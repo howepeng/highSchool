@@ -20,7 +20,7 @@
 <script type="text/javascript" src="jslib/uploadify/jquery.uploadify.min.js"></script>
 <script type="text/javascript">
 function exit() {
-     $.post("${pageContext.request.contextPath}/userAction!logOut.action",{name:"userName",test:"test123"},callback);
+     $.post("${pageContext.request.contextPath}/userAction!logOut.action",{},callback);
 }
 function callback(data) {
     var obj = $.parseJSON(data);

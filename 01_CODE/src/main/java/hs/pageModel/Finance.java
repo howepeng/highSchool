@@ -13,6 +13,10 @@ import javax.persistence.Table;
 @Table(name = "tb_finance", catalog = "highschool")
 public class Finance implements java.io.Serializable {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     // Fields
     private String num;
     private String id;
@@ -32,7 +36,9 @@ public class Finance implements java.io.Serializable {
     private BigDecimal safetyFee = new BigDecimal(0);
     private BigDecimal waterFee = new BigDecimal(0);
     private BigDecimal cashFee = new BigDecimal(0);
-    private BigDecimal transferFee = new BigDecimal(0);
+    private BigDecimal bankFee = new BigDecimal(0);
+    private BigDecimal lakalaFee = new BigDecimal(0);
+    private BigDecimal aliFee = new BigDecimal(0);
     private BigDecimal payAgainFee = new BigDecimal(0);
     private BigDecimal countPayFee = new BigDecimal(0);
     private BigDecimal preferentialFee = new BigDecimal(0);
@@ -48,9 +54,15 @@ public class Finance implements java.io.Serializable {
     private String sort;
     private String order;
     private BigDecimal cashRefundFee = new BigDecimal(0);
-    private BigDecimal transferRefundFee = new BigDecimal(0);
+    private BigDecimal bankRefundFee = new BigDecimal(0);
+    private BigDecimal lakalaRefundFee = new BigDecimal(0);
+    private BigDecimal aliRefundFee = new BigDecimal(0);
     private BigDecimal cashPayAgainFee = new BigDecimal(0);
-    private BigDecimal transferPayAgainFee = new BigDecimal(0);
+    private BigDecimal bankPayAgainFee = new BigDecimal(0);
+    private BigDecimal lakalaPayAgainFee = new BigDecimal(0);
+    private BigDecimal aliPayAgainFee = new BigDecimal(0);
+    private String cancelflg;
+    private String crashHistoryType;
 
     public BigDecimal getStudyFee() {
         return studyFee;
@@ -94,11 +106,23 @@ public class Finance implements java.io.Serializable {
     public void setCashFee(BigDecimal cashFee) {
         this.cashFee = cashFee;
     }
-    public BigDecimal getTransferFee() {
-        return transferFee;
+    public BigDecimal getBankFee() {
+        return bankFee;
     }
-    public void setTransferFee(BigDecimal transferFee) {
-        this.transferFee = transferFee;
+    public void setBankFee(BigDecimal bankFee) {
+        this.bankFee = bankFee;
+    }
+    public BigDecimal getLakalaFee() {
+        return lakalaFee;
+    }
+    public void setLakalaFee(BigDecimal lakalaFee) {
+        this.lakalaFee = lakalaFee;
+    }
+    public BigDecimal getAliFee() {
+        return aliFee;
+    }
+    public void setAliFee(BigDecimal aliFee) {
+        this.aliFee = aliFee;
     }
     public BigDecimal getPayAgainFee() {
         return payAgainFee;
@@ -244,11 +268,23 @@ public class Finance implements java.io.Serializable {
     public void setCashRefundFee(BigDecimal cashRefundFee) {
         this.cashRefundFee = cashRefundFee;
     }
-    public BigDecimal getTransferRefundFee() {
-        return transferRefundFee;
+    public BigDecimal getBankRefundFee() {
+        return bankRefundFee;
     }
-    public void setTransferRefundFee(BigDecimal transferRefundFee) {
-        this.transferRefundFee = transferRefundFee;
+    public void setBankRefundFee(BigDecimal bankRefundFee) {
+        this.bankRefundFee = bankRefundFee;
+    }
+    public BigDecimal getLakalaRefundFee() {
+        return lakalaRefundFee;
+    }
+    public void setLakalaRefundFee(BigDecimal lakalaRefundFee) {
+        this.lakalaRefundFee = lakalaRefundFee;
+    }
+    public BigDecimal getAliRefundFee() {
+        return aliRefundFee;
+    }
+    public void setAliRefundFee(BigDecimal aliRefundFee) {
+        this.aliRefundFee = aliRefundFee;
     }
     public BigDecimal getCashPayAgainFee() {
         return cashPayAgainFee;
@@ -256,13 +292,36 @@ public class Finance implements java.io.Serializable {
     public void setCashPayAgainFee(BigDecimal cashPayAgainFee) {
         this.cashPayAgainFee = cashPayAgainFee;
     }
-    public BigDecimal getTransferPayAgainFee() {
-        return transferPayAgainFee;
+    public BigDecimal getBankPayAgainFee() {
+        return bankPayAgainFee;
     }
-    public void setTransferPayAgainFee(BigDecimal transferPayAgainFee) {
-        this.transferPayAgainFee = transferPayAgainFee;
+    public void setBankPayAgainFee(BigDecimal bankPayAgainFee) {
+        this.bankPayAgainFee = bankPayAgainFee;
     }
-
+    public BigDecimal getLakalaPayAgainFee() {
+        return lakalaPayAgainFee;
+    }
+    public void setLakalaPayAgainFee(BigDecimal lakalaPayAgainFee) {
+        this.lakalaPayAgainFee = lakalaPayAgainFee;
+    }
+    public BigDecimal getAliPayAgainFee() {
+        return aliPayAgainFee;
+    }
+    public void setAliPayAgainFee(BigDecimal aliPayAgainFee) {
+        this.aliPayAgainFee = aliPayAgainFee;
+    }
+    public String getCancelflg() {
+        return cancelflg;
+    }
+    public void setCancelflg(String cancelflg) {
+        this.cancelflg = cancelflg;
+    }
+    public String getCrashHistoryType() {
+        return crashHistoryType;
+    }
+    public void setCrashHistoryType(String crashHistoryType) {
+        this.crashHistoryType = crashHistoryType;
+    }
 
 
 

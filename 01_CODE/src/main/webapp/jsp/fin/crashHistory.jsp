@@ -12,7 +12,7 @@
                             pageSize : 10,
                             pageList : [ 10, 20, 30, 40 ],
                             fit : true,
-                            fitColumns : true,
+                            fitColumns : false,
                             nowrap : false,
                             border : false,
                             idField : 'id',
@@ -20,103 +20,125 @@
                             sortOrder : 'desc',
                             checkOnSelect : false,
                             selectOnCheck : true,
-                            frozenColumns : [ [ {
+                            frozenColumns : [ ],
+                            columns : [ [ {
                                 title : '编号',
                                 field : 'id',
-                                width : 150,
+                                width : 50,
                                 sortable : true,
                                 checkbox : true
                             }, {
                                 title : '姓名',
                                 field : 'name',
-                                width : 120
-                            } ] ],
-                            columns : [ [ {
+                                width : 100
+                            }, {
                                 title : '身份证',
                                 field : 'idNum',
-                                width : 550
+                                width : 100
                             }, {
                                 title : '班级类型',
                                 field : 'classTypeName',
-                                width : 250
+                                width : 100
                             }, {
                                 title : '学费',
                                 field : 'studyFee',
-                                width : 200
+                                width : 100
                             } , {
                                 title : '住宿费',
                                 field : 'stayFee',
-                                width : 250
+                                width : 100
                             } , {
                                 title : '晚自习费',
                                 field : 'selfFee',
-                                width : 300
+                                width : 100
                             } , {
                                 title : '成绩单押金',
                                 field : 'scoreFee',
-                                width : 300
+                                width : 100
                             } , {
                                 title : '保险费',
                                 field : 'safetyFee',
-                                width : 250
+                                width : 100
                             } , {
                                 title : '水费',
                                 field : 'waterFee',
-                                width : 200
+                                width : 100
                             } , {
                                 title : '报名费',
                                 field : 'signFee',
-                                width : 250
+                                width : 100
                             } , {
                                 title : '减免费用',
                                 field : 'preferentialFee',
-                                width : 250
+                                width : 100
                             } , {
                                 title : '现金',
                                 field : 'cashFee',
-                                width : 200
+                                width : 100
                             } , {
-                                title : '转账',
-                                field : 'transferFee',
-                                width : 200
+                                title : '银行转账',
+                                field : 'bankFee',
+                                width : 100
+                            } , {
+                                title : '拉卡拉pos机转账',
+                                field : 'lakalaFee',
+                                width : 100
+                            } , {
+                                title : '支付宝转账',
+                                field : 'aliFee',
+                                width : 100
                             } , {
                                 title : '退款',
                                 field : 'refundFee',
-                                width : 200
+                                width : 100
                             } , {
                                 title : '补交费 ',
                                 field : 'payAgainFee',
-                                width : 250
+                                width : 100
                             } , {
                                 title : '总计交付',
                                 field : 'countPayFee',
-                                width : 300
+                                width : 100
                             } , {
                                 title : '欠费',
                                 field : 'arrearFee',
-                                width : 200
+                                width : 100
                             } , {
                                 title : '收款人',
                                 field : 'payee',
-                                width : 250
+                                width : 100
                             } , {
                                 title : '收款时间',
                                 field : 'createdatetime',
-                                width : 400
+                                width : 150
+                            } , {
+                                title : '账单类型',
+                                field : 'crashHistoryType',
+                                width : 150
+                            } , {
+                                title : '撤消状态',
+                                field : 'cancelflg',
+                                width : 150
                             }   ] ],
-                            toolbar : [ {
-                                text : '修改',
-                                iconCls : 'icon-edit',
-                                handler : function() {
-                                    fin_crashHistory_editFun();
-                                }
-                            }, '-', {
-                                text : '删除',
-                                iconCls : 'icon-edit',
-                                handler : function() {
-                                    fin_crashHistory_deleteFun();
-                                }
-                            }, '-', {
+                             toolbar : [ {
+//                                 text : '修改',
+//                                 iconCls : 'icon-edit',
+//                                 handler : function() {
+//                                     fin_crashHistory_editFun();
+//                                 }
+//                             }, '-', {
+//                                 text : '删除',
+//                                 iconCls : 'icon-remove',
+//                                 handler : function() {
+//                                     fin_crashHistory_deleteFun();
+//                                 }
+//                             }, '-', {
+                                 text : '撤销',
+                                 iconCls : 'icon-undo',
+                                 handler : function() {
+                                     fin_crashHistory_rollbackFun();
+                                 }
+                             }, '-', {
                                 text : '导出收费明细',
                                 iconCls : 'icon-ok',
                                 handler : function() {
@@ -173,8 +195,7 @@
                                     for ( var i = 0; i < rows.length; i++) {
                                         ids.push(rows[i].id);
                                     }
-                                    $
-                                            .ajax({
+                                    $.ajax({
                                                 url : '${pageContext.request.contextPath}/financeAction!remove.action',
                                                 data : {
                                                     ids : ids.join(',')
@@ -226,7 +247,9 @@
     function fin_crashHistory_edit() {
 
         var count = Number($('#fin_crashHistory_editForm input[name=cashFee]').val())
-                    + Number($('#fin_crashHistory_editForm input[name=transferFee]').val());
+                    + Number($('#fin_crashHistory_editForm input[name=bankFee]').val())
+                    + Number($('#fin_crashHistory_editForm input[name=lakalaFee]').val())
+                    + Number($('#fin_crashHistory_editForm input[name=aliFee]').val());
 
         if (count == $('#fin_crashHistory_editForm input[name=countPayFee]').val()) {
             $('#fin_crashHistory_editForm').form('submit', {
@@ -299,10 +322,20 @@
             alert("现金补交费请输入数字");
             cashPayAgainFeeTemp.val("0");
         }
-        var transferPayAgainFeeTemp = $('#fin_crashHistory_editForm input[name=transferPayAgainFee]');
-        if(transferPayAgainFeeTemp.val() == "" || !$.isNumeric(transferPayAgainFeeTemp.val())) {
+        var bankPayAgainFeeTemp = $('#fin_crashHistory_editForm input[name=bankPayAgainFee]');
+        if(bankPayAgainFeeTemp.val() == "" || !$.isNumeric(bankPayAgainFeeTemp.val())) {
             alert("转账补交费请输入数字");
-            transferPayAgainFeeTemp.val("0");
+            bankPayAgainFeeTemp.val("0");
+        }
+        var lakalaPayAgainFeeTemp = $('#fin_crashHistory_editForm input[name=lakalaPayAgainFee]');
+        if(lakalaPayAgainFeeTemp.val() == "" || !$.isNumeric(lakalaPayAgainFeeTemp.val())) {
+            alert("转账补交费请输入数字");
+            lakalaPayAgainFeeTemp.val("0");
+        }
+        var aliPayAgainFeeTemp = $('#fin_crashHistory_editForm input[name=aliPayAgainFee]');
+        if(aliPayAgainFeeTemp.val() == "" || !$.isNumeric(aliPayAgainFeeTemp.val())) {
+            alert("转账补交费请输入数字");
+            aliPayAgainFeeTemp.val("0");
         }
         var arrearFeeTemp = $('#fin_crashHistory_editForm input[name=arrearFee]');
         if(arrearFeeTemp.val() == "" || !$.isNumeric(arrearFeeTemp.val())) {
@@ -314,10 +347,20 @@
             alert("现金退款请输入数字");
             cashRefundFeeTemp.val("0");
         }
-        var transferRefundFeeTemp = $('#fin_crashHistory_editForm input[name=transferRefundFee]');
-        if(transferRefundFeeTemp.val() == "" || !$.isNumeric(transferRefundFeeTemp.val())) {
+        var bankRefundFeeTemp = $('#fin_crashHistory_editForm input[name=bankRefundFee]');
+        if(bankRefundFeeTemp.val() == "" || !$.isNumeric(bankRefundFeeTemp.val())) {
             alert("转账退款请输入数字");
-            transferRefundFeeTemp.val("0");
+            bankRefundFeeTemp.val("0");
+        }
+        var lakalaRefundFeeTemp = $('#fin_crashHistory_editForm input[name=lakalaRefundFee]');
+        if(lakalaRefundFeeTemp.val() == "" || !$.isNumeric(lakalaRefundFeeTemp.val())) {
+            alert("转账退款请输入数字");
+            lakalaRefundFeeTemp.val("0");
+        }
+        var aliRefundFeeTemp = $('#fin_crashHistory_editForm input[name=aliRefundFee]');
+        if(aliRefundFeeTemp.val() == "" || !$.isNumeric(aliRefundFeeTemp.val())) {
+            alert("转账退款请输入数字");
+            aliRefundFeeTemp.val("0");
         }
         var count = 0;
         count = Number(count) + Number($('#fin_crashHistory_editForm input[name=studyFee]').val());
@@ -336,7 +379,9 @@
         //alert("signFee"+count);
         count = Number(count) + Number($('#fin_crashHistory_editForm input[name=cashPayAgainFee]').val());
         //alert("cashPayAgainFee"+count);
-        count = Number(count) + Number($('#fin_crashHistory_editForm input[name=transferPayAgainFee]').val());
+        count = Number(count) + Number($('#fin_crashHistory_editForm input[name=bankPayAgainFee]').val());
+        count = Number(count) + Number($('#fin_crashHistory_editForm input[name=lakalaPayAgainFee]').val());
+        count = Number(count) + Number($('#fin_crashHistory_editForm input[name=aliPayAgainFee]').val());
         //alert("transferPayAgainFee"+count);
         //count = Number(count) - Number($('#fin_crashHistory_editForm input[name=arrearFee]').val());
         //alert("arrearFee"+count);
@@ -344,13 +389,78 @@
         //alert("preferentialFee"+count);
         count = Number(count) - Number($('#fin_crashHistory_editForm input[name=cashRefundFee]').val());
         //alert("cashRefundFee"+count);
-        count = Number(count) - Number($('#fin_crashHistory_editForm input[name=transferRefundFee]').val());
+        count = Number(count) - Number($('#fin_crashHistory_editForm input[name=bankRefundFee]').val());
+        count = Number(count) - Number($('#fin_crashHistory_editForm input[name=lakalaRefundFee]').val());
+        count = Number(count) - Number($('#fin_crashHistory_editForm input[name=aliRefundFee]').val());
         //alert("transferRefundFee"+count);
         $('#fin_crashHistory_editForm input[name=countPayFee]').val(count);
     }
+    function fin_crashHistory_rollbackFun() {
+        var rows = fin_crashHistory_datagrid.datagrid('getChecked');
+        if (rows.length > 1) {
+            $.messager.show({
+                title : '提示',
+                msg : '请选择一条记录'
+            });
+        } else if (rows.length == 1) {
+            if (rows[0].cancelflg == "已撤销") {
+                $.messager.show({
+                    title : '提示',
+                    msg : '已撤销不能再撤销！'
+                });
+                return;
+            }
+            var createdatetime = rows[0].createdatetime.substring(0,10);
+            var today = new Date();
+            var todayYear = today.getFullYear();
+            var todayMonth = Number(today.getMonth()+ 1) + "";
+            if(todayMonth.length == 1){
+                todayMonth = "0" + todayMonth;
+            }
+            var todayDay = today.getDate();
+            if(createdatetime != (todayYear+"-"+todayMonth+"-"+todayDay)) {
+                $.messager.show({
+                    title : '提示',
+                    msg : '只能撤销今天的数据！'
+                });
+                return;
+            }
+            $.messager
+            .confirm(
+                    '确认',
+                    '您是否撤销当前选中项目？',
+                    function(r) {
+                        if (r) {
+                            $.ajax({
+                                url : '${pageContext.request.contextPath}/financeAction!rollback.action',
+                                data : {
+                                    ids : rows[0].id
+                                },
+                                dataType : 'json',
+                                success : function(obj) {
+                                    if (obj.success) {
+                                        fin_crashHistory_datagrid.datagrid('load');
+                                        fin_crashHistory_datagrid.datagrid('unselectAll');
+                                        fin_crashHistory_datagrid.datagrid('uncheckAll');
+                                    }
+                                    $.messager.show({
+                                        title : '提示',
+                                        msg : obj.msg
+                                    });
+                                }
+                            });
+                        }
+                    });
+        } else {
+            $.messager.show({
+                title : '提示',
+                msg : '请勾选要显示的记录'
+            });
+        }
+    }
 </script>
 <div class="easyui-layout" data-options="fit:true">
-<div data-options="region:'north',border:false,title:'过滤条件'" style="height: 145px;overflow: hidden;" align="left">
+<div data-options="region:'north',border:false,title:'过滤条件'" style="height: 180px;overflow: hidden;" align="left">
         <form id="fin_crashHistory_searchForm">
             <table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
                 <tr>
@@ -359,7 +469,7 @@
                         <input name="name" style="width:180px;"/>
                     </td>
                     <th>收款人</th>
-                    <td><input name="payee" style="width:100px;" />
+                    <td><input name="payee" style="width:180px;" />
                     </td>
                 </tr>
                 <tr>
@@ -369,16 +479,39 @@
                                data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath}/classTypeAction!combox.action'"
                                style="width: 180px;" />
                     </td>
-                </tr>
-                <tr>
                     <th>收款时间</th>
                     <td>
-                        <input name="createdatetimeStart" onfocus="WdatePicker()" readonly="readonly" style="width: 155px;" />至
-                        <input name="createdatetimeEnd" onfocus="WdatePicker()" readonly="readonly" style="width: 155px;" />
+                        <input name="createdatetimeStart" onfocus="WdatePicker()" readonly="readonly" style="width: 75px;" />至
+                        <input name="createdatetimeEnd" onfocus="WdatePicker()" readonly="readonly" style="width: 75px;" />
                     </td>
-                    <th></th>
+                </tr>
+                <tr>
+                    <th>账单类型</th>
                     <td>
+                        <select id="crashHistoryType" name="crashHistoryType" style="width: 180px;">
+                            <option></option>
+                            <option>报名费</option>
+                            <option>缴费</option>
+                            <option>补交费</option>
+                            <option>退费</option>
+                        </select>
+                    </td>
+                    <th>撤销状态</th>
+                    <td>
+                        <select id="cancelflg" name="cancelflg" style="width: 180px;">
+                            <option></option>
+                            <option>未撤销</option>
+                            <option>已撤销</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                     <th></th>
+                     <td>
                         <a href="javascript:void(0);" class="easyui-linkbutton" onclick="fin_crashHistory_searchFun();">过滤</a>
+                     </td>
+                     <th></th>
+                     <td>
                         <a href="javascript:void(0);" class="easyui-linkbutton" onclick="fin_crashHistory_cleanFun();">取消</a>
                     </td>
                 </tr>
@@ -397,7 +530,7 @@
 
     <div id="fin_crashHistory_menu" class="easyui-menu" style="width:120px;display: none;">
         <div onclick="fin_crashHistory_editFun();" data-options="iconCls:'icon-edit'">编辑</div>
-        <div onclick="fin_crashHistory_deleteFun();" data-options="iconCls:'icon-remove'">编辑</div>
+        <div onclick="fin_crashHistory_deleteFun();" data-options="iconCls:'icon-remove'">删除</div>
     </div>
 </div>
 
@@ -452,16 +585,32 @@
                 <th style="width: 55px;">现金补交费 </th>
                 <td><input name="cashPayAgainFee" style="width:150px;"
                 onchange="fin_crashHistory_feeOnChangeFun()"/></td>
-                <th style="width: 55px;">转账补交费 </th>
-                <td><input name="transferPayAgainFee" style="width:150px;"
+                <th style="width: 55px;">银行转账补交费 </th>
+                <td><input name="bankPayAgainFee" style="width:150px;"
+                onchange="fin_crashHistory_feeOnChangeFun()"/></td>
+            </tr>
+            <tr>
+                <th style="width: 55px;">拉卡拉pos机补交费 </th>
+                <td><input name="lakalaPayAgainFee" style="width:150px;"
+                onchange="fin_crashHistory_feeOnChangeFun()"/></td>
+                <th style="width: 55px;">支付宝转账补交费 </th>
+                <td><input name="aliPayAgainFee" style="width:150px;"
                 onchange="fin_crashHistory_feeOnChangeFun()"/></td>
             </tr>
             <tr>
                 <th style="width: 55px;">现金退款</th>
                 <td><input name="cashRefundFee" style="width:150px;"
                 onchange="fin_crashHistory_feeOnChangeFun()"/></td>
-                <th style="width: 55px;">转账退款</th>
-                <td><input name="transferRefundFee" style="width:150px;"
+                <th style="width: 55px;">银行转账退款</th>
+                <td><input name="bankRefundFee" style="width:150px;"
+                onchange="fin_crashHistory_feeOnChangeFun()"/></td>
+            </tr>
+            <tr>
+                <th style="width: 55px;">拉卡拉pos机退款</th>
+                <td><input name="lakalaRefundFee" style="width:150px;"
+                onchange="fin_crashHistory_feeOnChangeFun()"/></td>
+                <th style="width: 55px;">支付宝转账退款</th>
+                <td><input name="aliRefundFee" style="width:150px;"
                 onchange="fin_crashHistory_feeOnChangeFun()"/></td>
             </tr>
             <tr>
@@ -471,8 +620,14 @@
             <tr>
                 <th style="width: 55px;">现金</th>
                 <td><input name="cashFee" style="width:150px;"/></td>
-                 <th style="width: 55px;">转账</th>
-                <td><input name="transferFee" style="width:150px;"/></td>
+                 <th style="width: 55px;">银行转账</th>
+                <td><input name="bankFee" style="width:150px;"/></td>
+            </tr>
+            <tr>
+                <th style="width: 55px;">拉卡拉pos机转账</th>
+                <td><input name="lakalaFee" style="width:150px;"/></td>
+                 <th style="width: 55px;">支付宝转账</th>
+                <td><input name="aliFee" style="width:150px;"/></td>
             </tr>
             <tr>
                 <th style="width: 55px;">欠费</th>

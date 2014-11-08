@@ -66,4 +66,25 @@ public class FinanceAction extends BaseAction implements ModelDriven<Finance> {
         }
         super.writeJson(json);
     }
+
+    public void rollback(){
+        Json json = new Json();
+        try {
+             String ret = financeService.rollbackFinance(finance.getIds());
+             if ("success".equals(ret)) {
+                 json.setSuccess(true);
+                 json.setMsg("撤销成功");
+             }else if ("noToday".equals(ret)) {
+                     json.setSuccess(false);
+                     json.setMsg("撤销失败!不是当天的数据不能撤销!");
+             } else {
+                 json.setSuccess(false);
+                 json.setMsg("撤销失败");
+             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            json.setMsg(e.getMessage());
+        }
+        super.writeJson(json);
+    }
 }

@@ -19,4 +19,6 @@ public interface FinanceServiceI {
 
     public String deleteFinance(String attachid);
 
+    public String rollbackFinance(String attachid);
+
 }

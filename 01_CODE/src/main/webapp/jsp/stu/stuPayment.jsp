@@ -17,7 +17,7 @@
                             nowrap : false,
                             border : false,
                             idField : 'id',
-                            sortName : 'name',
+                            sortName : 'createdatetime',
                             sortOrder : 'desc',
                             checkOnSelect : false,
                             selectOnCheck : true,
@@ -125,7 +125,9 @@
     function stu_stuPayment_edit() {
 
         var count = Number($('#stu_stuPayment_editForm input[name=cashFee]').val())
-                    + Number($('#stu_stuPayment_editForm input[name=transferFee]').val());
+                    + Number($('#stu_stuPayment_editForm input[name=bankFee]').val())
+                    + Number($('#stu_stuPayment_editForm input[name=lakalaFee]').val())
+                    + Number($('#stu_stuPayment_editForm input[name=aliFee]').val());
 
         if (count == $('#stu_stuPayment_editForm input[name=countFee]').val()) {
             $('#stu_stuPayment_editForm').form('submit', {
@@ -390,7 +392,9 @@
         $('#stu_stuPayment_editForm').find('#arrearFee').val("");
         $('#stu_stuPayment_editForm input[name=countFee]').val("");
         $('#stu_stuPayment_editForm input[name=cashFee]').val("");
-        $('#stu_stuPayment_editForm input[name=transferFee]').val("");
+        $('#stu_stuPayment_editForm input[name=bankFee]').val("");
+        $('#stu_stuPayment_editForm input[name=lakalaFee]').val("");
+        $('#stu_stuPayment_editForm input[name=aliFee]').val("");
     }
 
 

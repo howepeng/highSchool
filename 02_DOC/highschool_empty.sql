@@ -73,15 +73,23 @@ CREATE TABLE `tb_finance` (
   `preferentialFee` decimal(22,0) default NULL,
   `arrearFee` decimal(22,0) default NULL,
   `cashFee` decimal(22,0) default NULL,
-  `transferFee` decimal(22,0) default NULL,
+  `bankFee` decimal(22,0) default NULL,
+  `lakalaFee` decimal(22,0) default NULL,
+  `aliFee` decimal(22,0) default NULL,
   `payAgainFee` decimal(22,0) default NULL,
   `refundFee` decimal(22,0) default NULL,
   `count_pay_fee` decimal(22,0) default NULL,
   `cashRefundFee` decimal(22,0) default NULL,
-  `transferRefundFee` decimal(22,0) default NULL,
   `cashPayAgainFee` decimal(22,0) default NULL,
-  `transferPayAgainFee` decimal(22,0) default NULL,
+  `bankPayAgainFee` decimal(22,0) default NULL,
   `payee` varchar(36) default NULL,
+  `lakalaPayAgainFee` decimal(22,0) default NULL,
+  `aliPayAgainFee` decimal(22,0) default NULL,
+  `aliRefundFee` decimal(22,0) default NULL,
+  `bankRefundFee` decimal(22,0) default NULL,
+  `lakalaRefundFee` decimal(22,0) default NULL,
+  `cancel_flg` varchar(2) default NULL,
+  `crashHistoryType` varchar(50) default NULL,
   PRIMARY KEY  (`id`),
   KEY `FK_atbixe4b0gwnmic7gewjxnkn2` (`payee`),
   KEY `finance_class_type` (`class_type`),
@@ -128,21 +136,22 @@ CREATE TABLE `tb_menu` (
 -- ----------------------------
 -- Records of tb_menu
 -- ----------------------------
-INSERT INTO tb_menu VALUES ('0', '首页', null, null, null, null);
-INSERT INTO tb_menu VALUES ('0c77a745-90b3-4c8e-9848-60d1d806ad9d', '补交学费', 'icon-save', '3', 'jsp/stu/stuArrears.jsp', 'xsgl');
-INSERT INTO tb_menu VALUES ('1447677b-562e-4b58-98af-ebb26dcbeaca', '报名缴费', 'icon-tip', '2', 'jsp/stu/stuPayment.jsp', 'xsgl');
-INSERT INTO tb_menu VALUES ('46ec3a24-43a4-44fb-a9e7-d2315eb3c698', '学生管理', 'icon-search', '5', 'jsp/stu/studentManager.jsp', 'xsgl');
-INSERT INTO tb_menu VALUES ('4a915675-6ffd-46f4-93f8-d2a9464bf9d6', '退款', 'icon-cancel', '4', 'jsp/stu/stuRefundment.jsp', 'xsgl');
-INSERT INTO tb_menu VALUES ('5f9bb20e-887e-459a-baee-ac697d058775', '财务管理', '', '2', '', '0');
-INSERT INTO tb_menu VALUES ('6546cfdb-e0d1-48f0-bda7-734c5063fe20', '班级种别管理', 'icon-ok', '6', 'jsp/stu/classTypeManager.jsp', 'xsgl');
-INSERT INTO tb_menu VALUES ('701da494-93ca-49f3-9b9a-28774030e527', '报名优惠管理', '', '7', 'jsp/fin/preferentialManager.jsp', 'xsgl');
-INSERT INTO tb_menu VALUES ('cdgl', '菜单管理', '', '2', 'jsp/comn/menuManager.jsp', 'xtgl');
-INSERT INTO tb_menu VALUES ('ffe51ba1-2682-4c27-a141-0422e2e25d78', '历史账单', '', '2', 'jsp/fin/crashHistory.jsp', '5f9bb20e-887e-459a-baee-ac697d058775');
-INSERT INTO tb_menu VALUES ('jsgl', '角色管理', '', '3', 'jsp/comn/roleManager.jsp', 'xtgl');
-INSERT INTO tb_menu VALUES ('xsbm', '学生报名', '', '1', 'jsp/stu/stuSignup.jsp', 'xsgl');
-INSERT INTO tb_menu VALUES ('xsgl', '学生管理', '', '1', '', '0');
-INSERT INTO tb_menu VALUES ('xtgl', '系统管理', '', '3', '', '0');
-INSERT INTO tb_menu VALUES ('yhgl', '用户管理', '', '1', 'jsp/comn/userManager.jsp', 'xtgl');
+INSERT INTO `tb_menu` VALUES ('0', '首页', null, null, null, null);
+INSERT INTO `tb_menu` VALUES ('0c77a745-90b3-4c8e-9848-60d1d806ad9d', '补交学费', 'icon-save', '3', 'jsp/stu/stuArrears.jsp', 'xsgl');
+INSERT INTO `tb_menu` VALUES ('1447677b-562e-4b58-98af-ebb26dcbeaca', '报名缴费', 'icon-tip', '2', 'jsp/stu/stuPayment.jsp', 'xsgl');
+INSERT INTO `tb_menu` VALUES ('46ec3a24-43a4-44fb-a9e7-d2315eb3c698', '学生管理', 'icon-search', '5', 'jsp/stu/studentManager.jsp', 'xsgl');
+INSERT INTO `tb_menu` VALUES ('4a915675-6ffd-46f4-93f8-d2a9464bf9d6', '退款', 'icon-cancel', '4', 'jsp/stu/stuRefundment.jsp', 'xsgl');
+INSERT INTO `tb_menu` VALUES ('5f9bb20e-887e-459a-baee-ac697d058775', '财务管理', '', '2', '', '0');
+INSERT INTO `tb_menu` VALUES ('6546cfdb-e0d1-48f0-bda7-734c5063fe20', '班级种别管理', 'icon-ok', '6', 'jsp/stu/classTypeManager.jsp', 'xsgl');
+INSERT INTO `tb_menu` VALUES ('701da494-93ca-49f3-9b9a-28774030e527', '报名优惠管理', '', '7', 'jsp/fin/preferentialManager.jsp', 'xsgl');
+INSERT INTO `tb_menu` VALUES ('ab44acb1-c54e-4d3f-ac7e-b26eb984e5c8', '学生信息修改历史', '', '8', 'jsp/stu/sutdentInfoHistory.jsp', 'xsgl');
+INSERT INTO `tb_menu` VALUES ('cdgl', '菜单管理', '', '2', 'jsp/comn/menuManager.jsp', 'xtgl');
+INSERT INTO `tb_menu` VALUES ('ffe51ba1-2682-4c27-a141-0422e2e25d78', '历史账单', '', '2', 'jsp/fin/crashHistory.jsp', '5f9bb20e-887e-459a-baee-ac697d058775');
+INSERT INTO `tb_menu` VALUES ('jsgl', '角色管理', '', '3', 'jsp/comn/roleManager.jsp', 'xtgl');
+INSERT INTO `tb_menu` VALUES ('xsbm', '学生报名', '', '1', 'jsp/stu/stuSignup.jsp', 'xsgl');
+INSERT INTO `tb_menu` VALUES ('xsgl', '学生管理', '', '1', '', '0');
+INSERT INTO `tb_menu` VALUES ('xtgl', '系统管理', '', '3', '', '0');
+INSERT INTO `tb_menu` VALUES ('yhgl', '用户管理', '', '1', 'jsp/comn/userManager.jsp', 'xtgl');
 
 -- ----------------------------
 -- Table structure for `tb_photo_file`
@@ -205,9 +214,9 @@ CREATE TABLE `tb_role` (
 -- ----------------------------
 -- Records of tb_role
 -- ----------------------------
-INSERT INTO tb_role VALUES ('0', '超级管理员', 'admin');
-INSERT INTO tb_role VALUES ('233c43ba-a29a-45b3-bc0e-6192fd8b5059', '', '财务');
-INSERT INTO tb_role VALUES ('fdd5e503-0638-4483-9773-74b2f32369d3', '', '报名老师');
+INSERT INTO `tb_role` VALUES ('0', '超级管理员', 'admin');
+INSERT INTO `tb_role` VALUES ('233c43ba-a29a-45b3-bc0e-6192fd8b5059', '', '财务');
+INSERT INTO `tb_role` VALUES ('fdd5e503-0638-4483-9773-74b2f32369d3', '', '报名老师');
 
 -- ----------------------------
 -- Table structure for `tb_role_menu`
@@ -227,31 +236,33 @@ CREATE TABLE `tb_role_menu` (
 -- ----------------------------
 -- Records of tb_role_menu
 -- ----------------------------
-INSERT INTO tb_role_menu VALUES ('18344bba-6c9f-4d99-8e5b-e41e84de8bb3', '0', '1447677b-562e-4b58-98af-ebb26dcbeaca');
-INSERT INTO tb_role_menu VALUES ('190c3499-932e-466d-87a5-16a688ee8a7a', 'fdd5e503-0638-4483-9773-74b2f32369d3', '46ec3a24-43a4-44fb-a9e7-d2315eb3c698');
-INSERT INTO tb_role_menu VALUES ('1f5214a8-469f-4bbb-aa1d-c7394d09e6d2', '0', 'xsbm');
-INSERT INTO tb_role_menu VALUES ('25dfeab4-8110-4cac-a89e-633c59bbc19b', '0', '0c77a745-90b3-4c8e-9848-60d1d806ad9d');
-INSERT INTO tb_role_menu VALUES ('2e571579-9dd6-4f56-8c26-b98f2490e1a0', '0', '5f9bb20e-887e-459a-baee-ac697d058775');
-INSERT INTO tb_role_menu VALUES ('3b6bc3de-1f39-47ab-a1b8-84a0889b4528', 'fdd5e503-0638-4483-9773-74b2f32369d3', '1447677b-562e-4b58-98af-ebb26dcbeaca');
-INSERT INTO tb_role_menu VALUES ('3f32b9cb-2de2-476b-a8c7-03411697ed32', '0', 'cdgl');
-INSERT INTO tb_role_menu VALUES ('407ac48c-84ba-4aa0-8d0e-5254e8eb31ca', '0', '6546cfdb-e0d1-48f0-bda7-734c5063fe20');
-INSERT INTO tb_role_menu VALUES ('442af366-03a0-49b0-a3b0-89b59078ee11', '0', 'xtgl');
-INSERT INTO tb_role_menu VALUES ('49f3ba86-f22b-4001-80c6-fd626c8ee97c', '233c43ba-a29a-45b3-bc0e-6192fd8b5059', 'ffe51ba1-2682-4c27-a141-0422e2e25d78');
-INSERT INTO tb_role_menu VALUES ('5bcfa2b5-1c98-4698-8451-67eda68e14a6', 'fdd5e503-0638-4483-9773-74b2f32369d3', '4a915675-6ffd-46f4-93f8-d2a9464bf9d6');
-INSERT INTO tb_role_menu VALUES ('5c349684-e380-4653-8cd2-f68881aa2346', 'fdd5e503-0638-4483-9773-74b2f32369d3', '701da494-93ca-49f3-9b9a-28774030e527');
-INSERT INTO tb_role_menu VALUES ('64ec3931-20bb-48c1-8778-feeca693215a', '0', '4a915675-6ffd-46f4-93f8-d2a9464bf9d6');
-INSERT INTO tb_role_menu VALUES ('6a8cab81-3f7d-4845-843c-795fbe280f4f', '0', '46ec3a24-43a4-44fb-a9e7-d2315eb3c698');
-INSERT INTO tb_role_menu VALUES ('818efafa-9159-48c8-9a5a-5c2ac02fec17', 'fdd5e503-0638-4483-9773-74b2f32369d3', 'xsbm');
-INSERT INTO tb_role_menu VALUES ('8c4ae1cd-5794-42b0-a90f-ddd44dd49642', 'fdd5e503-0638-4483-9773-74b2f32369d3', 'xsgl');
-INSERT INTO tb_role_menu VALUES ('8fb09c78-2641-45ab-8d78-48090b6b2d81', '0', '0');
-INSERT INTO tb_role_menu VALUES ('9228c9ed-b9a1-4076-b23b-6164409ae31b', '0', 'ffe51ba1-2682-4c27-a141-0422e2e25d78');
-INSERT INTO tb_role_menu VALUES ('94d96952-2275-4c75-abcb-6c3792a7e41c', '0', '701da494-93ca-49f3-9b9a-28774030e527');
-INSERT INTO tb_role_menu VALUES ('96195c93-006f-48af-9b09-b92614dfb50b', 'fdd5e503-0638-4483-9773-74b2f32369d3', '0c77a745-90b3-4c8e-9848-60d1d806ad9d');
-INSERT INTO tb_role_menu VALUES ('b7690f30-d38c-4096-8818-c6cac38e40b3', '0', 'yhgl');
-INSERT INTO tb_role_menu VALUES ('ba864495-c5b5-4967-85d9-0d57428fcb36', '233c43ba-a29a-45b3-bc0e-6192fd8b5059', '5f9bb20e-887e-459a-baee-ac697d058775');
-INSERT INTO tb_role_menu VALUES ('c554b084-7b62-47d3-857b-b99f0f24eb4a', '0', 'xsgl');
-INSERT INTO tb_role_menu VALUES ('eb92df4e-e860-4b41-b507-1172dda1f255', '0', 'jsgl');
-INSERT INTO tb_role_menu VALUES ('f9c7629d-4dc0-4ae5-b3f6-53d77a9e3131', 'fdd5e503-0638-4483-9773-74b2f32369d3', '6546cfdb-e0d1-48f0-bda7-734c5063fe20');
+INSERT INTO `tb_role_menu` VALUES ('03056b9f-c721-4403-a055-5885cf699c53', '0', '0');
+INSERT INTO `tb_role_menu` VALUES ('1bb149d0-9351-4881-93b1-50e46838ae68', '0', 'xsbm');
+INSERT INTO `tb_role_menu` VALUES ('21c51c20-6e8d-4c82-a93d-211f0ae347bd', 'fdd5e503-0638-4483-9773-74b2f32369d3', '46ec3a24-43a4-44fb-a9e7-d2315eb3c698');
+INSERT INTO `tb_role_menu` VALUES ('25beb6f1-caa9-4f0d-8232-29d99594c19e', 'fdd5e503-0638-4483-9773-74b2f32369d3', 'xsgl');
+INSERT INTO `tb_role_menu` VALUES ('2c2e8ad9-95c1-4020-b0ea-0efab165ebfb', 'fdd5e503-0638-4483-9773-74b2f32369d3', '0c77a745-90b3-4c8e-9848-60d1d806ad9d');
+INSERT INTO `tb_role_menu` VALUES ('39bf4be4-0a33-475a-922a-aeee43aa609f', 'fdd5e503-0638-4483-9773-74b2f32369d3', '701da494-93ca-49f3-9b9a-28774030e527');
+INSERT INTO `tb_role_menu` VALUES ('45163885-de94-4105-b16c-3e74e91d84e0', 'fdd5e503-0638-4483-9773-74b2f32369d3', 'xsbm');
+INSERT INTO `tb_role_menu` VALUES ('493b6602-d594-4acd-a3ac-52f79283189e', 'fdd5e503-0638-4483-9773-74b2f32369d3', '4a915675-6ffd-46f4-93f8-d2a9464bf9d6');
+INSERT INTO `tb_role_menu` VALUES ('49f3ba86-f22b-4001-80c6-fd626c8ee97c', '233c43ba-a29a-45b3-bc0e-6192fd8b5059', 'ffe51ba1-2682-4c27-a141-0422e2e25d78');
+INSERT INTO `tb_role_menu` VALUES ('50c68c26-12f8-46d3-95d9-af7f4c42c00d', '0', 'xsgl');
+INSERT INTO `tb_role_menu` VALUES ('5a966f1b-cdc6-4d6f-87b9-af0a3dcb36de', '0', 'cdgl');
+INSERT INTO `tb_role_menu` VALUES ('67eef788-1b10-48a6-80e9-a90f116f3a40', '0', '701da494-93ca-49f3-9b9a-28774030e527');
+INSERT INTO `tb_role_menu` VALUES ('688e4402-3b99-48a0-92f2-4345068b28e7', 'fdd5e503-0638-4483-9773-74b2f32369d3', '6546cfdb-e0d1-48f0-bda7-734c5063fe20');
+INSERT INTO `tb_role_menu` VALUES ('6d6bb533-b199-44e5-a253-04766a1a18ef', '0', 'xtgl');
+INSERT INTO `tb_role_menu` VALUES ('6f93f48b-2cec-4a75-aa2c-cd353e66e556', '0', 'jsgl');
+INSERT INTO `tb_role_menu` VALUES ('81db9c4c-8a45-477f-85fe-ed55d6b06dc4', '0', 'yhgl');
+INSERT INTO `tb_role_menu` VALUES ('8ea5571b-7c77-44b9-be2f-38d1b0256650', '0', '0c77a745-90b3-4c8e-9848-60d1d806ad9d');
+INSERT INTO `tb_role_menu` VALUES ('91bea6d1-9ec4-4b84-a0d1-31e770560970', '0', '5f9bb20e-887e-459a-baee-ac697d058775');
+INSERT INTO `tb_role_menu` VALUES ('939c7278-3cd7-4ae7-92d0-4a303f9e524e', '0', 'ab44acb1-c54e-4d3f-ac7e-b26eb984e5c8');
+INSERT INTO `tb_role_menu` VALUES ('9a4c6068-8f39-4afb-9805-8eaf94e1eaae', '0', 'ffe51ba1-2682-4c27-a141-0422e2e25d78');
+INSERT INTO `tb_role_menu` VALUES ('a73d4e06-8347-486a-91fa-86a07471cdb8', '0', '6546cfdb-e0d1-48f0-bda7-734c5063fe20');
+INSERT INTO `tb_role_menu` VALUES ('b26965d9-75a1-4315-9a34-f78de7fb6485', 'fdd5e503-0638-4483-9773-74b2f32369d3', 'ab44acb1-c54e-4d3f-ac7e-b26eb984e5c8');
+INSERT INTO `tb_role_menu` VALUES ('ba864495-c5b5-4967-85d9-0d57428fcb36', '233c43ba-a29a-45b3-bc0e-6192fd8b5059', '5f9bb20e-887e-459a-baee-ac697d058775');
+INSERT INTO `tb_role_menu` VALUES ('c5afa6f6-671a-48ee-93be-d35c1e741f89', '0', '46ec3a24-43a4-44fb-a9e7-d2315eb3c698');
+INSERT INTO `tb_role_menu` VALUES ('e7cda2ff-a6ab-4ad3-9893-4c06b982e388', '0', '1447677b-562e-4b58-98af-ebb26dcbeaca');
+INSERT INTO `tb_role_menu` VALUES ('e871a572-623d-4afa-8666-eadfaaae0b3f', '0', '4a915675-6ffd-46f4-93f8-d2a9464bf9d6');
+INSERT INTO `tb_role_menu` VALUES ('ef50280d-ff96-4b1c-888b-e3cf41307302', 'fdd5e503-0638-4483-9773-74b2f32369d3', '1447677b-562e-4b58-98af-ebb26dcbeaca');
 
 -- ----------------------------
 -- Table structure for `tb_student`
@@ -264,7 +275,9 @@ CREATE TABLE `tb_student` (
   `sex` varchar(2) default NULL,
   `nation` varchar(40) default NULL,
   `signed_flg` varchar(1) default NULL,
-  `transferSignUpMoneyFlg` varchar(1) default NULL,
+  `bankSignUpMoneyFlg` varchar(1) default NULL,
+  `lakalaSignUpMoneyFlg` varchar(1) default NULL,
+  `aliSignUpMoneyFlg` varchar(1) default NULL,
   `tel` varchar(20) default NULL,
   `intention` varchar(200) default NULL,
   `wlqf` varchar(2) default NULL,
@@ -335,6 +348,8 @@ CREATE TABLE `tb_student` (
   `secureContent` varchar(255) default NULL,
   `isPayment_Flg` varchar(1) default NULL,
   `signUpMoneyContent` varchar(255) default NULL,
+  `stuTypeContent` varchar(255) default NULL,
+  `studentType` varchar(2) default NULL,
   PRIMARY KEY  (`id`),
   KEY `student_class_type` (`class_type`),
   KEY `student_payee` (`payee`),
@@ -355,6 +370,28 @@ CREATE TABLE `tb_student` (
 -- ----------------------------
 -- Records of tb_student
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for `tb_student_info_history`
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_student_info_history`;
+CREATE TABLE `tb_student_info_history` (
+  `id` varchar(36) NOT NULL,
+  `num` varchar(14) default NULL,
+  `name` varchar(10) default NULL,
+  `id_num` varchar(30) default NULL,
+  `class_type_id` varchar(36) default NULL,
+  `class_type_name` varchar(40) default NULL,
+  `update_content` varchar(2000) default NULL,
+  `createdatetime` datetime default NULL,
+  `updatedatetime` datetime default NULL,
+  `payee` varchar(36) default NULL,
+  `update_type` varchar(40) default NULL,
+  `student_id` varchar(36) default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `student_payee` (`payee`),
+  CONSTRAINT `tb_student_info_history_ibfk_4` FOREIGN KEY (`payee`) REFERENCES `tb_user` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for `tb_user`

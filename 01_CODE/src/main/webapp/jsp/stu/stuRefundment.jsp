@@ -16,7 +16,7 @@
                             nowrap : false,
                             border : false,
                             idField : 'id',
-                            sortName : 'name',
+                            sortName : 'createdatetime',
                             sortOrder : 'desc',
                             checkOnSelect : false,
                             selectOnCheck : true,
@@ -96,7 +96,9 @@
             $('#stu_stuRefun_editForm').form('load', rows[0]);
             $('#stu_stuRefun_editDialog').dialog('open');
             $('#stu_stuRefun_editForm').find('#cashRefundFee').val("0");
-            $('#stu_stuRefun_editForm').find('#transferRefundFee').val("0");
+            $('#stu_stuRefun_editForm').find('#bankRefundFee').val("0");
+            $('#stu_stuRefun_editForm').find('#lakalaRefundFee').val("0");
+            $('#stu_stuRefun_editForm').find('#aliRefundFee').val("0");
         } else {
             $.messager.show({
                 title : '提示',
@@ -106,10 +108,12 @@
     }
     function stu_stuRefun_edit() {
         var cashRefundFee = $('#stu_stuRefun_editForm').find('#cashRefundFee').val();
-        var transferRefundFee = $('#stu_stuRefun_editForm').find('#transferRefundFee').val();
+        var bankRefundFee = $('#stu_stuRefun_editForm').find('#bankRefundFee').val();
+        var lakalaRefundFee = $('#stu_stuRefun_editForm').find('#lakalaRefundFee').val();
+        var aliRefundFee = $('#stu_stuRefun_editForm').find('#aliRefundFee').val();
         var countFee = $('#stu_stuRefun_editForm').find('#countFee').val();
         var signFee = $('#stu_stuRefun_editForm').find('#signFee').val();
-        if(cashRefundFee == "" && transferRefundFee == "") {
+        if(cashRefundFee == "" && bankRefundFee == "" && lakalaRefundFee == "" && aliRefundFee == "") {
             alert("请输入退款金额");
             return;
         }
@@ -117,19 +121,27 @@
             alert("现金退款金额请输入数字");
             return;
         }
-        if(transferRefundFee != "" && !$.isNumeric(transferRefundFee)) {
-            alert("转账退款金额请输入数字");
+        if(bankRefundFee != "" && !$.isNumeric(bankRefundFee)) {
+            alert("银行转账退款金额请输入数字");
             return;
         }
-        if (cashRefundFee + transferRefundFee == 0){
+        if(lakalaRefundFee != "" && !$.isNumeric(lakalaRefundFee)) {
+            alert("拉卡拉pos机转账退款金额请输入数字");
+            return;
+        }
+        if(aliRefundFee != "" && !$.isNumeric(aliRefundFee)) {
+            alert("支付宝转账退款金额请输入数字");
+            return;
+        }
+        if (cashRefundFee + bankRefundFee + lakalaRefundFee + aliRefundFee == 0){
             alert("请输入退款金额");
             return;
         }
-        if (cashRefundFee + transferRefundFee > countFee){
+        if (cashRefundFee + bankRefundFee + lakalaRefundFee + aliRefundFee > countFee){
             alert("退款金额要小于支付总金额");
             return;
         }
-        if ((Number(countFee) - (Number(cashRefundFee) + Number(transferRefundFee))) < Number(signFee)) {
+        if ((Number(countFee) - (Number(cashRefundFee) + Number(bankRefundFee) + Number(lakalaRefundFee) + Number(aliRefundFee))) < Number(signFee)) {
             alert("报名费不能退");
             return;
         }
@@ -223,8 +235,16 @@
                 <td><input id="cashRefundFee" name="cashRefundFee" style="width:180px;" value="0"/></td>
             </tr>
             <tr>
-                <th style="width: 120px;">转账退款</th>
-                <td><input id="transferRefundFee" name="transferRefundFee" style="width:180px;" value="0"/></td>
+                <th style="width: 120px;">银行转账退款</th>
+                <td><input id="bankRefundFee" name="bankRefundFee" style="width:180px;" value="0"/></td>
+            </tr>
+            <tr>
+                <th style="width: 120px;">拉卡拉pos机转账退款</th>
+                <td><input id="lakalaRefundFee" name="lakalaRefundFee" style="width:180px;" value="0"/></td>
+            </tr>
+            <tr>
+                <th style="width: 120px;">支付宝转账退款</th>
+                <td><input id="aliRefundFee" name="aliRefundFee" style="width:180px;" value="0"/></td>
             </tr>
         </table>
     </form>

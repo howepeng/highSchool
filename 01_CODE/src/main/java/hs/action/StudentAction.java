@@ -1,5 +1,7 @@
 package hs.action;
 
+import hs.dao.UserDaoI;
+import hs.model.TbUser;
 import hs.pageModel.Json;
 import hs.pageModel.SessionInfo;
 import hs.pageModel.Student;
@@ -23,6 +25,12 @@ public class StudentAction extends BaseAction implements ModelDriven<Student> {
         return student;
     }
 
+    private UserDaoI userDao;
+
+    @Autowired
+    public void setUserDao(UserDaoI userDao) {
+        this.userDao = userDao;
+    }
     private StudentServiceI studentService;
 
     @Autowired
@@ -102,12 +110,15 @@ public class StudentAction extends BaseAction implements ModelDriven<Student> {
     }
     public void remove(){
         Json json = new Json();
+        SessionInfo sessionInfo = (SessionInfo) ServletActionContext
+                .getRequest().getSession().getAttribute("sessionInfo");
+        TbUser tbUser = userDao.getById(TbUser.class, sessionInfo.getId());
         try {
             String ret = "";
             if (student.getIds() != null && !"".equals(student.getIds())) {
                 String[] ids = student.getIds().split(",");
                 for(String id : ids){
-                    ret = studentService.deleteStudent(id);
+                    ret = studentService.deleteStudent(id,tbUser);
                     if (!"success".equals(ret)) {
                         break;
                     }

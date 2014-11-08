@@ -7,15 +7,18 @@ import hs.dao.IdFileDaoI;
 import hs.dao.PreferentialDaoI;
 import hs.dao.ReportFileDaoI;
 import hs.dao.StudentDaoI;
+import hs.dao.StudentInfoHistoryDaoI;
 import hs.dao.UserDaoI;
 import hs.model.TbClassType;
 import hs.model.TbFinance;
 import hs.model.TbPreferential;
 import hs.model.TbStudent;
+import hs.model.TbStudentInfoHistory;
 import hs.model.TbUser;
 import hs.pageModel.DataGrid;
 import hs.pageModel.SessionInfo;
 import hs.pageModel.Student;
+import hs.pageModel.StudentInfoHistory;
 import hs.service.StudentServiceI;
 
 import java.io.File;
@@ -40,6 +43,13 @@ public class StudentServiceImpl implements StudentServiceI {
     @Autowired
     public void setStudentDao(StudentDaoI studentDao) {
         this.studentDao = studentDao;
+    }
+
+    private StudentInfoHistoryDaoI studentInfoHistoryDao;
+
+    @Autowired
+    public void setStudentInfoHistoryDao(StudentInfoHistoryDaoI studentInfoHistoryDao) {
+        this.studentInfoHistoryDao = studentInfoHistoryDao;
     }
 
     private ClassTypeDaoI classTypeDao;
@@ -182,7 +192,6 @@ public class StudentServiceImpl implements StudentServiceI {
         DataGrid j = new DataGrid();
         List<Student> finList = new ArrayList<Student>();
         Map<String, Object> params = new HashMap<String, Object>();
-        //String hql = "FROM TbStudent t WHERE t.tbClassType is not null";
         String hql = "FROM TbStudent t";
         hql += this.addCondition(student, params);
         List<TbStudent> tbStuList = studentDao.find(hql, params, student.getPage(), student.getRows());
@@ -202,6 +211,13 @@ public class StudentServiceImpl implements StudentServiceI {
                     f.setWlqfContent("体育文科");
                 } else if ("98".equals(t.getWlqf())) {
                     f.setWlqfContent("体育理科");
+                }
+                if ("0".equals(t.getStudentType())) {
+                    f.setStuTypeContent("复读");
+                } else if ("1".equals(t.getStudentType())) {
+                    f.setStuTypeContent("应届");
+                } else if ("2".equals(t.getStudentType())) {
+                    f.setStuTypeContent("往届");
                 }
                 if ("0".equals(t.getSex())) {
                     f.setSexContent("男");
@@ -227,6 +243,80 @@ public class StudentServiceImpl implements StudentServiceI {
         }
         j.setRows(finList);
         j.setTotal(studentDao.count("SELECT count(*) " + hql, params));
+        return j;
+    }
+
+    @Override
+    public List<TbStudent> getStudentInfo(Student student) {
+        List<Student> finList = new ArrayList<Student>();
+        Map<String, Object> params = new HashMap<String, Object>();
+        String hql = "FROM TbStudent t";
+        hql += this.addCondition(student, params);
+        List<TbStudent> tbStuList = studentDao.find(hql, params, student.getPage(), student.getRows());
+        if (tbStuList != null && tbStuList.size() > 0) {
+            for (TbStudent t : tbStuList) {
+                Student f = new Student();
+                BeanUtils.copyProperties(t, f);
+                if ("91".equals(t.getWlqf())) {
+                    f.setWlqfContent("文科");
+                } else if ("95".equals(t.getWlqf())) {
+                    f.setWlqfContent("理科");
+                } else if ("93".equals(t.getWlqf())) {
+                    f.setWlqfContent("艺术文科");
+                } else if ("97".equals(t.getWlqf())) {
+                    f.setWlqfContent("艺术理科");
+                } else if ("94".equals(t.getWlqf())) {
+                    f.setWlqfContent("体育文科");
+                } else if ("98".equals(t.getWlqf())) {
+                    f.setWlqfContent("体育理科");
+                }
+                if ("0".equals(t.getStudentType())) {
+                    f.setStuTypeContent("复读");
+                } else if ("1".equals(t.getStudentType())) {
+                    f.setStuTypeContent("应届");
+                } else if ("2".equals(t.getStudentType())) {
+                    f.setStuTypeContent("往届");
+                }
+                if ("0".equals(t.getSex())) {
+                    f.setSexContent("男");
+                } else if ("1".equals(t.getSex())) {
+                    f.setSexContent("女");
+                }
+                f.setPayee(t.getTbUser().getName());
+                if (t.getTbClassType()!=null) {
+                    f.setClassType(t.getTbClassType().getId());
+                    f.setClassTypeName(t.getTbClassType().getClassType());
+                }
+                if (t.getTbPhotoFile()!=null) {
+                    f.setPhotoId(t.getTbPhotoFile().getId());
+                    f.setPhotoImgSrc(t.getTbPhotoFile().getFilePath());
+                }
+                finList.add(f);
+            }
+        }
+        return tbStuList;
+    }
+
+    @Override
+    public DataGrid datagridStudentInfoHistory(
+            StudentInfoHistory studentInfoHistory) {
+        DataGrid j = new DataGrid();
+        List<StudentInfoHistory> finList = new ArrayList<StudentInfoHistory>();
+        Map<String, Object> params = new HashMap<String, Object>();
+        String hql = "FROM TbStudentInfoHistory t";
+        hql += this.addStudentInfoHistoryCondition(studentInfoHistory, params);
+        List<TbStudentInfoHistory> tbStuHistoryList = studentInfoHistoryDao.find(hql, params, studentInfoHistory.getPage(), studentInfoHistory.getRows());
+        if (tbStuHistoryList != null && tbStuHistoryList.size() > 0) {
+            for (TbStudentInfoHistory t : tbStuHistoryList) {
+                StudentInfoHistory f = new StudentInfoHistory();
+                BeanUtils.copyProperties(t, f);
+                f.setUserId(t.getTbUser().getId());
+                f.setUserName(t.getTbUser().getName());
+                finList.add(f);
+            }
+        }
+        j.setRows(finList);
+        j.setTotal(studentInfoHistoryDao.count("SELECT count(*) " + hql, params));
         return j;
     }
 
@@ -257,8 +347,8 @@ public class StudentServiceImpl implements StudentServiceI {
             params.put("createdatetimeStart", student.getCreatedatetimeStart());
         }
         if (student.getClassType() != null && !student.getClassType().trim().equals("")) {
-            if (student.getName() != null && !student.getName().trim().equals("") ||
-                    student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) {
+            if ((student.getName() != null && !student.getName().trim().equals("")) ||
+                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null)) {
                 hql += " AND";
             }else {
                 hql += " WHERE";
@@ -267,9 +357,9 @@ public class StudentServiceImpl implements StudentServiceI {
             params.put("classType", "%%" + student.getClassType() + "%%");
         }
         if (student.fractionCountStart != null && !student.fractionCountStart.trim().equals("")) {
-            if (student.getName() != null && !student.getName().trim().equals("") ||
-                    student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null ||
-                        student.getClassType() != null && !student.getClassType().trim().equals("")) {
+            if ((student.getName() != null && !student.getName().trim().equals("")) ||
+                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) ||
+                    (student.getClassType() != null && !student.getClassType().trim().equals(""))) {
                 hql += " AND";
             }else {
                 hql += " WHERE";
@@ -278,9 +368,9 @@ public class StudentServiceImpl implements StudentServiceI {
         }
         if (student.fractionCountEnd != null && !student.fractionCountEnd.trim().equals("")) {
             if (student.getName() != null && !student.getName().trim().equals("") ||
-                    student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null ||
-                        student.getClassType() != null && !student.getClassType().trim().equals("") ||
-                                student.fractionCountStart != null && !student.fractionCountStart.trim().equals("")) {
+                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) ||
+                    (student.getClassType() != null && !student.getClassType().trim().equals("")) ||
+                    (student.fractionCountStart != null && !student.fractionCountStart.trim().equals(""))) {
                 hql += " AND";
             }else {
                 hql += " WHERE";
@@ -318,6 +408,62 @@ public class StudentServiceImpl implements StudentServiceI {
         }
         if (student.getSort() != null) {
             hql += " ORDER BY " + student.getSort() + " " + student.getOrder();
+        }
+        return hql;
+    }
+
+    /**
+     * 生成学生历史查询hql语句
+     *
+     * @param studentInfoHistory
+     * @param params
+     * @return
+     */
+    private String addStudentInfoHistoryCondition(StudentInfoHistory studentInfoHistory, Map<String, Object> params) {
+        String hql = "";
+
+        if (studentInfoHistory.getName() != null && !studentInfoHistory.getName().trim().equals("")) {
+            hql += " WHERE t.name LIKE :name";
+            params.put("name", "%%" + studentInfoHistory.getName() + "%%");
+        }
+        if (studentInfoHistory.getCreatedatetimeStart() != null && studentInfoHistory.getCreatedatetimeEnd() != null) {
+            if (studentInfoHistory.getName() != null && !studentInfoHistory.getName().trim().equals("")) {
+                hql += " AND";
+            }else {
+                hql += " WHERE";
+            }
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String createdatetimeEnd =df.format(studentInfoHistory.getCreatedatetimeEnd()) + " 24:00:00";
+            hql += " t.createdatetime>= :createdatetimeStart AND t.createdatetime<= '" + createdatetimeEnd +"'";
+            params.put("createdatetimeStart", studentInfoHistory.getCreatedatetimeStart());
+        }
+        if (studentInfoHistory.getClassTypeId() != null && !studentInfoHistory.getClassTypeId().trim().equals("")) {
+            if ((studentInfoHistory.getName() != null && !studentInfoHistory.getName().trim().equals("")) ||
+                    (studentInfoHistory.getCreatedatetimeStart() != null && studentInfoHistory.getCreatedatetimeEnd() != null)) {
+                hql += " AND";
+            }else {
+                hql += " WHERE";
+            }
+            hql += " t.classTypeId LIKE :classType";
+            params.put("classType", "%%" + studentInfoHistory.getClassTypeId() + "%%");
+        }
+        if (studentInfoHistory.getUpdatedatetimeStart() != null && studentInfoHistory.getUpdatedatetimeEnd() != null) {
+
+            if ((studentInfoHistory.getName() != null && !studentInfoHistory.getName().trim().equals("")) ||
+                    (studentInfoHistory.getCreatedatetimeStart() != null && studentInfoHistory.getCreatedatetimeEnd() != null) ||
+                    (studentInfoHistory.getClassTypeName() != null && !studentInfoHistory.getClassTypeName().trim().equals(""))) {
+                hql += " AND";
+            }else {
+                hql += " WHERE";
+            }
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String updatedatetimeEnd =df.format(studentInfoHistory.getUpdatedatetimeEnd()) + " 24:00:00";
+            hql += " t.updatedatetime>= :updatedatetimeStart AND t.updatedatetime<= '" + updatedatetimeEnd +"'";
+            params.put("updatedatetimeStart", studentInfoHistory.getUpdatedatetimeStart());
+            params.put("updatedatetimeEnd", updatedatetimeEnd);
+        }
+        if (studentInfoHistory.getSort() != null) {
+            hql += " ORDER BY " + studentInfoHistory.getSort() + " " + studentInfoHistory.getOrder();
         }
         return hql;
     }
@@ -372,13 +518,8 @@ public class StudentServiceImpl implements StudentServiceI {
         // 已缴费
         tbStudent.setIsPaymentFlg("1");
 
-        boolean isUpdate = true;
-        TbFinance tbFinance = getFinance(tbStudent.getId());
-        if (tbFinance == null) {
-            tbFinance = new TbFinance();
-            isUpdate = false;
-            tbFinance.setId(UUID.randomUUID().toString());
-        }
+        TbFinance  tbFinance = new TbFinance();
+        tbFinance.setId(UUID.randomUUID().toString());
         tbFinance.setName(tbStudent.getName());
         tbFinance.setIdNum(tbStudent.getIdNum());
         // 学费
@@ -435,14 +576,34 @@ public class StudentServiceImpl implements StudentServiceI {
                 tbFinance.setCashFee(student.getCashFee());
             }
         }
-        // 转账
-        if(student.getTransferFee() == null) {
-            tbFinance.setTransferFee(new BigDecimal(0));
+        // 银行转账
+        if(student.getBankFee() == null) {
+            tbFinance.setBankFee(new BigDecimal(0));
         } else {
-            if (tbFinance.getTransferFee() != null) {
-                tbFinance.setTransferFee(tbFinance.getTransferFee().add(student.getTransferFee()));
+            if (tbFinance.getBankFee() != null) {
+                tbFinance.setBankFee(tbFinance.getBankFee().add(student.getBankFee()));
             } else {
-                tbFinance.setTransferFee(student.getTransferFee());
+                tbFinance.setBankFee(student.getBankFee());
+            }
+        }
+        // 拉卡拉pos机转账
+        if(student.getLakalaFee() == null) {
+            tbFinance.setLakalaFee(new BigDecimal(0));
+        } else {
+            if (tbFinance.getLakalaFee() != null) {
+                tbFinance.setLakalaFee(tbFinance.getLakalaFee().add(student.getLakalaFee()));
+            } else {
+                tbFinance.setLakalaFee(student.getLakalaFee());
+            }
+        }
+        // 支付宝转账
+        if(student.getAliFee() == null) {
+            tbFinance.setAliFee(new BigDecimal(0));
+        } else {
+            if (tbFinance.getAliFee() != null) {
+                tbFinance.setAliFee(tbFinance.getAliFee().add(student.getAliFee()));
+            } else {
+                tbFinance.setAliFee(student.getAliFee());
             }
         }
         // 减免
@@ -471,29 +632,16 @@ public class StudentServiceImpl implements StudentServiceI {
                 tbFinance.setCountPayFee(student.getCountFee());
             }
         }
+        // 撤销状态
+        tbFinance.setCancelflg("0");
+        // 账单类型
+        tbFinance.setCrashHistoryType("缴费");
 
         tbFinance.setTbClassType(tbClassType);
         tbFinance.setTbUser(userDao.getById(TbUser.class, sessionInfo.getId()));
         tbFinance.setCreatedatetime(new Date());
         tbFinance.setStudentId(tbStudent.getId());
-        if (isUpdate) {
-            financeDao.update(tbFinance);
-        } else {
-            financeDao.save(tbFinance);
-        }
-    }
-
-    private TbFinance getFinance(String id) {
-        Date now = new Date();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String createdatetimeStart =df.format(now) + " 00:00:00";
-        String createdatetimeEnd =df.format(now) + " 24:00:00";
-        String hql = "FROM TbFinance t WHERE t.studentId is '"+id+"' and t.createdatetime >= '"+createdatetimeStart+"' and t.createdatetime <= '"+createdatetimeEnd+"'";
-        TbFinance ret = financeDao.get(hql);
-        if (ret == null || ret.getId() == null || "".equals(ret.getId())) {
-            ret = null;
-        }
-        return ret;
+        financeDao.save(tbFinance);
     }
 
     @Override
@@ -502,11 +650,19 @@ public class StudentServiceImpl implements StudentServiceI {
             student.cashPayAgainFee = new BigDecimal(0);
         }
 
-        if (student.transferPayAgainFee == null) {
-            student.transferPayAgainFee = new BigDecimal(0);
+        if (student.bankPayAgainFee == null) {
+            student.bankPayAgainFee = new BigDecimal(0);
         }
 
-        BigDecimal arrearFee = student.cashPayAgainFee.add(student.transferPayAgainFee);
+        if (student.lakalaPayAgainFee == null) {
+            student.lakalaPayAgainFee = new BigDecimal(0);
+        }
+
+        if (student.aliPayAgainFee == null) {
+            student.aliPayAgainFee = new BigDecimal(0);
+        }
+
+        BigDecimal arrearFee = student.cashPayAgainFee.add(student.bankPayAgainFee).add(student.lakalaPayAgainFee).add(student.aliPayAgainFee);
 
         if (arrearFee.compareTo(new BigDecimal(0)) <= 0) {
             return;
@@ -529,15 +685,8 @@ public class StudentServiceImpl implements StudentServiceI {
         } else {
             tbStudent.setArrearflg("0");
         }
-
-        boolean isUpdate = true;
-        TbFinance tbFinance = getFinance(tbStudent.getId());
-        if (tbFinance == null) {
-            tbFinance = new TbFinance();
-            isUpdate = false;
-            tbFinance.setId(UUID.randomUUID().toString());
-        }
-
+        TbFinance  tbFinance = new TbFinance();
+        tbFinance.setId(UUID.randomUUID().toString());
         tbFinance.setName(tbStudent.getName());
         tbFinance.setIdNum(tbStudent.getIdNum());
         // 补交费 = 原补交费+现在补交费
@@ -563,12 +712,26 @@ public class StudentServiceImpl implements StudentServiceI {
             // 现金
             tbFinance.setCashFee(student.cashPayAgainFee);
         }
-        if(tbFinance.getTransferFee() !=null) {
-            // 转账
-            tbFinance.setTransferFee(tbFinance.getTransferFee().add(student.transferPayAgainFee));
+        if(tbFinance.getBankFee() !=null) {
+            // 银行转账
+            tbFinance.setBankFee(tbFinance.getBankFee().add(student.bankPayAgainFee));
         } else {
-            // 转账
-            tbFinance.setTransferFee(student.transferPayAgainFee);
+            // 银行转账
+            tbFinance.setBankFee(student.bankPayAgainFee);
+        }
+        if(tbFinance.getLakalaFee() !=null) {
+            // 拉卡拉pos机转账
+            tbFinance.setLakalaFee(tbFinance.getLakalaFee().add(student.lakalaPayAgainFee));
+        } else {
+            // 拉卡拉pos机转账
+            tbFinance.setLakalaFee(student.lakalaPayAgainFee);
+        }
+        if(tbFinance.getAliFee() !=null) {
+            // 支付宝转账
+            tbFinance.setAliFee(tbFinance.getAliFee().add(student.aliPayAgainFee));
+        } else {
+            // 支付宝转账
+            tbFinance.setAliFee(student.aliPayAgainFee);
         }
         if (tbFinance.getCashPayAgainFee() != null) {
             // 现金补交
@@ -577,12 +740,26 @@ public class StudentServiceImpl implements StudentServiceI {
             // 现金补交
             tbFinance.setCashPayAgainFee(student.cashPayAgainFee);
         }
-        if (tbFinance.getTransferPayAgainFee() != null) {
-            // 转账补交
-            tbFinance.setTransferPayAgainFee(tbFinance.getTransferPayAgainFee().add(student.transferPayAgainFee));
+        if (tbFinance.getBankPayAgainFee() != null) {
+            // 银行转账补交
+            tbFinance.setBankPayAgainFee(tbFinance.getBankPayAgainFee().add(student.bankPayAgainFee));
         } else {
-            // 转账补交
-            tbFinance.setTransferPayAgainFee(student.transferPayAgainFee);
+            // 银行转账补交
+            tbFinance.setBankPayAgainFee(student.bankPayAgainFee);
+        }
+        if (tbFinance.getLakalaPayAgainFee() != null) {
+            // 拉卡拉pos机转账补交
+            tbFinance.setLakalaPayAgainFee(tbFinance.getLakalaPayAgainFee().add(student.lakalaPayAgainFee));
+        } else {
+            // 拉卡拉pos机转账补交
+            tbFinance.setLakalaPayAgainFee(student.lakalaPayAgainFee);
+        }
+        if (tbFinance.getAliPayAgainFee() != null) {
+            // 支付宝转账补交
+            tbFinance.setAliPayAgainFee(tbFinance.getAliPayAgainFee().add(student.aliPayAgainFee));
+        } else {
+            // 支付宝转账补交
+            tbFinance.setAliPayAgainFee(student.aliPayAgainFee);
         }
         // 合计交付
         if(tbFinance.getCountPayFee() != null ) {
@@ -598,11 +775,11 @@ public class StudentServiceImpl implements StudentServiceI {
         tbFinance.setTbUser(userDao.getById(TbUser.class, sessionInfo.getId()));
         tbFinance.setCreatedatetime(new Date());
         tbFinance.setStudentId(tbStudent.getId());
-        if (isUpdate) {
-            financeDao.update(tbFinance);
-        } else {
-            financeDao.save(tbFinance);
-        }
+        // 撤销状态
+        tbFinance.setCancelflg("0");
+        // 账单类型
+        tbFinance.setCrashHistoryType("补交费");
+        financeDao.save(tbFinance);
     }
 
 
@@ -613,11 +790,18 @@ public class StudentServiceImpl implements StudentServiceI {
             student.cashRefundFee = new BigDecimal(0);
         }
 
-        if (student.transferRefundFee == null) {
-            student.transferRefundFee = new BigDecimal(0);
+        if (student.bankRefundFee == null) {
+            student.bankRefundFee = new BigDecimal(0);
         }
 
-        BigDecimal refundFee = student.cashRefundFee.add(student.transferRefundFee);
+        if (student.lakalaRefundFee == null) {
+            student.lakalaRefundFee = new BigDecimal(0);
+        }
+        if (student.aliRefundFee == null) {
+            student.aliRefundFee = new BigDecimal(0);
+        }
+
+        BigDecimal refundFee = student.cashRefundFee.add(student.bankRefundFee).add(student.lakalaRefundFee).add(student.aliRefundFee);
 
         if (refundFee.compareTo(new BigDecimal(0)) <= 0) {
             return;
@@ -636,48 +820,21 @@ public class StudentServiceImpl implements StudentServiceI {
             tbStudent.setCountFee(refundFee.multiply(new BigDecimal(-1)));
         }
 
-        boolean isUpdate = true;
-        TbFinance tbFinance = getFinance(tbStudent.getId());
-        if (tbFinance == null) {
-            tbFinance = new TbFinance();
-            isUpdate = false;
-            tbFinance.setId(UUID.randomUUID().toString());
-            // 退款
-            tbFinance.setRefundFee(refundFee);
-            // 合计交付
-            tbFinance.setCountPayFee(refundFee.multiply(new BigDecimal(-1)));
-            // 现金
-            tbFinance.setCashFee(student.cashRefundFee.multiply(new BigDecimal(-1)));
-            // 转账
-            tbFinance.setTransferFee(student.transferRefundFee.multiply(new BigDecimal(-1)));
-        } else{
-             // 退款
-            if (tbFinance.getRefundFee() != null) {
-                tbFinance.setRefundFee(tbFinance.getRefundFee().add(refundFee));
-            } else {
-                tbFinance.setRefundFee(refundFee);
-            }
-            // 合计交付
-            if (tbFinance.getCountPayFee() != null) {
-                tbFinance.setCountPayFee(tbFinance.getCountPayFee().subtract(refundFee));
-            } else {
-                tbFinance.setCountPayFee(refundFee.multiply(new BigDecimal(-1)));
-            }
-            if (tbFinance.getCashFee() != null) {
-                // 现金
-                tbFinance.setCashFee(tbFinance.getCashFee().subtract(student.cashRefundFee));
-            } else {
-                // 现金
-                tbFinance.setCashFee(student.cashRefundFee.multiply(new BigDecimal(-1)));
-            }
-            if (tbFinance.getTransferFee() != null) {
-                // 转账
-                tbFinance.setTransferFee(tbFinance.getTransferFee().subtract(student.transferRefundFee));
-            } else {
-                // 转账
-                tbFinance.setTransferFee(student.transferRefundFee.multiply(new BigDecimal(-1)));
-            }
-        }
+        TbFinance tbFinance = new TbFinance();
+        tbFinance.setId(UUID.randomUUID().toString());
+        // 退款
+        tbFinance.setRefundFee(refundFee);
+        // 合计交付
+        tbFinance.setCountPayFee(refundFee.multiply(new BigDecimal(-1)));
+        // 现金
+        tbFinance.setCashFee(student.cashRefundFee.multiply(new BigDecimal(-1)));
+        // 银行转账转账
+        tbFinance.setBankFee(student.bankRefundFee.multiply(new BigDecimal(-1)));
+        // 拉卡拉pos机转账转账
+        tbFinance.setLakalaFee(student.lakalaRefundFee.multiply(new BigDecimal(-1)));
+        // 支付宝转账转账
+        tbFinance.setAliFee(student.aliRefundFee.multiply(new BigDecimal(-1)));
+
         if (tbFinance.getCashRefundFee() != null) {
             // 现金退款
             tbFinance.setCashRefundFee(tbFinance.getCashRefundFee().add(student.cashRefundFee));
@@ -685,13 +842,32 @@ public class StudentServiceImpl implements StudentServiceI {
             // 现金退款
             tbFinance.setCashRefundFee(student.cashRefundFee);
         }
-        if (tbFinance.getTransferRefundFee() != null) {
-            // 转账退款
-            tbFinance.setTransferRefundFee(tbFinance.getTransferRefundFee().add(student.transferRefundFee));
+        if (tbFinance.getBankRefundFee() != null) {
+            // 银行退款
+            tbFinance.setBankRefundFee(tbFinance.getBankRefundFee().add(student.bankRefundFee));
         } else {
-            // 转账退款
-            tbFinance.setTransferRefundFee(student.transferRefundFee);
+            // 银行退款
+            tbFinance.setBankRefundFee(student.bankRefundFee);
         }
+        if (tbFinance.getLakalaRefundFee() != null) {
+            // 拉卡拉pos机退款
+            tbFinance.setLakalaRefundFee(tbFinance.getLakalaRefundFee().add(student.lakalaRefundFee));
+        } else {
+            // 拉卡拉pos机退款
+            tbFinance.setLakalaRefundFee(student.lakalaRefundFee);
+        }
+        if (tbFinance.getAliRefundFee() != null) {
+            // 支付宝退款
+            tbFinance.setAliRefundFee(tbFinance.getAliRefundFee().add(student.aliRefundFee));
+        } else {
+            // 支付宝退款
+            tbFinance.setAliRefundFee(student.aliRefundFee);
+        }
+        // 撤销状态
+        tbFinance.setCancelflg("0");
+        // 账单类型
+        tbFinance.setCrashHistoryType("退费");
+
         tbFinance.setName(tbStudent.getName());
         tbFinance.setIdNum(tbStudent.getIdNum());
         if(student.getClassType()!=null) {
@@ -702,11 +878,7 @@ public class StudentServiceImpl implements StudentServiceI {
         tbFinance.setTbUser(userDao.getById(TbUser.class, sessionInfo.getId()));
         tbFinance.setCreatedatetime(new Date());
         tbFinance.setStudentId(tbStudent.getId());
-        if (isUpdate) {
-            financeDao.update(tbFinance);
-        } else {
-            financeDao.save(tbFinance);
-        }
+        financeDao.save(tbFinance);
     }
 
     @Override
@@ -730,9 +902,22 @@ public class StudentServiceImpl implements StudentServiceI {
     }
 
     @Override
-    public String deleteStudent(String attachid) {
+    public String deleteStudent(String attachid,TbUser tbUser) {
         TbStudent tbStudent = studentDao.getById(TbStudent.class,
                 attachid.trim());
+        TbStudentInfoHistory tbStuHis = new TbStudentInfoHistory();
+        tbStuHis.setId(UUID.randomUUID().toString());
+        tbStuHis.setStudentId(tbStudent.getId());
+        tbStuHis.setIdNum(tbStudent.getIdNum());
+        tbStuHis.setName(tbStudent.getName());
+        tbStuHis.setNum(tbStudent.getNum());
+        tbStuHis.setTbUser(tbUser);
+        tbStuHis.setCreatedatetime(tbStudent.getCreatedatetime());
+        tbStuHis.setUpdatedatetime(new Date());
+        tbStuHis.setClassTypeName(tbStudent.getTbClassType().getClassType());
+        tbStuHis.setClassTypeId(tbStudent.getTbClassType().getId());
+        tbStuHis.setUpdateType("删除");
+        tbStuHis.setUpdateContent(tbStudent.toString());
         try {
             try {
                 if (tbStudent.getTbFile() != null) {
@@ -778,10 +963,12 @@ public class StudentServiceImpl implements StudentServiceI {
             } catch (Exception e) {
 
             }
+
         } catch (Exception e) {
             return "fail";
         } finally {
             studentDao.delete(tbStudent);
+            studentInfoHistoryDao.save(tbStuHis);
         }
         return "success";
     }

@@ -61,7 +61,13 @@ public class DownloadStudentInfoAction extends ActionSupport {
         } else if ("98".equals(student.getWlqf())) {
             student.setWlqfContent("体育理科");
         }
-
+        if ("0".equals(student.getStudentType())) {
+            student.setStuTypeContent("复读");
+        } else if ("1".equals(student.getStudentType())) {
+            student.setStuTypeContent("应届");
+        } else if ("2".equals(student.getStudentType())) {
+            student.setStuTypeContent("往届");
+        }
 
         if ("0".equals(student.getSex())) {
             student.setSexContent("男");

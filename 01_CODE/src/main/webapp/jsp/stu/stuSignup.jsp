@@ -31,13 +31,16 @@
         var num = $("#stu_stuSignup_form").find('#num');
         var num1 = $("#stu_stuSignup_form").find('#num1');
         var num2 = $("#stu_stuSignup_form").find('#num2');
+        if(num2.val().length==0){
+            num2.val("XXX");
+        }
         var num3 = $("#stu_stuSignup_form").find('#num3');
         var num4 = $("#stu_stuSignup_form").find('#num4');
-        num.val(num1.val()+num2.val()+num3.val()+num4.val());
-        if (num.val().length != 14) {
-            alert("考生号输入不正确！");
-            return;
+        if(num4.val().length==0){
+            num4.val("XXXX");
         }
+        num.val(num1.val()+num2.val()+num3.val()+num4.val());
+
         var name = $("#stu_stuSignup_form").find('#name');
         if (name.val().length == 0) {
             alert("请输入姓名！");
@@ -46,21 +49,6 @@
         var idNum = $("#stu_stuSignup_form").find('#idNum');
         if (idNum.val().length == 0) {
             alert("请输入身份证号！");
-            return;
-        }
-        var fractionCount = $("#stu_stuSignup_form").find('#fractionCount');
-        if (fractionCount.val().length == 0) {
-            alert("请输入总分！");
-            return;
-        }
-        var tel = $("#stu_stuSignup_form").find('#tel');
-        var fatherTel = $("#stu_stuSignup_form").find('#fatherTel');
-        var motherTel = $("#stu_stuSignup_form").find('#motherTel');
-        if (tel.val().length == 0
-                && fatherTel.val().length == 0
-                && motherTel.val().length == 0) {
-
-            alert("本人电话，父亲电话，母亲电话请至少输入一个！");
             return;
         }
         var classType = $("#stu_stuSignup_form").find("input[name^='classType']");
@@ -73,32 +61,68 @@
             alert("请输入毕业学校！");
             return;
         }
-        $('#stu_stuSignup_form')
-                .form(
-                        'submit',
-                        {
-                            url : '${pageContext.request.contextPath}/stuSignupAction!signup.action',
-                            success : function(data) {
-                                var obj = $.parseJSON(data);
-                                if (obj.success) {
-                                    stu_stuSignup_cleanFun();
-                                    getNum();
-                                    photoImgHide();
-                                }
-                                $.messager.show({
-                                    title : '提示',
-                                    msg : obj.msg
-                                });
-                            }
+        var bankSignUpMoneyFlg = $("#stu_stuSignup_form").find('#bankSignUpMoneyFlg');
+        var lakalaSignUpMoneyFlg = $("#stu_stuSignup_form").find('#lakalaSignUpMoneyFlg');
+        var aliSignUpMoneyFlg = $("#stu_stuSignup_form").find('#aliSignUpMoneyFlg');
+        var checkedCount = 0;
+        if (bankSignUpMoneyFlg.prop("checked") == true){
+            checkedCount = checkedCount+1;
+        }
+        if (lakalaSignUpMoneyFlg.prop("checked") == true){
+            checkedCount = checkedCount+1;
+        }
+        if (aliSignUpMoneyFlg.prop("checked") == true){
+            checkedCount = checkedCount+1;
+        }
+        if(checkedCount > 1) {
+            alert("银行交付，拉卡拉pos机交付，支付宝交付 只能选一个");
+            return;
+        }
+
+        $('<div id="submiting" style="5px;"/>').dialog({
+            href : 'jsp/comn/onload.jsp',
+            width : 200,
+            height :100,
+            modal : true,
+            title : '提交中',
+            closed: false,
+            closable: false,
+            onLoad: function() {
+                } ,
+            onClose : function() {
+                $(this).dialog('destroy');
+            }
+        });
+        $('#stu_stuSignup_form').form(
+                'submit',
+                {
+                    url : '${pageContext.request.contextPath}/stuSignupAction!signup.action',
+                    success : function(data) {
+                        var obj = $.parseJSON(data);
+                        if (obj.success) {
+                            stu_stuSignup_cleanFun();
+                            getNum();
+                            photoImgHide();
+                        }
+                        $('#submiting').dialog('destroy');
+                        $.messager.show({
+                            title : '提示',
+                            msg : obj.msg
                         });
+                    }
+                });
     }
     function stu_stuSignup_cleanFun() {
         $('#stu_stuSignup_form').form('clear');
+        $("#stu_stuSignup_form").find("input[name='wlqf'][value='91']").prop("checked",true);
+        $("#stu_stuSignup_form").find("input[name='studentType'][value='0']").prop("checked",true);
+        $("#stu_stuSignup_form").find("input[name='sex'][value='0']").prop("checked",true);
+        $("#stu_stuSignup_form").find("input[name='stayFlg'][value='0']").prop("checked",true);
         photoImgHide();
     }
     function getNum(){
         //var htmlobj = $.ajax({url:"${pageContext.request.contextPath}/stuSignupAction!getNum.action",async:false});
-        $.post("${pageContext.request.contextPath}/stuSignupAction!getNum.action",{name:"userName",test:"test123"},callback);
+        $.post("${pageContext.request.contextPath}/stuSignupAction!getNum.action",{},callback);
         var num3 = $("#stu_stuSignup_form").find('#num3');
         var wlqf = $("#stu_stuSignup_form").find('#wlqf');
         num3.val(wlqf.val());
@@ -124,6 +148,20 @@
 
     function ajaxFileUpload()
     {
+        $('<div id="ajaxFileUpload" style="5px;"/>').dialog({
+            href : 'jsp/comn/onload.jsp',
+            width : 200,
+            height :100,
+            modal : true,
+            title : '提交中',
+            closed: false,
+            closable: false,
+            onLoad: function() {
+                } ,
+            onClose : function() {
+                $(this).dialog('destroy');
+            }
+        });
         $('#stu_stuSignup_form')
         .form(
                 'submit',
@@ -136,6 +174,7 @@
                             $("#stu_stuSignup_form").find('#photoId').val(obj.returnObject[0]);
                             photoImgShow();
                         }
+                        $('#ajaxFileUpload').dialog('destroy');
                         $.messager.show({
                             title : '提示',
                             msg : obj.msg
@@ -176,7 +215,7 @@
                     <td>
                         <input id="name" name="name" maxlength="10"/>
                     </td>
-                    <td colspan="3">
+                    <td colspan="2">
                       <table>
                           <tr>
                               <td style="border:none">
@@ -217,11 +256,35 @@
                               </td>
                           </tr>
                       </table>
+                   </td>
+                   <td>
+                      <table>
+                          <tr>
+                              <td style="border:none">
+                                  <input class="radio" type="radio" id="studentType" name="studentType" value="0" checked="checked"/>
+                              </td>
+                              <td style="border:none;width:50px;">
+                                  <label>复读</label>
+                              </td>
+                              <td style="border:none">
+                                  <input class="radio" type="radio" id="studentType" name="studentType" value="1"/>
+                              </td>
+                              <td style="border:none;width:50px;">
+                                  <label>应届</label>
+                              </td>
+                              <td style="border:none">
+                                  <input class="radio" type="radio" id="studentType" name="studentType" value="2"/>
+                              </td>
+                              <td style="border:none;width:100px;">
+                                  <label>往届</label>
+                              </td>
+                          </tr>
+                      </table>
                     </td>
                     <td colspan="2">
                      <table>
                             <tr>
-                                <td style="border:none;width:50px;"><span style="color:red">*</span>考生号</td>
+                                <td style="border:none;width:50px;">考生号</td>
                                 <td style="border:none;width:150px;">
                                     <input type="text" id="num1" name="num1" maxlength="5" style="width:35px">
                                     <input type="text" id="num2" name="num2" maxlength="3" style="width:30px;border:1px solid #f00!important;"/>
@@ -248,7 +311,7 @@
                       <table>
                           <tr>
                               <td style="border:none">
-                                  <input class="radio" type="radio" name="sex" value="0"/>
+                                  <input class="radio" type="radio" name="sex" value="0" checked="checked"/>
                               </td>
                               <td style="border:none">
                                    <label>男</label>
@@ -291,7 +354,7 @@
                     <td><span style="color:red">*</span>身份证号</td>
                     <td colspan="2"><input id= "idNum" name="idNum" maxlength="18"/>
                     </td>
-                    <td><span style="color:red">*</span>本人电话</td>
+                    <td>本人电话</td>
                     <td><input id="tel" name="tel" maxlength="20"/>
                     </td>
                     <td>家庭电话</td>
@@ -310,7 +373,7 @@
                     <td>父亲姓名</td>
                     <td><input name="fatherName" maxlength="10"/>
                     </td>
-                    <td><span style="color:red">*</span>电话</td>
+                    <td>电话</td>
                     <td><input id="fatherTel" name="fatherTel" maxlength="20"/>
                     </td>
                     <td>工作单位</td>
@@ -321,7 +384,7 @@
                     <td>母亲姓名</td>
                     <td><input name="motherName" />
                     </td>
-                    <td><span style="color:red">*</span>电话</td>
+                    <td>电话</td>
                     <td><input id="motherTel" name="motherTel" maxlength="20"/>
                     </td>
                     <td>工作单位</td>
@@ -337,7 +400,7 @@
                     <td rowspan="2">外语</td>
                     <td colspan="3">文/理综</td>
                     <td rowspan="2">综合总分</td>
-                    <td rowspan="2"><span style="color:red">*</span>总分</td>
+                    <td rowspan="2">总分</td>
                 </tr>
                 <tr>
                     <td>历史/物理</td>
@@ -376,10 +439,24 @@
                                   <label>报名费</label>
                               </td>
                               <td style="border:none">
-                                  <input class="radio" type="checkbox" name="transferSignUpMoneyFlg" value="1" />
+                                  <input class="radio" type="checkbox" name="bankSignUpMoneyFlg" id = "bankSignUpMoneyFlg" value="1" />
                               </td>
                               <td style="border:none;width:50px;">
-                                  <label>转账交付</label>
+                                  <label>银行交付</label>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td style="border:none">
+                                  <input class="radio" type="checkbox" name="lakalaSignUpMoneyFlg" id = "lakalaSignUpMoneyFlg" value="1" />
+                              </td>
+                              <td style="border:none;width:50px;">
+                                  <label>拉卡拉pos机交付</label>
+                              </td>
+                              <td style="border:none">
+                                  <input class="radio" type="checkbox" name="aliSignUpMoneyFlg" id = "aliSignUpMoneyFlg" value="1" />
+                              </td>
+                              <td style="border:none;width:50px;">
+                                  <label>支付宝交付</label>
                               </td>
                           </tr>
                       </table>
@@ -394,7 +471,7 @@
                                   <label>住宿</label>
                               </td>
                               <td style="border:none">
-                                  <input class="radio" type="radio" name="stayFlg" value="0" />
+                                  <input class="radio" type="radio" name="stayFlg" value="0" checked="checked"/>
                               </td>
                               <td style="border:none;width:50px;">
                                   <label>走读</label>

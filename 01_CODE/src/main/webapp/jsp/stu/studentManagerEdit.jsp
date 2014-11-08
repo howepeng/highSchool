@@ -10,7 +10,7 @@
                     <td>
                         <input id="name" name="name" maxlength="10"/>
                     </td>
-                    <td colspan="3">
+                    <td colspan="2">
                       <table>
                           <tr>
                               <td style="border:none">
@@ -52,10 +52,34 @@
                           </tr>
                       </table>
                     </td>
+                   <td>
+                      <table>
+                          <tr>
+                              <td style="border:none">
+                                  <input class="radio" type="radio" id="studentType" name="studentType" value="0" checked="checked"/>
+                              </td>
+                              <td style="border:none;width:50px;">
+                                  <label>复读</label>
+                              </td>
+                              <td style="border:none">
+                                  <input class="radio" type="radio" id="studentType" name="studentType" value="1"/>
+                              </td>
+                              <td style="border:none;width:50px;">
+                                  <label>应届</label>
+                              </td>
+                              <td style="border:none">
+                                  <input class="radio" type="radio" id="studentType" name="studentType" value="2"/>
+                              </td>
+                              <td style="border:none;width:100px;">
+                                  <label>往届</label>
+                              </td>
+                          </tr>
+                      </table>
+                    </td>
                     <td colspan="2">
                      <table>
                             <tr>
-                                <td style="border:none;width:50px;"><span style="color:red">*</span>考生号</td>
+                                <td style="border:none;width:50px;">考生号</td>
                                 <td style="border:none;width:150px;">
                                     <input type="text" id="num1" name="num1" maxlength="5" style="width:35px">
                                     <input type="text" id="num2" name="num2" maxlength="3" style="width:30px;border:1px solid #f00!important;"/>
@@ -82,7 +106,7 @@
                       <table>
                           <tr>
                               <td style="border:none">
-                                  <input class="radio" type="radio" name="sex" value="0"/>
+                                  <input class="radio" type="radio" name="sex" value="0" checked="checked"/>
                               </td>
                               <td style="border:none">
                                    <label>男</label>
@@ -125,7 +149,7 @@
                     <td><span style="color:red">*</span>身份证号</td>
                     <td colspan="2"><input id= "idNum" name="idNum"  maxlength="18"/>
                     </td>
-                    <td><span style="color:red">*</span>本人电话</td>
+                    <td>本人电话</td>
                     <td><input id="tel" name="tel"  maxlength="20"/>
                     </td>
                     <td>家庭电话</td>
@@ -144,7 +168,7 @@
                     <td>父亲姓名</td>
                     <td><input name="fatherName" />
                     </td>
-                    <td><span style="color:red">*</span>电话</td>
+                    <td>电话</td>
                     <td><input id="fatherTel" name="fatherTel"  maxlength="20"/>
                     </td>
                     <td>工作单位</td>
@@ -155,7 +179,7 @@
                     <td>母亲姓名</td>
                     <td><input name="motherName" />
                     </td>
-                    <td><span style="color:red">*</span>电话</td>
+                    <td>电话</td>
                     <td><input id="motherTel" name="motherTel"  maxlength="20"/>
                     </td>
                     <td>工作单位</td>
@@ -171,7 +195,7 @@
                     <td rowspan="2">外语</td>
                     <td colspan="3">文/理综</td>
                     <td rowspan="2">综合总分</td>
-                    <td rowspan="2"><span style="color:red">*</span>总分</td>
+                    <td rowspan="2">总分</td>
                 </tr>
                 <tr>
                     <td>历史/物理</td>
@@ -210,10 +234,24 @@
                                   <label>报名费</label>
                               </td>
                               <td style="border:none">
-                                  <input class="radio" type="checkbox" name="transferSignUpMoneyFlg" value="1" />
+                                  <input class="radio" type="checkbox" name="bankSignUpMoneyFlg" value="1" />
                               </td>
                               <td style="border:none;width:50px;">
-                                  <label>转账交付</label>
+                                  <label>银行转账交付</label>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td style="border:none">
+                                  <input class="radio" type="checkbox" name="lakalaSignUpMoneyFlg" value="1" />
+                              </td>
+                              <td style="border:none;width:50px;">
+                                  <label>拉卡拉pos机转账交付</label>
+                              </td>
+                              <td style="border:none">
+                                  <input class="radio" type="checkbox" name="aliSignUpMoneyFlg" value="1" />
+                              </td>
+                              <td style="border:none;width:50px;">
+                                  <label>支付宝转账交付</label>
                               </td>
                           </tr>
                       </table>
@@ -228,7 +266,7 @@
                                   <label>住宿</label>
                               </td>
                               <td style="border:none">
-                                  <input class="radio" type="radio" name="stayFlg" value="0" />
+                                  <input class="radio" type="radio" name="stayFlg" value="0" checked="checked"/>
                               </td>
                               <td style="border:none;width:50px;">
                                   <label>走读</label>
