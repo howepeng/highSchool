@@ -1,0 +1,53 @@
+宋校  8802668
+
+--没有修改过学生信息的学生86
+SELECT ss.id,count(tf.studentId)
+from 
+tb_finance tf,
+tb_student ss
+where  
+tf.studentId = ss.id
+and ss.count_fee > ss.sign_fee
+GROUP BY ss.id
+ORDER BY  ss.id,tf.createdatetime desc
+
+--指交了报名费
+SELECT ss.id,count(tf.studentId)
+from 
+tb_finance tf,
+tb_student ss
+where  
+tf.studentId = ss.id
+and ss.count_fee <= ss.sign_fee
+GROUP BY ss.id
+ORDER BY  ss.id,tf.createdatetime desc
+
+SELECT * 
+from 
+tb_finance tf,
+tb_student ss
+where  
+tf.studentId = ss.id
+and ss.count_fee <= ss.sign_fee
+ORDER BY  ss.id,tf.createdatetime desc
+
+SELECT ss.* 
+from 
+tb_finance tf,
+tb_student ss
+where  
+tf.studentId = ss.id
+and ss.count_fee > ss.sign_fee
+ORDER BY  ss.id,tf.createdatetime desc
+
+
+SELECT ss.id, count(sih.student_id)
+from 
+tb_student ss,
+tb_student_info_history sih
+where  
+sih.student_id = ss.id
+and ss.isPayment_Flg = 1
+and ss.count_fee <= ss.sign_fee
+GROUP BY ss.id
+ORDER BY  ss.id,sih.createdatetime desc

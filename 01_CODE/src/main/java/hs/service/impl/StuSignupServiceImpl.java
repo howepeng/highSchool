@@ -7,6 +7,7 @@ import hs.dao.IdFileDaoI;
 import hs.dao.PhotoFileDaoI;
 import hs.dao.ReportFileDaoI;
 import hs.dao.StudentDaoI;
+import hs.dao.StudentInfoHistoryDaoI;
 import hs.dao.UserDaoI;
 import hs.model.TbClassType;
 import hs.model.TbFile;
@@ -15,6 +16,7 @@ import hs.model.TbIdFile;
 import hs.model.TbPhotoFile;
 import hs.model.TbReportFile;
 import hs.model.TbStudent;
+import hs.model.TbStudentInfoHistory;
 import hs.model.TbUser;
 import hs.pageModel.SessionInfo;
 import hs.pageModel.Student;
@@ -43,6 +45,13 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
     @Autowired
     public void setStudentDao(StudentDaoI studentDao) {
         this.studentDao = studentDao;
+    }
+
+    private StudentInfoHistoryDaoI studentInfoHistoryDao;
+
+    @Autowired
+    public void setStudentInfoHistoryDao(StudentInfoHistoryDaoI studentInfoHistoryDao) {
+        this.studentInfoHistoryDao = studentInfoHistoryDao;
     }
 
     private FinanceDaoI financeDao;
@@ -95,16 +104,20 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
     }
 
     @Override
-    public String signup(Student student, SessionInfo sessionInfo) {
+    public String signup(Student student, SessionInfo sessionInfo) throws Exception {
         TbStudent tbStu = null;
+        String updateType = "";
+        TbUser tbUser = userDao.getById(TbUser.class, sessionInfo.getId());
+        TbClassType tbClassType = null;
+        TbStudentInfoHistory tbStuHis = new TbStudentInfoHistory();
         if (student.getId() == null || "".equals(student.getId())) {
             tbStu = new TbStudent();
-            TbUser tbUser = userDao.getById(TbUser.class, sessionInfo.getId());
+            updateType = "添加";
             BeanUtils.copyProperties(student, tbStu);
             tbStu.setId(UUID.randomUUID().toString());
             tbStu.setCreatedatetime(new Date());
             tbStu.setTbUser(tbUser);
-            TbClassType tbClassType = classTypeDao.getById(TbClassType.class, student.getClassType());
+            tbClassType = classTypeDao.getById(TbClassType.class, student.getClassType());
             tbStu.setTbClassType(tbClassType);
             if ("1".equals(tbStu.getSignUpMoneyFlg())) {
                 tbStu.setSignFee(tbClassType.getSignFee());
@@ -123,32 +136,44 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
                 tbFinance.setName(tbStu.getName());
                 tbFinance.setIdNum(tbStu.getIdNum());
                 tbFinance.setTbClassType(tbStu.getTbClassType());
-                if("1".equals(tbStu.getTransferSignUpMoneyFlg())) {
-                    tbFinance.setTransferFee(tbClassType.getSignFee());
-                } else {
+                if("1".equals(tbStu.getBankSignUpMoneyFlg())) {
+                    tbFinance.setBankFee(tbClassType.getSignFee());
+                } else if("1".equals(tbStu.getLakalaSignUpMoneyFlg())) {
+                    tbFinance.setLakalaFee(tbClassType.getSignFee());
+                }else if("1".equals(tbStu.getAliSignUpMoneyFlg())) {
+                    tbFinance.setAliFee(tbClassType.getSignFee());
+                }else {
                     tbFinance.setCashFee(tbClassType.getSignFee());
                 }
+                // 撤销状态
+                tbFinance.setCancelflg("0");
+                // 账单类型
+                tbFinance.setCrashHistoryType("报名费");
                 financeDao.save(tbFinance);
             }
-
             if (student.getPhotoId() != null
                     && !"".equals(student.getPhotoId())) {
                 TbPhotoFile tbFile = photoFileDao.getById(TbPhotoFile.class,
                         student.getPhotoId());
                 tbStu.setTbPhotoFile(tbFile);
             }
+            upload(student, tbStu);
         } else {
+            updateType = "修改";
             tbStu = studentDao.getById(TbStudent.class, student.getId());
-            TbUser tbUser = userDao.getById(TbUser.class, sessionInfo.getId());
             String oldSignUpMoneyFlg = tbStu.getSignUpMoneyFlg();
             BigDecimal oldCountFee = tbStu.getCountFee();
             String oldIsPaymentFlg = tbStu.getIsPaymentFlg();
             Date createdatetime = tbStu.getCreatedatetime();
-            BeanUtils.copyProperties(student, tbStu);
+            String oldBankSignUpMoneyFlg = tbStu.getBankSignUpMoneyFlg();
+            String oldLakalaSignUpMoneyFlg= tbStu.getLakalaSignUpMoneyFlg();
+            String oldAliSignUpMoneyFlg = tbStu.getAliSignUpMoneyFlg();
+            BigDecimal oldSignFee =  tbStu.getSignFee();
+            setStudent(student, tbStu);
             tbStu.setCreatedatetime(createdatetime);
             tbStu.setModifydatetime(new Date());
             tbStu.setTbUser(tbUser);
-            TbClassType tbClassType = classTypeDao.getById(TbClassType.class, student.getClassType());
+            tbClassType = classTypeDao.getById(TbClassType.class, student.getClassType());
             tbStu.setTbClassType(tbClassType);
             if ("1".equals(tbStu.getSignUpMoneyFlg())
                     && "0".equals(oldSignUpMoneyFlg)) {
@@ -157,83 +182,94 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             }
             if ("0".equals(tbStu.getSignUpMoneyFlg())
                     && "1".equals(oldSignUpMoneyFlg)) {
-                tbStu.setSignFee(null);
+                tbStu.setSignFee(new BigDecimal(0));
                 tbStu.setCountFee(oldCountFee.subtract(tbClassType.getSignFee()));
             }
             tbStu.setIsPaymentFlg(oldIsPaymentFlg);
-            studentDao.update(tbStu);
+
             if ("1".equals(tbStu.getSignUpMoneyFlg())
                     && "0".equals(oldSignUpMoneyFlg)) {
-                boolean isUpdate = true;
-                TbFinance tbFinance = getFinance(tbStu.getId());
-                if (tbFinance == null) {
-                    tbFinance = new TbFinance();
-                    isUpdate = false;
-                    tbFinance.setId(UUID.randomUUID().toString());
-                    tbFinance.setCreatedatetime(new Date());
-                    tbFinance.setTbClassType(tbClassType);
-                    tbFinance.setName(tbStu.getName());
-                    tbFinance.setIdNum(tbStu.getIdNum());
-                }
+                TbFinance tbFinance = new TbFinance();
+                tbFinance.setId(UUID.randomUUID().toString());
+                tbFinance.setCreatedatetime(new Date());
                 tbFinance.setSignFee(tbClassType.getSignFee());
-                if (tbFinance.getCountPayFee() != null) {
-                    tbFinance.setCountPayFee(tbFinance.getCountPayFee().add(tbClassType.getSignFee()));
-                } else {
-                    tbFinance.setCountPayFee(tbFinance.getCountPayFee());
-                }
-                if("1".equals(tbStu.getTransferSignUpMoneyFlg())) {
-                    if (tbFinance.getTransferFee() != null) {
-                        tbFinance.setTransferFee(tbFinance.getTransferFee().add(tbClassType.getSignFee()));
-                    } else {
-                        tbFinance.setTransferFee(tbClassType.getSignFee());
-                    }
-                } else {
-                    if (tbFinance.getCashFee() != null) {
-                        tbFinance.setCashFee(tbFinance.getCashFee().add(tbClassType.getSignFee()));
-                    } else {
-                        tbFinance.setCashFee(tbClassType.getSignFee());
-                    }
-                }
-                tbFinance.setStudentId(tbStu.getId());
+                tbFinance.setCountPayFee(tbClassType.getSignFee());
                 tbFinance.setTbUser(tbUser);
-                if (isUpdate) {
-                    financeDao.update(tbFinance);
-                } else {
-                    financeDao.save(tbFinance);
+                tbFinance.setStudentId(tbStu.getId());
+                tbFinance.setName(tbStu.getName());
+                tbFinance.setIdNum(tbStu.getIdNum());
+                tbFinance.setTbClassType(tbStu.getTbClassType());
+                if("1".equals(tbStu.getBankSignUpMoneyFlg())) {
+                    tbFinance.setBankFee(tbClassType.getSignFee());
+                } else if("1".equals(tbStu.getLakalaSignUpMoneyFlg())) {
+                    tbFinance.setLakalaFee(tbClassType.getSignFee());
+                }else if("1".equals(tbStu.getAliSignUpMoneyFlg())) {
+                    tbFinance.setAliFee(tbClassType.getSignFee());
+                }else {
+                    tbFinance.setCashFee(tbClassType.getSignFee());
                 }
+                // 撤销状态
+                tbFinance.setCancelflg("0");
+                // 账单类型
+                tbFinance.setCrashHistoryType("报名费");
+                financeDao.save(tbFinance);
             }
             if ("0".equals(tbStu.getSignUpMoneyFlg())
                     && "1".equals(oldSignUpMoneyFlg)) {
                 TbFinance tbFinance = getFinance(tbStu.getId());
                 if (tbFinance != null) {
-                    tbFinance.setSignFee(null);
-                    if(tbFinance.getCountPayFee()!=null) {
-                        tbFinance.setCountPayFee(tbFinance.getCountPayFee().subtract(tbClassType.getSignFee()));
-                    } else {
-                        tbFinance.setCountPayFee(tbClassType.getSignFee().multiply(new BigDecimal(-1)));
-                    }
-                    if("1".equals(tbStu.getTransferSignUpMoneyFlg())) {
-                        if (tbFinance.getTransferFee() != null) {
-                            tbFinance.setTransferFee(tbFinance.getTransferFee().subtract(tbClassType.getSignFee()));
+                    tbStu.setSignUpMoneyFlg("0");
+                    tbStu.setBankSignUpMoneyFlg("0");
+                    tbStu.setLakalaSignUpMoneyFlg("0");
+                    tbStu.setAliSignUpMoneyFlg("0");
+                    tbFinance.setCancelflg("1");
+                    financeDao.update(tbFinance);
+                } else {
+                    throw new Exception("报名费已出账不能修改报名信息的【是否缴纳报名费】！");
+                }
+            }
+            if ("1".equals(tbStu.getSignUpMoneyFlg())
+                    && "1".equals(oldSignUpMoneyFlg)) {
+                if(!oldBankSignUpMoneyFlg.equals(tbStu.getBankSignUpMoneyFlg())
+                    || !oldLakalaSignUpMoneyFlg.equals(tbStu.getLakalaSignUpMoneyFlg())
+                    || !oldAliSignUpMoneyFlg.equals(tbStu.getAliSignUpMoneyFlg())) {
+                        TbFinance tbFinance = getFinance(tbStu.getId());
+                        if (tbFinance != null) {
+                            if("1".equals(tbStu.getBankSignUpMoneyFlg())) {
+                                tbFinance.setBankFee(tbClassType.getSignFee());
+                            } else {
+                                tbFinance.setBankFee(new BigDecimal(0));
+                            }
+                            if("1".equals(tbStu.getLakalaSignUpMoneyFlg())) {
+                                tbFinance.setLakalaFee(tbClassType.getSignFee());
+                            } else {
+                                tbFinance.setLakalaFee(new BigDecimal(0));
+                            }
+                            if("1".equals(tbStu.getAliSignUpMoneyFlg())) {
+                                tbFinance.setAliFee(tbClassType.getSignFee());
+                            } else {
+                                tbFinance.setAliFee(new BigDecimal(0));
+                            }
+                            if (!"1".equals(tbStu.getBankSignUpMoneyFlg())
+                                && !"1".equals(tbStu.getLakalaSignUpMoneyFlg())
+                                && !"1".equals(tbStu.getAliSignUpMoneyFlg())) {
+                                tbFinance.setCashFee(tbClassType.getSignFee());
+                            } else {
+                                tbFinance.setCashFee(new BigDecimal(0));
+                            }
+                            tbFinance.setCreatedatetime(new Date());
+                            tbFinance.setCountPayFee(tbClassType.getSignFee());
+                            tbStu.setSignFee(tbClassType.getSignFee());
+                            //合计 = 之前的合计-之前的报名费+新的报名费
+                            tbStu.setCountFee(tbStu.getCountFee().subtract(oldSignFee).add(tbClassType.getSignFee()));
+                            financeDao.update(tbFinance);
                         } else {
-                            tbFinance.setTransferFee(tbClassType.getSignFee().multiply(new BigDecimal(-1)));
+                            throw new Exception("报名费已出账不能修改报名信息的【报名交付方式】！");
                         }
-                    } else {
-                        if (tbFinance.getCashFee() != null) {
-                            tbFinance.setCashFee(tbFinance.getCashFee().add(tbClassType.getSignFee()));
-                        } else {
-                            tbFinance.setCashFee(tbClassType.getSignFee());
-                        }
-                    }
-                    tbFinance.setTbUser(tbUser);
-                    if (tbFinance.getCountPayFee().compareTo(new BigDecimal(0)) > 0) {
-                        financeDao.update(tbFinance);
-                    } else {
-                        financeDao.delete(tbFinance);
-                    }
                 }
 
             }
+            studentDao.update(tbStu);
             if (tbStu.getTbPhotoFile()!= null && student.getPhotoId() != null
                     && !"".equals(student.getPhotoId())
                     && !student.getPhotoId().equals(tbStu.getTbPhotoFile().getId())) {
@@ -241,9 +277,74 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
                         student.getPhotoId());
                 tbStu.setTbPhotoFile(tbFile);
             }
-            upload(student);
+            upload(student, tbStu);
         }
+        tbStuHis.setId(UUID.randomUUID().toString());
+        tbStuHis.setStudentId(tbStu.getId());
+        tbStuHis.setIdNum(tbStu.getIdNum());
+        tbStuHis.setName(tbStu.getName());
+        tbStuHis.setNum(tbStu.getNum());
+        tbStuHis.setTbUser(tbUser);
+        tbStuHis.setCreatedatetime(tbStu.getCreatedatetime());
+        tbStuHis.setUpdatedatetime(new Date());
+        tbStuHis.setClassTypeName(tbClassType.getClassType());
+        tbStuHis.setClassTypeId(student.getClassType());
+        tbStuHis.setUpdateType(updateType);
+        tbStuHis.setUpdateContent(tbStu.toString());
+        studentInfoHistoryDao.save(tbStuHis);
         return tbStu.getId();
+    }
+
+    /**
+     * 复制学生信息
+     * @param student
+     * @param tbStu
+     */
+    private void setStudent(Student student, TbStudent tbStu) {
+        if (tbStu.getId().equals(student.getId())) {
+            tbStu.setNum(student.getNum());
+            tbStu.setName(student.getName());
+            tbStu.setWlqf(student.getWlqf());
+            tbStu.setStudentType(student.getStudentType());
+            tbStu.setSex(student.getSex());
+            tbStu.setSignedFlg(student.getSignedFlg());
+            tbStu.setIdNum(student.getIdNum());
+            tbStu.setTel(student.getTel());
+            tbStu.setHomeTel(student.getHomeTel());
+            tbStu.setGraduateSchool(student.getGraduateSchool());
+            tbStu.setAddress(student.getAddress());
+            tbStu.setFatherName(student.getFatherName());
+            tbStu.setFatherTel(student.getFatherTel());
+            tbStu.setFatherWork(student.getFatherWork());
+            tbStu.setMotherName(student.getMotherName());
+            tbStu.setMotherTel(student.getMotherTel());
+            tbStu.setMotherWork(student.getMotherWork());
+            tbStu.setFractionLanguage(student.getFractionLanguage());
+            tbStu.setFractionMath(student.getFractionMath());
+            tbStu.setFractionEnglish(student.getFractionEnglish());
+            tbStu.setFractionComp1(student.getFractionComp1());
+            tbStu.setFractionComp2(student.getFractionComp2());
+            tbStu.setFractionComp3(student.getFractionComp3());
+            tbStu.setFractionCompCount(student.getFractionCompCount());
+            tbStu.setFractionCount(student.getFractionCount());
+            tbStu.setClassName(student.getClassName());
+            tbStu.setSignUpMoneyFlg(student.getSignUpMoneyFlg());
+            tbStu.setBankSignUpMoneyFlg(student.getBankSignUpMoneyFlg());
+            tbStu.setLakalaSignUpMoneyFlg(student.getLakalaSignUpMoneyFlg());
+            tbStu.setAliSignUpMoneyFlg(student.getAliSignUpMoneyFlg());
+            tbStu.setStayFlg(student.getStayFlg());
+            tbStu.setDormitoryNum(student.getDormitoryNum());
+            tbStu.setSelfstudyNightflg(student.getSelfstudyNightflg());
+            tbStu.setSelfstudyNoonflg(student.getSelfstudyNoonflg());
+            tbStu.setStuNum(student.getStuNum());
+            tbStu.setIntention(student.getIntention());
+            tbStu.setArtType(student.getArtType());
+            tbStu.setSecureFlg(student.getSecureFlg());
+            tbStu.setOldFileName(student.getOldFileName());
+            tbStu.setOldReportFileName(student.getOldReportFileName());
+            tbStu.setOldIdFileName(student.getOldIdFileName());
+            tbStu.setRemark(student.getRemark());
+        }
     }
 
     private TbFinance getFinance(String id) {
@@ -251,7 +352,8 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String createdatetimeStart =df.format(now) + " 00:00:00";
         String createdatetimeEnd =df.format(now) + " 24:00:00";
-        String hql = "FROM TbFinance t WHERE t.studentId is '"+id+"' and t.createdatetime >= '"+createdatetimeStart+"' and t.createdatetime <= '"+createdatetimeEnd+"'";
+        String hql = "FROM TbFinance t WHERE t.studentId is '"+id + "' and t.createdatetime >= '"+createdatetimeStart
+                +"' and t.createdatetime <= '"+createdatetimeEnd + "' and t.crashHistoryType='报名费'";
         TbFinance ret = financeDao.get(hql);
         if (ret == null || ret.getId() == null || "".equals(ret.getId())) {
             ret = null;
@@ -260,13 +362,13 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
     }
 
     @Override
-    public void upload(Student student) {
-        uploadVideo(student);
-        uploadReportFile(student);
-        uploadIdFile(student);
+    public void upload(Student student, TbStudent tbStu) {
+        uploadVideo(student, tbStu);
+        uploadReportFile(student, tbStu);
+        uploadIdFile(student, tbStu);
     }
 
-    private void uploadVideo(Student student) {
+    private void uploadVideo(Student student, TbStudent tbStu) {
         String fileName = student.getVideoFileName();
         if (fileName != null && !"".equals(fileName)) {
             String fileRealName = UUID.randomUUID().toString()
@@ -296,13 +398,11 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             } finally {
                 close(fos, fis);
             }
-            TbStudent tbStu = studentDao.getById(TbStudent.class,
-                    student.getId());
             tbStu.setTbFile(tbFile);
         }
     }
 
-    private void uploadReportFile(Student student) {
+    private void uploadReportFile(Student student, TbStudent tbStu) {
         String fileName = student.getReportFileFileName();
         if (fileName != null && !"".equals(fileName)) {
             String fileRealName = UUID.randomUUID().toString()
@@ -332,13 +432,11 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             } finally {
                 close(fos, fis);
             }
-            TbStudent tbStu = studentDao.getById(TbStudent.class,
-                    student.getId());
             tbStu.setTbReportFile(tbFile);
         }
     }
 
-    private void uploadIdFile(Student student) {
+    private void uploadIdFile(Student student, TbStudent tbStu) {
         String fileName = student.getIdNUmFileFileName();
         if (fileName != null && !"".equals(fileName)) {
             String fileRealName = UUID.randomUUID().toString()
@@ -368,8 +466,6 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             } finally {
                 close(fos, fis);
             }
-            TbStudent tbStu = studentDao.getById(TbStudent.class,
-                    student.getId());
             tbStu.setTbIdFile(tbFile);
         }
     }

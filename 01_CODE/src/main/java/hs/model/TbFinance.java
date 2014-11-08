@@ -40,16 +40,24 @@ public class TbFinance implements java.io.Serializable {
     private BigDecimal safetyFee = new BigDecimal(0);
     private BigDecimal waterFee = new BigDecimal(0);
     private BigDecimal cashFee = new BigDecimal(0);
-    private BigDecimal transferFee = new BigDecimal(0);
+    private BigDecimal bankFee = new BigDecimal(0);
+    private BigDecimal lakalaFee = new BigDecimal(0);
+    private BigDecimal aliFee = new BigDecimal(0);
     private BigDecimal payAgainFee = new BigDecimal(0);
     private BigDecimal countPayFee = new BigDecimal(0);
     private BigDecimal preferentialFee = new BigDecimal(0);
     private BigDecimal arrearFee = new BigDecimal(0);
     private BigDecimal refundFee = new BigDecimal(0);
     private BigDecimal cashRefundFee = new BigDecimal(0);
-    private BigDecimal transferRefundFee = new BigDecimal(0);
+    private BigDecimal bankRefundFee = new BigDecimal(0);
+    private BigDecimal lakalaRefundFee = new BigDecimal(0);
+    private BigDecimal aliRefundFee = new BigDecimal(0);
     private BigDecimal cashPayAgainFee = new BigDecimal(0);
-    private BigDecimal transferPayAgainFee = new BigDecimal(0);
+    private BigDecimal bankPayAgainFee = new BigDecimal(0);
+    private BigDecimal lakalaPayAgainFee = new BigDecimal(0);
+    private BigDecimal aliPayAgainFee = new BigDecimal(0);
+    private String cancelflg;
+    private String crashHistoryType;
     // Constructors
 
     /** default constructor */
@@ -68,7 +76,9 @@ public class TbFinance implements java.io.Serializable {
     BigDecimal safetyFee,
     BigDecimal waterFee,
     BigDecimal cashFee,
-    BigDecimal transferFee,
+    BigDecimal bankFee,
+    BigDecimal lakalaFee,
+    BigDecimal aliFee,
     BigDecimal payAgainFee,
     BigDecimal countPayFee,
     String studentId,
@@ -89,7 +99,9 @@ public class TbFinance implements java.io.Serializable {
         this.safetyFee = safetyFee;
         this.waterFee = waterFee;
         this.cashFee = cashFee;
-        this.transferFee = transferFee;
+        this.bankFee = bankFee;
+        this.lakalaFee = lakalaFee;
+        this.aliFee = aliFee;
         this.payAgainFee = payAgainFee;
         this.countPayFee = countPayFee;
         this.studentId = studentId;
@@ -262,15 +274,31 @@ public class TbFinance implements java.io.Serializable {
         this.payAgainFee = payAgainFee;
     }
 
-    @Column(name = "transferFee", precision = 22, scale = 0)
-    public BigDecimal getTransferFee() {
-        return transferFee;
+    @Column(name = "bankFee", precision = 22, scale = 0)
+    public BigDecimal getBankFee() {
+        return bankFee;
     }
 
-    public void setTransferFee(BigDecimal transferFee) {
-        this.transferFee = transferFee;
+    public void setBankFee(BigDecimal bankFee) {
+        this.bankFee = bankFee;
+    }
+    public BigDecimal getLakalaFee() {
+        return lakalaFee;
     }
 
+    @Column(name = "lakalaFee", precision = 22, scale = 0)
+    public void setLakalaFee(BigDecimal lakalaFee) {
+        this.lakalaFee = lakalaFee;
+    }
+
+    public BigDecimal getAliFee() {
+        return aliFee;
+    }
+
+    @Column(name = "aliFee", precision = 22, scale = 0)
+    public void setAliFee(BigDecimal aliFee) {
+        this.aliFee = aliFee;
+    }
     @Column(name = "studentId", length = 36)
     public String getStudentId() {
         return studentId;
@@ -298,13 +326,31 @@ public class TbFinance implements java.io.Serializable {
         this.cashRefundFee = cashRefundFee;
     }
 
-    @Column(name = "transferRefundFee", precision = 22, scale = 0)
-    public BigDecimal getTransferRefundFee() {
-        return transferRefundFee;
+    @Column(name = "bankRefundFee", precision = 22, scale = 0)
+    public BigDecimal getBankRefundFee() {
+        return bankRefundFee;
     }
 
-    public void setTransferRefundFee(BigDecimal transferRefundFee) {
-        this.transferRefundFee = transferRefundFee;
+    public void setBankRefundFee(BigDecimal bankRefundFee) {
+        this.bankRefundFee = bankRefundFee;
+    }
+
+    @Column(name = "lakalaRefundFee", precision = 22, scale = 0)
+    public BigDecimal getLakalaRefundFee() {
+        return lakalaRefundFee;
+    }
+
+    public void setLakalaRefundFee(BigDecimal lakalaRefundFee) {
+        this.lakalaRefundFee = lakalaRefundFee;
+    }
+
+    @Column(name = "aliRefundFee", precision = 22, scale = 0)
+    public BigDecimal getAliRefundFee() {
+        return aliRefundFee;
+    }
+
+    public void setAliRefundFee(BigDecimal aliRefundFee) {
+        this.aliRefundFee = aliRefundFee;
     }
 
     @Column(name = "cashPayAgainFee", precision = 22, scale = 0)
@@ -316,12 +362,52 @@ public class TbFinance implements java.io.Serializable {
         this.cashPayAgainFee = cashPayAgainFee;
     }
 
-    @Column(name = "transferPayAgainFee", precision = 22, scale = 0)
-    public BigDecimal getTransferPayAgainFee() {
-        return transferPayAgainFee;
+    @Column(name = "bankPayAgainFee", precision = 22, scale = 0)
+    public BigDecimal getBankPayAgainFee() {
+        return bankPayAgainFee;
     }
 
-    public void setTransferPayAgainFee(BigDecimal transferPayAgainFee) {
-        this.transferPayAgainFee = transferPayAgainFee;
+    public void setBankPayAgainFee(BigDecimal bankPayAgainFee) {
+        this.bankPayAgainFee = bankPayAgainFee;
     }
+
+    @Column(name = "lakalaPayAgainFee", precision = 22, scale = 0)
+    public BigDecimal getLakalaPayAgainFee() {
+        return lakalaPayAgainFee;
+    }
+
+    public void setLakalaPayAgainFee(BigDecimal lakalaPayAgainFee) {
+        this.lakalaPayAgainFee = lakalaPayAgainFee;
+    }
+
+    @Column(name = "aliPayAgainFee", precision = 22, scale = 0)
+    public BigDecimal getAliPayAgainFee() {
+        return aliPayAgainFee;
+    }
+
+    public void setAliPayAgainFee(BigDecimal aliPayAgainFee) {
+        this.aliPayAgainFee = aliPayAgainFee;
+    }
+
+    @Column(name = "cancel_flg", length = 2)
+    public String getCancelflg() {
+        return cancelflg;
+    }
+
+    public void setCancelflg(String cancelflg) {
+        this.cancelflg = cancelflg;
+    }
+
+    @Column(name = "crashHistoryType", length = 50)
+    public String getCrashHistoryType() {
+        return crashHistoryType;
+    }
+
+    public void setCrashHistoryType(String crashHistoryType) {
+        this.crashHistoryType = crashHistoryType;
+    }
+
+
+
+
 }

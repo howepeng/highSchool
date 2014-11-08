@@ -39,6 +39,7 @@ public class TbStudent implements java.io.Serializable {
     private String tel;
     private String intention;
     private String wlqf;
+    private String studentType;
     private String photo;
     private String fatherName;
     private String fatherTel;
@@ -82,11 +83,14 @@ public class TbStudent implements java.io.Serializable {
     private String signUpMoneyFlg;
     private String signUpMoneyContent;
     private String secureFlg;
-    private String transferSignUpMoneyFlg;
+    private String bankSignUpMoneyFlg;
+    private String lakalaSignUpMoneyFlg;
+    private String aliSignUpMoneyFlg;
     private String secureContent;
     private String artType;
 
     private String wlqfContent;
+    private String stuTypeContent;
     private String sexContent;
     private String signedContent;
     private String stayContent;
@@ -98,8 +102,11 @@ public class TbStudent implements java.io.Serializable {
     private String oldReportFileName;
     private String classTypeName;
     private String isPaymentFlg;
+    //欠款
     private BigDecimal arrearFee;
+    //退款
     private BigDecimal refundFee;
+    //优惠
     private BigDecimal preferentialFee;
 
     // Constructors
@@ -876,12 +883,393 @@ public class TbStudent implements java.io.Serializable {
         this.preferentialFee = preferentialFee;
     }
 
-    @Column(name = "transferSignUpMoneyFlg", length = 1)
-    public String getTransferSignUpMoneyFlg() {
-        return transferSignUpMoneyFlg;
+    @Column(name = "bankSignUpMoneyFlg", length = 1)
+    public String getBankSignUpMoneyFlg() {
+        return bankSignUpMoneyFlg;
     }
 
-    public void setTransferSignUpMoneyFlg(String transferSignUpMoneyFlg) {
-        this.transferSignUpMoneyFlg = transferSignUpMoneyFlg;
+    public void setBankSignUpMoneyFlg(String bankSignUpMoneyFlg) {
+        this.bankSignUpMoneyFlg = bankSignUpMoneyFlg;
+    }
+
+    @Column(name = "lakalaSignUpMoneyFlg", length = 1)
+    public String getLakalaSignUpMoneyFlg() {
+        return lakalaSignUpMoneyFlg;
+    }
+
+    public void setLakalaSignUpMoneyFlg(String lakalaSignUpMoneyFlg) {
+        this.lakalaSignUpMoneyFlg = lakalaSignUpMoneyFlg;
+    }
+
+    @Column(name = "aliSignUpMoneyFlg", length = 1)
+    public String getAliSignUpMoneyFlg() {
+        return aliSignUpMoneyFlg;
+    }
+
+    public void setAliSignUpMoneyFlg(String aliSignUpMoneyFlg) {
+        this.aliSignUpMoneyFlg = aliSignUpMoneyFlg;
+    }
+
+    @Column(name = "studentType", length = 2)
+    public String getStudentType() {
+        return studentType;
+    }
+
+    public void setStudentType(String studentType) {
+        this.studentType = studentType;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("姓名:");
+        if(this.name !=null && !"".equals(this.name)) {
+            sb.append(this.name);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("学科:");
+        if(this.wlqf !=null && !"".equals(this.wlqf)) {
+            if ("91".equals(this.wlqf)) {
+                sb.append("文科");
+            } else if ("95".equals(this.wlqf)) {
+                sb.append("理科");
+            } else if ("93".equals(this.wlqf)) {
+                sb.append("艺术文科");
+            } else if ("97".equals(this.wlqf)) {
+                sb.append("艺术理科");
+            } else if ("94".equals(this.wlqf)) {
+                sb.append("体育文科");
+            } else if ("98".equals(this.wlqf)) {
+                sb.append("体育理科");
+            }
+        } else {
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("学生类型:");
+        if(this.studentType !=null && !"".equals(this.studentType)) {
+            if ("0".equals(this.studentType)) {
+                sb.append("复读");
+            } else if ("1".equals(this.studentType)) {
+                sb.append("应届");
+            } else if ("2".equals(this.studentType)) {
+                sb.append("往届");
+            }
+        } else {
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("考生号:");
+        if(this.num !=null && !"".equals(this.num)) {
+            sb.append(this.num);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("民族:");
+        if(this.nation !=null && !"".equals(this.nation)) {
+            sb.append(this.nation);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("性别:");
+        if(this.sex !=null && !"".equals(this.sex)) {
+            if ("0".equals(this.sex)) {
+                sb.append("男");
+            } else if ("1".equals(this.sex)) {
+                sb.append("女");
+            }
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("照片:");
+        if (this.tbPhotoFile != null
+                && this.tbPhotoFile.getFileName() != null
+                && !"".equals(this.tbPhotoFile.getFileName())) {
+            sb.append(this.tbPhotoFile.getFileName());
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("签约情况:");
+        if(this.signedFlg !=null && !"".equals(this.signedFlg)) {
+            if ("0".equals(this.signedFlg)) {
+                sb.append("未签约");
+            } else if ("1".equals(this.signedFlg)) {
+                sb.append("已签约");
+            }
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("班级类型:");
+        if (this.tbClassType != null
+                && this.tbClassType.getClassType() != null
+                && !"".equals(this.tbClassType.getClassType())) {
+            sb.append(this.tbClassType.getClassType());
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("身份证号:");
+        if(this.idNum !=null && !"".equals(this.idNum)) {
+            sb.append(this.idNum);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("本人电话:");
+        if(this.tel !=null && !"".equals(this.tel)) {
+            sb.append(this.tel);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("家庭电话:");
+        if(this.homeTel !=null && !"".equals(this.homeTel)) {
+            sb.append(this.homeTel);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("毕业学校:");
+        if(this.graduateSchool !=null && !"".equals(this.graduateSchool)) {
+            sb.append(this.graduateSchool);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("家庭住址:");
+        if(this.address !=null && !"".equals(this.address)) {
+            sb.append(this.address);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("父亲姓名:");
+        if(this.fatherName !=null && !"".equals(this.fatherName)) {
+            sb.append(this.fatherName);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("父亲电话：");
+        if(this.fatherTel !=null && !"".equals(this.fatherTel)) {
+            sb.append(this.fatherTel);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("父亲工作单位：");
+        if(this.fatherWork !=null && !"".equals(this.fatherWork)) {
+            sb.append(this.fatherWork);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("母亲姓名：");
+        if(this.motherName !=null && !"".equals(this.motherName)) {
+            sb.append(this.motherName);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("母亲电话：");
+        if(this.motherTel !=null && !"".equals(this.motherTel)) {
+            sb.append(this.motherTel);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("母亲工作单位：");
+        if(this.motherWork !=null && !"".equals(this.motherWork)) {
+            sb.append(this.motherWork);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("高考成绩_总分：");
+        if(this.fractionCount !=null && !"".equals(this.fractionCount)) {
+            sb.append(this.fractionCount);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("高考成绩_语文：");
+        if(this.fractionLanguage !=null && !"".equals(this.fractionLanguage)) {
+            sb.append(this.fractionLanguage);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("高考成绩_数学：");
+        if(this.fractionMath !=null && !"".equals(this.fractionMath)) {
+            sb.append(this.fractionMath);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("高考成绩_外语：");
+        if(this.fractionEnglish !=null && !"".equals(this.fractionEnglish)) {
+            sb.append(this.fractionEnglish);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("高考成绩_历史/物理：");
+        if(this.fractionComp1 !=null && !"".equals(this.fractionComp1)) {
+            sb.append(this.fractionComp1);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("高考成绩_地理/化学：");
+        if(this.fractionComp2 !=null && !"".equals(this.fractionComp2)) {
+            sb.append(this.fractionComp2);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("高考成绩_政治/生物：");
+        if(this.fractionComp3 !=null && !"".equals(this.fractionComp3)) {
+            sb.append(this.fractionComp3);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("高考成绩_综合总分：");
+        if(this.fractionCompCount !=null && !"".equals(this.fractionCompCount)) {
+            sb.append(this.fractionCompCount);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("班级：");
+        if(this.className !=null && !"".equals(this.className)) {
+            sb.append(this.className);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("报名费：");
+        if(this.signUpMoneyFlg !=null && !"".equals(this.signUpMoneyFlg)) {
+            if ("1".equals(this.signUpMoneyFlg)) {
+                if(this.bankSignUpMoneyFlg !=null && !"".equals(this.bankSignUpMoneyFlg)) {
+                    sb.append("银行交付");
+                } else if(this.bankSignUpMoneyFlg !=null && !"".equals(this.bankSignUpMoneyFlg)) {
+                    sb.append("拉卡拉pos机交付");
+                } else if(this.bankSignUpMoneyFlg !=null && !"".equals(this.bankSignUpMoneyFlg)) {
+                    sb.append("支付宝交付");
+                } else {
+                    sb.append("现金交付");
+                }
+            } else{
+                sb.append("未交");
+            }
+        } else{
+            sb.append("无");
+        }
+        if (this.stayFlg !=null && !"".equals(this.stayFlg)) {
+            if("1".equals(this.stayFlg)) {
+                sb.append("，");
+                sb.append("住宿");
+            } else if ("0".equals(this.stayFlg)) {
+                sb.append("，");
+                sb.append("走读");
+            }
+        }
+        sb.append("，");
+        sb.append("宿舍号：");
+        if(this.dormitoryNum !=null && !"".equals(this.dormitoryNum)) {
+            sb.append(this.dormitoryNum);
+        } else{
+            sb.append("无");
+        }
+        if (this.selfstudyNightflg !=null && !"".equals(this.selfstudyNightflg)) {
+            if("1".equals(this.selfstudyNightflg)) {
+                sb.append("，");
+                sb.append("晚自习");
+            }
+        }
+        if (this.selfstudyNoonflg !=null && !"".equals(this.selfstudyNoonflg)) {
+            if("1".equals(this.selfstudyNoonflg)) {
+                sb.append("，");
+                sb.append("午休");
+            }
+        }
+        sb.append("，");
+        sb.append("学号：");
+        if(this.stuNum !=null && !"".equals(this.stuNum)) {
+            sb.append(this.stuNum);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("预约缴费时间：");
+        if(this.intention !=null && !"".equals(this.intention)) {
+            sb.append(this.intention);
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("艺术生类型：");
+        if(this.artType !=null && !"".equals(this.artType)) {
+            sb.append(this.artType);
+        } else{
+            sb.append("无");
+        }
+        if (this.secureFlg !=null && !"".equals(this.secureFlg)) {
+            if("1".equals(this.secureFlg)) {
+                sb.append("，");
+                sb.append("保险");
+            }
+        }
+        sb.append("，");
+        sb.append("入学视频：");
+        if (this.tbFile != null
+                && this.tbFile.getFileName() != null
+                && !"".equals(this.tbFile.getFileName())) {
+            sb.append(this.tbFile.getFileName());
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("成绩单上传：");
+        if (this.tbReportFile != null
+                && this.tbReportFile.getFileName() != null
+                && !"".equals(this.tbReportFile.getFileName())) {
+            sb.append(this.tbReportFile.getFileName());
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("身份证上传：");
+        if (this.tbIdFile != null
+                && this.tbIdFile.getFileName() != null
+                && !"".equals(this.tbIdFile.getFileName())) {
+            sb.append(this.tbIdFile.getFileName());
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
+        sb.append("备注：");
+        if(this.remark !=null && !"".equals(this.remark)) {
+            sb.append(this.remark);
+        } else {
+            sb.append("无");
+        }
+        return sb.toString();
+    }
+
+    public String getStuTypeContent() {
+        return stuTypeContent;
+    }
+
+    public void setStuTypeContent(String stuTypeContent) {
+        this.stuTypeContent = stuTypeContent;
     }
 }

@@ -97,8 +97,14 @@ public class FinanceServiceImpl implements FinanceServiceI {
                  if(f.getCashFee() == null) {
                      f.setCashFee(new BigDecimal(0));
                  }
-                 if(f.getTransferFee() == null) {
-                     f.setTransferFee(new BigDecimal(0));
+                 if(f.getBankFee() == null) {
+                     f.setBankFee(new BigDecimal(0));
+                 }
+                 if(f.getLakalaFee() == null) {
+                     f.setLakalaFee(new BigDecimal(0));
+                 }
+                 if(f.getAliFee() == null) {
+                     f.setAliFee(new BigDecimal(0));
                  }
                  if(f.getArrearFee() == null) {
                      f.setArrearFee(new BigDecimal(0));
@@ -111,6 +117,11 @@ public class FinanceServiceImpl implements FinanceServiceI {
                  }
                  if(f.getCountPayFee() == null) {
                      f.setCountPayFee(new BigDecimal(0));
+                 }
+                 if("0".equals(f.getCancelflg())) {
+                     f.setCancelflg("未撤销");
+                 } else {
+                     f.setCancelflg("已撤销");
                  }
 //                if (t.getStudentId() != null && !"".equals(t.getStudentId())) {
 //                    TbStudent tbStudent = studentDao.getById(TbStudent.class, t.getStudentId());
@@ -156,6 +167,20 @@ public class FinanceServiceImpl implements FinanceServiceI {
             hql += " AND t.tbClassType.id LIKE :classType";
             params.put("classType", "%%" + finance.getClassType() + "%%");
         }
+        if (finance.getCrashHistoryType() != null && !finance.getCrashHistoryType().trim().equals("")) {
+            hql += " AND t.crashHistoryType LIKE :crashHistoryType";
+            params.put("crashHistoryType", "%%" + finance.getCrashHistoryType() + "%%");
+        }
+        if (finance.getCancelflg() != null && !finance.getCancelflg().trim().equals("")) {
+            String cancelflg;
+            if ("未撤销".equals(finance.getCancelflg())) {
+                cancelflg = "0";
+            } else {
+                cancelflg = "1";
+            }
+            hql += " AND t.cancelflg = '" + cancelflg +"'";
+//            params.put("cancelflg", "%%" + cancelflg + "%%");
+        }
         if (finance.getSort() != null) {
             hql += " ORDER BY " + finance.getSort() + " " + finance.getOrder();
         }
@@ -171,8 +196,14 @@ public class FinanceServiceImpl implements FinanceServiceI {
         if (finance.getCashRefundFee() != null) {
             finance.setRefundFee(finance.getRefundFee().add(finance.getCashRefundFee()));
         }
-        if (finance.getTransferRefundFee() != null) {
-            finance.setRefundFee(finance.getRefundFee().add(finance.getTransferRefundFee()));
+        if (finance.getBankRefundFee() != null) {
+            finance.setRefundFee(finance.getRefundFee().add(finance.getBankRefundFee()));
+        }
+        if (finance.getLakalaRefundFee() != null) {
+            finance.setRefundFee(finance.getRefundFee().add(finance.getLakalaRefundFee()));
+        }
+        if (finance.getAliRefundFee() != null) {
+            finance.setRefundFee(finance.getRefundFee().add(finance.getAliRefundFee()));
         }
 
         TbFinance tbFinance = financeDao.getById(TbFinance.class, finance.getId());
@@ -221,8 +252,12 @@ public class FinanceServiceImpl implements FinanceServiceI {
         tbFinance.setWaterFee(finance.getWaterFee());
         // 现金
         tbFinance.setCashFee(finance.getCashFee());
-        // 转账
-        tbFinance.setTransferFee(finance.getTransferFee());
+        // 银行转账
+        tbFinance.setBankFee(finance.getBankFee());
+        // 拉卡拉pos机转账
+        tbFinance.setLakalaFee(finance.getLakalaFee());
+         // 支付宝转账
+        tbFinance.setAliFee(finance.getAliFee());
         // 减免
         tbFinance.setPreferentialFee(finance.getPreferentialFee());
         // 欠费
@@ -230,64 +265,46 @@ public class FinanceServiceImpl implements FinanceServiceI {
         // 退款
         tbFinance.setRefundFee(finance.getRefundFee());
         tbFinance.setCashRefundFee(finance.getCashRefundFee());
-        tbFinance.setTransferRefundFee(finance.getTransferRefundFee());
+        tbFinance.setBankRefundFee(finance.getBankRefundFee());
+        tbFinance.setLakalaRefundFee(finance.getLakalaRefundFee());
+        tbFinance.setAliRefundFee(finance.getAliRefundFee());
         // 补交费
         tbFinance.setCashPayAgainFee(finance.getCashPayAgainFee());
-        tbFinance.setTransferPayAgainFee(finance.getTransferPayAgainFee());
+        tbFinance.setBankPayAgainFee(finance.getBankPayAgainFee());
+        tbFinance.setLakalaPayAgainFee(finance.getLakalaPayAgainFee());
+        tbFinance.setAliPayAgainFee(finance.getAliPayAgainFee());
         if (finance.getCashPayAgainFee() != null) {
             finance.setPayAgainFee(finance.getPayAgainFee().add(finance.getCashPayAgainFee()));
         }
-        if (finance.getTransferPayAgainFee() != null) {
-            finance.setPayAgainFee(finance.getPayAgainFee().add(finance.getTransferPayAgainFee()));
+        if (finance.getBankPayAgainFee() != null) {
+            finance.setPayAgainFee(finance.getPayAgainFee().add(finance.getBankPayAgainFee()));
+        }
+        if (finance.getLakalaPayAgainFee() != null) {
+            finance.setPayAgainFee(finance.getPayAgainFee().add(finance.getLakalaPayAgainFee()));
+        }
+        if (finance.getAliPayAgainFee() != null) {
+            finance.setPayAgainFee(finance.getPayAgainFee().add(finance.getAliPayAgainFee()));
         }
         tbFinance.setPayAgainFee(finance.getPayAgainFee());
         // 总计交付
         tbFinance.setCountPayFee(finance.getCountPayFee());
         tbFinance.setCreatedatetime(new Date());
         financeDao.update(tbFinance);
-
-
     }
 
     @Override
     public Map<String, List<Finances>> getReportData(String attachid) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        try {
-            date = df.parse(attachid);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        String createdatetimeStart =df.format(date) + " 00:00:00";
-        String createdatetimeEnd =df.format(date) + " 24:00:00";
-        String hql = "FROM TbFinance t WHERE t.createdatetime >= '"+createdatetimeStart+"' and t.createdatetime <= '"+createdatetimeEnd+"'";
-        List<TbFinance> tbFinList = financeDao.find(hql);
+        List<Finance> oneDay = getOnedayData(attachid);
         List<Finances> financesReport = new ArrayList<Finances>();
-        Finances finances = new Finances();
-        finances.setNum("1");
         List<Finance> finance = new ArrayList<Finance>();
         Map<String, List<Finances>> ret = null;
-        if (tbFinList != null && tbFinList.size() > 0) {
-            int count = tbFinList.size();
+        // 计算这一天的历史信息依据20条为单位做合计
+        Finances finances = new Finances();
+        finances.setNum("1");
+        if (oneDay != null && oneDay.size() > 0) {
+            int count = oneDay.size();
             for (int i=0;i<count;i++) {
-                Finance f = new Finance();
-                TbFinance t = tbFinList.get(i);
-                BeanUtils.copyProperties(t, f);
-                f.setPayee(t.getTbUser().getName());
-                if (t.getTbClassType() != null) {
-                    f.setClassType(t.getTbClassType().getId());
-                    f.setClassTypeName(t.getTbClassType().getClassType());
-                }
-                if (t.getStudentId() != null && !"".equals(t.getStudentId())) {
-                    TbStudent tbStudent = studentDao.getById(TbStudent.class, t.getStudentId());
-                    if (tbStudent != null) {
-                        f.setName(tbStudent.getName());
-                        f.setIdNum(tbStudent.getIdNum());
-                    } else {
-                        f.setName(t.getName());
-                        f.setIdNum(t.getIdNum());
-                    }
-                }
+                Finance f = oneDay.get(i);
                 BigDecimal countReport = new BigDecimal(0);
                 // 学费
                 if (f.getStudyFee() != null) {
@@ -384,7 +401,7 @@ public class FinanceServiceImpl implements FinanceServiceI {
                 // 报名费
                 if (finances.getSignFee() !=null) {
                     if (f.getSignFee() != null){
-                        finances.setWaterFee(finances.getSignFee().add(f.getSignFee()));
+                        finances.setSignFee(finances.getSignFee().add(f.getSignFee()));
                     }
                 } else {
                     finances.setSignFee(f.getSignFee());
@@ -405,13 +422,29 @@ public class FinanceServiceImpl implements FinanceServiceI {
                 } else {
                     finances.setCashFee(f.getCashFee());
                 }
-                // 转账
-                if (finances.getTransferFee() !=null) {
-                    if (f.getTransferFee() != null){
-                        finances.setTransferFee(finances.getTransferFee().add(f.getTransferFee()));
+                // 银行转账
+                if (finances.getBankFee() !=null) {
+                    if (f.getBankFee() != null){
+                        finances.setBankFee(finances.getBankFee().add(f.getBankFee()));
                     }
                 } else {
-                    finances.setTransferFee(f.getTransferFee());
+                    finances.setBankFee(f.getBankFee());
+                }
+                // 拉卡拉pos机转账
+                if (finances.getLakalaFee() !=null) {
+                    if (f.getLakalaFee() != null){
+                        finances.setLakalaFee(finances.getLakalaFee().add(f.getLakalaFee()));
+                    }
+                } else {
+                    finances.setLakalaFee(f.getLakalaFee());
+                }
+                // 支付宝转账
+                if (finances.getAliFee() !=null) {
+                    if (f.getAliFee() != null){
+                        finances.setAliFee(finances.getAliFee().add(f.getAliFee()));
+                    }
+                } else {
+                    finances.setAliFee(f.getAliFee());
                 }
                 // 退款
                 if (finances.getRefundFee() !=null) {
@@ -454,6 +487,157 @@ public class FinanceServiceImpl implements FinanceServiceI {
         return null;
     }
 
+    private List<Finance> getOnedayData(String attachid) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        try {
+            date = df.parse(attachid);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String createdatetimeStart =df.format(date) + " 00:00:00";
+        String createdatetimeEnd =df.format(date) + " 24:00:00";
+        //取得期间内没有撤销的记录
+        String hql = "FROM TbFinance t WHERE t.createdatetime >= '"+createdatetimeStart+"' and t.createdatetime <= '"+createdatetimeEnd+"' and t.cancelflg = '0' order by t.createdatetime desc";
+        List<TbFinance> tbFinList = financeDao.find(hql);
+        Map<String, List<Finance>> oneStudent = new HashMap<String, List<Finance>>();
+        // 把一个学生的历史都收集起来
+        if (tbFinList != null && tbFinList.size() > 0) {
+            int count = tbFinList.size();
+            for (int i=0;i<count;i++) {
+                Finance f = new Finance();
+                TbFinance t = tbFinList.get(i);
+                String stuId = t.getStudentId();
+                BeanUtils.copyProperties(t, f);
+                f.setPayee(t.getTbUser().getName());
+                if (t.getTbClassType() != null) {
+                    f.setClassType(t.getTbClassType().getId());
+                    f.setClassTypeName(t.getTbClassType().getClassType());
+                }
+                if (stuId != null && !"".equals(stuId)) {
+                    TbStudent tbStudent = studentDao.getById(TbStudent.class, t.getStudentId());
+                    if (tbStudent != null) {
+                        f.setName(tbStudent.getName());
+                        f.setIdNum(tbStudent.getIdNum());
+                    } else {
+                        f.setName(t.getName());
+                        f.setIdNum(t.getIdNum());
+                    }
+                }
+                if(oneStudent.containsKey(stuId)) {
+                    List<Finance> stuList = oneStudent.get(stuId);
+                    stuList.add(f);
+                } else {
+                    List<Finance> stuList = new ArrayList<Finance>();
+                    stuList.add(f);
+                    oneStudent.put(stuId, stuList);
+                }
+            }
+        }
+        List<Finance> oneDay = new ArrayList<Finance>();
+        Object s[] = oneStudent.keySet().toArray();
+        int sutdentCount = oneStudent.size();
+        for(int i = 0; i < sutdentCount; i++) {
+            List<Finance> finances = oneStudent.get(s[i]);
+            Finance oneStudentFinance = new Finance();
+            int financesCount = finances.size();
+            for(int j = 0; j < financesCount; j++) {
+                Finance f = finances.get(j);
+                oneStudentFinance.setName(f.getName());
+                oneStudentFinance.setIdNum(f.getIdNum());
+                oneStudentFinance.setClassTypeName(f.getClassTypeName());
+                BigDecimal countReport = new BigDecimal(0);
+                // 学费
+                if (f.getStudyFee() != null) {
+                    countReport = countReport.add(f.getStudyFee());
+                    oneStudentFinance.setStudyFee(oneStudentFinance.getStudyFee().add(f.getStudyFee()));
+                }
+                // 住宿费
+                if (f.getStayFee() != null) {
+                    countReport = countReport.add(f.getStayFee());
+                    oneStudentFinance.setStayFee(oneStudentFinance.getStayFee().add(f.getStayFee()));
+                }
+                // 晚自习费
+                if (f.getSelfFee() != null) {
+                    countReport = countReport.add(f.getSelfFee());
+                    oneStudentFinance.setSelfFee(oneStudentFinance.getSelfFee().add(f.getSelfFee()));
+                }
+                // 成绩单押金
+                if (f.getScoreFee() != null) {
+                    countReport = countReport.add(f.getScoreFee());
+                    oneStudentFinance.setScoreFee(oneStudentFinance.getScoreFee().add(f.getScoreFee()));
+                }
+                // 保险费
+                if (f.getSafetyFee() != null) {
+                    countReport = countReport.add(f.getSafetyFee());
+                    oneStudentFinance.setSafetyFee(oneStudentFinance.getSafetyFee().add(f.getSafetyFee()));
+                }
+                // 水费
+                if (f.getWaterFee() != null) {
+                    countReport = countReport.add(f.getWaterFee());
+                    oneStudentFinance.setWaterFee(oneStudentFinance.getWaterFee().add(f.getWaterFee()));
+                }
+                // 报名费
+                if (f.getSignFee() != null) {
+                    countReport = countReport.add(f.getSignFee());
+                    oneStudentFinance.setSignFee(oneStudentFinance.getSignFee().add(f.getSignFee()));
+                }
+                // 减免费用
+                if (f.getPreferentialFee() != null) {
+                    countReport = countReport.subtract(f.getPreferentialFee());
+                    oneStudentFinance.setPreferentialFee(oneStudentFinance.getPreferentialFee().add(f.getPreferentialFee()));
+                }
+                // 退款
+                if (f.getRefundFee() != null) {
+                    countReport = countReport.subtract(f.getRefundFee());
+                    oneStudentFinance.setRefundFee(oneStudentFinance.getRefundFee().add(f.getRefundFee()));
+                }
+                // 补交费
+                if (f.getPayAgainFee() != null) {
+                    countReport = countReport.add(f.getPayAgainFee());
+                    oneStudentFinance.setPayAgainFee(oneStudentFinance.getPayAgainFee().add(f.getPayAgainFee()));
+                }
+                f.setCountReport(countReport);
+                oneStudentFinance.setCountReport(oneStudentFinance.getCountReport().add(f.getCountReport()));
+
+                // 现金
+                if (oneStudentFinance.getCashFee() !=null) {
+                    if (f.getCashFee() != null){
+                        oneStudentFinance.setCashFee(oneStudentFinance.getCashFee().add(f.getCashFee()));
+                    }
+                } else {
+                    oneStudentFinance.setCashFee(f.getCashFee());
+                }
+                // 银行转账
+                if (oneStudentFinance.getBankFee() !=null) {
+                    if (f.getBankFee() != null){
+                        oneStudentFinance.setBankFee(oneStudentFinance.getBankFee().add(f.getBankFee()));
+                    }
+                } else {
+                    oneStudentFinance.setBankFee(f.getBankFee());
+                }
+                // 拉卡拉pos机转账
+                if (oneStudentFinance.getLakalaFee() !=null) {
+                    if (f.getLakalaFee() != null){
+                        oneStudentFinance.setLakalaFee(oneStudentFinance.getLakalaFee().add(f.getLakalaFee()));
+                    }
+                } else {
+                    oneStudentFinance.setLakalaFee(f.getLakalaFee());
+                }
+                // 支付宝转账
+                if (oneStudentFinance.getAliFee() !=null) {
+                    if (f.getAliFee() != null){
+                        oneStudentFinance.setAliFee(oneStudentFinance.getAliFee().add(f.getAliFee()));
+                    }
+                } else {
+                    oneStudentFinance.setAliFee(f.getAliFee());
+                }
+            }
+            oneDay.add(oneStudentFinance);
+        }
+        return oneDay;
+    }
+
     @Override
     public String deleteFinance(String attachid) {
         TbFinance tbFinance = financeDao.getById(TbFinance.class,
@@ -467,4 +651,128 @@ public class FinanceServiceImpl implements FinanceServiceI {
         return "success";
     }
 
+    @Override
+    public String rollbackFinance(String attachid) {
+        try {
+            TbFinance tbFinance = financeDao.getById(TbFinance.class, attachid.trim());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String createdate = df.format(tbFinance.getCreatedatetime());
+            String today = df.format(new Date());
+            if(df.parse(createdate).compareTo(df.parse(today)) != 0){
+                return "noToday";
+            }
+            TbStudent tbStudent = studentDao.getById(TbStudent.class, tbFinance.getStudentId());
+            if("报名费".equals(tbFinance.getCrashHistoryType())) {
+                if ("1".equals(tbStudent.getSignUpMoneyFlg())) {
+                    tbStudent.setSignFee(tbStudent.getSignFee().subtract(tbFinance.getSignFee()));
+                    tbStudent.setCountFee(tbStudent.getCountFee().subtract(tbFinance.getCountPayFee()));
+                    tbStudent.setSignUpMoneyFlg("0");
+                    tbStudent.setBankSignUpMoneyFlg("0");
+                    tbStudent.setLakalaSignUpMoneyFlg("0");
+                    tbStudent.setAliSignUpMoneyFlg("0");
+                }
+            } else if ("缴费".equals(tbFinance.getCrashHistoryType())) {
+                if ("1".equals(tbStudent.getSignUpMoneyFlg())) {
+                    // 学费
+                    if(tbStudent.getStudyFee() != null) {
+                        tbStudent.setStudyFee(tbStudent.getStudyFee().subtract(tbFinance.getStudyFee()));
+                    }
+                    // 住宿费
+                    if(tbStudent.getStayFee() != null) {
+                        tbStudent.setStayFee(tbStudent.getStayFee().subtract(tbFinance.getStayFee()));
+                    }
+                    // 晚自习费
+                    if(tbStudent.getSelfFee() != null) {
+                        tbStudent.setSelfFee(tbStudent.getSelfFee().subtract(tbFinance.getSelfFee()));
+                    }
+                    // 报名费
+                    if ("0".equals(tbStudent.getSignUpMoneyFlg())) {
+                        if(tbStudent.getSignFee() != null) {
+                            tbStudent.setSignFee(tbStudent.getSignFee().subtract(tbFinance.getSignFee()));
+                        }
+                    }
+                    // 成绩单押金
+                    if(tbStudent.getScoreFee() != null) {
+                        tbStudent.setScoreFee(tbStudent.getScoreFee().subtract(tbFinance.getScoreFee()));
+                    }
+                    // 保险费
+                    if(tbStudent.getSafetyFee() != null) {
+                        tbStudent.setSafetyFee(tbStudent.getSafetyFee().subtract(tbFinance.getSafetyFee()));
+                    }
+                    // 水费
+                    if(tbStudent.getWaterFee() != null) {
+                        tbStudent.setWaterFee(tbStudent.getWaterFee().subtract(tbFinance.getWaterFee()));
+                    }
+                    // 现金
+                    // 银行转账
+                    // 拉卡拉pos机转账
+                    // 支付宝转账
+                    // 减免
+                    if(tbStudent.getPreferentialFee() != null) {
+                        tbStudent.setPreferentialFee(tbStudent.getPreferentialFee().subtract(tbFinance.getPreferentialFee()));
+                    }
+                    // 欠费 = 原来的欠费+撤销的全部金额
+                    if (tbStudent.getArrearFee() != null) {
+                        tbStudent.setArrearFee(tbStudent.getArrearFee().add(tbFinance.getCountPayFee()));
+                    }
+                    // 总计交付
+                    if (tbStudent.getCountFee() != null) {
+                        tbStudent.setCountFee(tbStudent.getCountFee().subtract(tbFinance.getCountPayFee()));
+                    }
+                    // 撤销状态
+                    tbFinance.setCancelflg("0");
+                    tbStudent.setIsPaymentFlg("0");
+                }
+            } else if ("补交费".equals(tbFinance.getCrashHistoryType())) {
+                // 合计 = 合计-撤销的全部金额
+                if (tbStudent.getCountFee() != null) {
+                    tbStudent.setCountFee(tbStudent.getCountFee().subtract(tbFinance.getCountPayFee()));
+                }
+                // 欠费 = 原来的欠费 + 撤销的全部金额
+                if (tbStudent.getArrearFee() != null) {
+                    tbStudent.setArrearFee(tbStudent.getArrearFee().add(tbFinance.getCountPayFee()));
+                }
+                if (tbStudent.getArrearFee().compareTo(new BigDecimal(0))>0) {
+                    tbStudent.setArrearflg("1");
+                } else {
+                    tbStudent.setArrearflg("0");
+                }
+                // 现金
+                // 银行转账
+                // 拉卡拉pos机转账
+                // 支付宝转账
+                // 现金补交
+                // 银行转账补交
+                // 拉卡拉pos机转账补交
+                // 支付宝转账补交
+                // 合计交付
+            } else if ("退费".equals(tbFinance.getCrashHistoryType())) {
+                // 合计 = 合计+撤销的全部金额(合计金额是负的)
+                if (tbStudent.getCountFee() != null) {
+                    tbStudent.setCountFee(tbStudent.getCountFee().subtract(tbFinance.getCountPayFee()));
+                }
+                // 退款 = 原来的退款-撤销
+                if (tbStudent.getRefundFee() != null) {
+                    tbStudent.setRefundFee(tbStudent.getRefundFee().subtract(tbFinance.getRefundFee()));
+                }
+                // 欠费
+                // 现金
+                // 银行转账转账
+                // 拉卡拉pos机转账转账
+                // 支付宝转账转账
+                // 现金退款
+                // 银行退款
+                // 拉卡拉pos机退款
+                // 支付宝退款
+            } else {
+                return "fail";
+            }
+            tbFinance.setCancelflg("1");
+            financeDao.update(tbFinance);
+            studentDao.update(tbStudent);
+        } catch (Exception e) {
+            return "fail";
+        }
+        return "success";
+    }
 }

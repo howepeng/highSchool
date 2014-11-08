@@ -11,305 +11,309 @@ import javax.persistence.Table;
 @Table(name = "tb_stu_singup", catalog = "highschool")
 public class StuSignup implements java.io.Serializable {
 
-	private String id;
-	private String name;
-	private String sex;
-	private String wlqf;
-	private String photo;
-	private String fatherName;
-	private String fatherTel;
-	private String fatherWork;
-	private String motherName;
-	private String motherTel;
-	private String motherWork;
-	private String idNum;
-	private String address;
-	private String homeTel;
-	private String graduateSchool;
-	private String fractionLanguage;
-	private String fractionMath;
-	private String fractionEnglish;
-	private String fractionComp1;
-	private String fractionComp2;
-	private String fractionComp3;
-	private String fractionCompCount;
-	private String fractionCount;
-	private String className;
-	private String stayFlg;
-	private String stayNum;
-	private String stayTel;
-	private String stuNum;
-	private String selfstudyNightflg = "0";
-	private String selfstudyNoonflg = "0";
-	private String remark;
-	private Date createdatetime;
-	private Date modifydatetime;
-
-	public StuSignup() {
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSex() {
-		return sex;
-	}
-
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
-
-	public String getWlqf() {
-		return wlqf;
-	}
-
-	public void setWlqf(String wlqf) {
-		this.wlqf = wlqf;
-	}
-
-	public String getPhoto() {
-		return photo;
-	}
-
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
-
-	public String getFatherName() {
-		return fatherName;
-	}
-
-	public void setFatherName(String fatherName) {
-		this.fatherName = fatherName;
-	}
-
-	public String getFatherTel() {
-		return fatherTel;
-	}
-
-	public void setFatherTel(String fatherTel) {
-		this.fatherTel = fatherTel;
-	}
-
-	public String getFatherWork() {
-		return fatherWork;
-	}
-
-	public void setFatherWork(String fatherWork) {
-		this.fatherWork = fatherWork;
-	}
-
-	public String getMotherName() {
-		return motherName;
-	}
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private String id;
+    private String name;
+    private String sex;
+    private String wlqf;
+    private String photo;
+    private String fatherName;
+    private String fatherTel;
+    private String fatherWork;
+    private String motherName;
+    private String motherTel;
+    private String motherWork;
+    private String idNum;
+    private String address;
+    private String homeTel;
+    private String graduateSchool;
+    private String fractionLanguage;
+    private String fractionMath;
+    private String fractionEnglish;
+    private String fractionComp1;
+    private String fractionComp2;
+    private String fractionComp3;
+    private String fractionCompCount;
+    private String fractionCount;
+    private String className;
+    private String stayFlg;
+    private String stayNum;
+    private String stayTel;
+    private String stuNum;
+    private String selfstudyNightflg = "0";
+    private String selfstudyNoonflg = "0";
+    private String remark;
+    private Date createdatetime;
+    private Date modifydatetime;
+
+    public StuSignup() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getWlqf() {
+        return wlqf;
+    }
+
+    public void setWlqf(String wlqf) {
+        this.wlqf = wlqf;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getFatherName() {
+        return fatherName;
+    }
+
+    public void setFatherName(String fatherName) {
+        this.fatherName = fatherName;
+    }
+
+    public String getFatherTel() {
+        return fatherTel;
+    }
+
+    public void setFatherTel(String fatherTel) {
+        this.fatherTel = fatherTel;
+    }
+
+    public String getFatherWork() {
+        return fatherWork;
+    }
+
+    public void setFatherWork(String fatherWork) {
+        this.fatherWork = fatherWork;
+    }
 
-	public void setMotherName(String motherName) {
-		this.motherName = motherName;
-	}
+    public String getMotherName() {
+        return motherName;
+    }
 
-	public String getMotherTel() {
-		return motherTel;
-	}
+    public void setMotherName(String motherName) {
+        this.motherName = motherName;
+    }
 
-	public void setMotherTel(String motherTel) {
-		this.motherTel = motherTel;
-	}
+    public String getMotherTel() {
+        return motherTel;
+    }
 
-	public String getMotherWork() {
-		return motherWork;
-	}
+    public void setMotherTel(String motherTel) {
+        this.motherTel = motherTel;
+    }
 
-	public void setMotherWork(String motherWork) {
-		this.motherWork = motherWork;
-	}
+    public String getMotherWork() {
+        return motherWork;
+    }
 
-	public String getIdNum() {
-		return idNum;
-	}
+    public void setMotherWork(String motherWork) {
+        this.motherWork = motherWork;
+    }
 
-	public void setIdNum(String idNum) {
-		this.idNum = idNum;
-	}
+    public String getIdNum() {
+        return idNum;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public void setIdNum(String idNum) {
+        this.idNum = idNum;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public String getHomeTel() {
-		return homeTel;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setHomeTel(String homeTel) {
-		this.homeTel = homeTel;
-	}
+    public String getHomeTel() {
+        return homeTel;
+    }
 
-	public String getGraduateSchool() {
-		return graduateSchool;
-	}
+    public void setHomeTel(String homeTel) {
+        this.homeTel = homeTel;
+    }
 
-	public void setGraduateSchool(String graduateSchool) {
-		this.graduateSchool = graduateSchool;
-	}
+    public String getGraduateSchool() {
+        return graduateSchool;
+    }
 
-	public String getFractionLanguage() {
-		return fractionLanguage;
-	}
+    public void setGraduateSchool(String graduateSchool) {
+        this.graduateSchool = graduateSchool;
+    }
 
-	public void setFractionLanguage(String fractionLanguage) {
-		this.fractionLanguage = fractionLanguage;
-	}
+    public String getFractionLanguage() {
+        return fractionLanguage;
+    }
 
-	public String getFractionMath() {
-		return fractionMath;
-	}
+    public void setFractionLanguage(String fractionLanguage) {
+        this.fractionLanguage = fractionLanguage;
+    }
 
-	public void setFractionMath(String fractionMath) {
-		this.fractionMath = fractionMath;
-	}
+    public String getFractionMath() {
+        return fractionMath;
+    }
 
-	public String getFractionEnglish() {
-		return fractionEnglish;
-	}
+    public void setFractionMath(String fractionMath) {
+        this.fractionMath = fractionMath;
+    }
 
-	public void setFractionEnglish(String fractionEnglish) {
-		this.fractionEnglish = fractionEnglish;
-	}
+    public String getFractionEnglish() {
+        return fractionEnglish;
+    }
 
-	public String getFractionComp1() {
-		return fractionComp1;
-	}
+    public void setFractionEnglish(String fractionEnglish) {
+        this.fractionEnglish = fractionEnglish;
+    }
 
-	public void setFractionComp1(String fractionComp1) {
-		this.fractionComp1 = fractionComp1;
-	}
+    public String getFractionComp1() {
+        return fractionComp1;
+    }
 
-	public String getFractionComp2() {
-		return fractionComp2;
-	}
+    public void setFractionComp1(String fractionComp1) {
+        this.fractionComp1 = fractionComp1;
+    }
 
-	public void setFractionComp2(String fractionComp2) {
-		this.fractionComp2 = fractionComp2;
-	}
+    public String getFractionComp2() {
+        return fractionComp2;
+    }
 
-	public String getFractionComp3() {
-		return fractionComp3;
-	}
+    public void setFractionComp2(String fractionComp2) {
+        this.fractionComp2 = fractionComp2;
+    }
 
-	public void setFractionComp3(String fractionComp3) {
-		this.fractionComp3 = fractionComp3;
-	}
+    public String getFractionComp3() {
+        return fractionComp3;
+    }
 
-	public String getFractionCompCount() {
-		return fractionCompCount;
-	}
+    public void setFractionComp3(String fractionComp3) {
+        this.fractionComp3 = fractionComp3;
+    }
 
-	public void setFractionCompCount(String fractionCompCount) {
-		this.fractionCompCount = fractionCompCount;
-	}
+    public String getFractionCompCount() {
+        return fractionCompCount;
+    }
 
-	public String getFractionCount() {
-		return fractionCount;
-	}
+    public void setFractionCompCount(String fractionCompCount) {
+        this.fractionCompCount = fractionCompCount;
+    }
 
-	public void setFractionCount(String fractionCount) {
-		this.fractionCount = fractionCount;
-	}
+    public String getFractionCount() {
+        return fractionCount;
+    }
 
-	public String getClassName() {
-		return className;
-	}
+    public void setFractionCount(String fractionCount) {
+        this.fractionCount = fractionCount;
+    }
 
-	public void setClassName(String className) {
-		this.className = className;
-	}
+    public String getClassName() {
+        return className;
+    }
 
-	public String getStayFlg() {
-		return stayFlg;
-	}
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
-	public void setStayFlg(String stayFlg) {
-		this.stayFlg = stayFlg;
-	}
+    public String getStayFlg() {
+        return stayFlg;
+    }
 
-	public String getStayNum() {
-		return stayNum;
-	}
+    public void setStayFlg(String stayFlg) {
+        this.stayFlg = stayFlg;
+    }
 
-	public void setStayNum(String stayNum) {
-		this.stayNum = stayNum;
-	}
+    public String getStayNum() {
+        return stayNum;
+    }
 
-	public String getStayTel() {
-		return stayTel;
-	}
+    public void setStayNum(String stayNum) {
+        this.stayNum = stayNum;
+    }
 
-	public void setStayTel(String stayTel) {
-		this.stayTel = stayTel;
-	}
+    public String getStayTel() {
+        return stayTel;
+    }
 
-	public String getStuNum() {
-		return stuNum;
-	}
+    public void setStayTel(String stayTel) {
+        this.stayTel = stayTel;
+    }
 
-	public void setStuNum(String stuNum) {
-		this.stuNum = stuNum;
-	}
+    public String getStuNum() {
+        return stuNum;
+    }
 
-	public String getSelfstudyNightflg() {
-		return selfstudyNightflg;
-	}
+    public void setStuNum(String stuNum) {
+        this.stuNum = stuNum;
+    }
 
-	public void setSelfstudyNightflg(String selfstudyNightflg) {
-		this.selfstudyNightflg = selfstudyNightflg;
-	}
+    public String getSelfstudyNightflg() {
+        return selfstudyNightflg;
+    }
 
-	public String getSelfstudyNoonflg() {
-		return selfstudyNoonflg;
-	}
+    public void setSelfstudyNightflg(String selfstudyNightflg) {
+        this.selfstudyNightflg = selfstudyNightflg;
+    }
 
-	public void setSelfstudyNoonflg(String selfstudyNoonflg) {
-		this.selfstudyNoonflg = selfstudyNoonflg;
-	}
+    public String getSelfstudyNoonflg() {
+        return selfstudyNoonflg;
+    }
 
-	public String getRemark() {
-		return remark;
-	}
+    public void setSelfstudyNoonflg(String selfstudyNoonflg) {
+        this.selfstudyNoonflg = selfstudyNoonflg;
+    }
 
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
+    public String getRemark() {
+        return remark;
+    }
 
-	public Date getCreatedatetime() {
-		return createdatetime;
-	}
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
-	public void setCreatedatetime(Date createdatetime) {
-		this.createdatetime = createdatetime;
-	}
+    public Date getCreatedatetime() {
+        return createdatetime;
+    }
 
-	public Date getModifydatetime() {
-		return modifydatetime;
-	}
+    public void setCreatedatetime(Date createdatetime) {
+        this.createdatetime = createdatetime;
+    }
 
-	public void setModifydatetime(Date modifydatetime) {
-		this.modifydatetime = modifydatetime;
-	}
+    public Date getModifydatetime() {
+        return modifydatetime;
+    }
+
+    public void setModifydatetime(Date modifydatetime) {
+        this.modifydatetime = modifydatetime;
+    }
 
 }

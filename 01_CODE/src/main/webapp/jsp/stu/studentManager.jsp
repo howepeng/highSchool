@@ -36,7 +36,7 @@
                             nowrap : false,
                             border : false,
                             idField : 'id',
-                            sortName : 'name',
+                            sortName : 'createdatetime',
                             sortOrder : 'desc',
                             checkOnSelect : false,
                             selectOnCheck : true,
@@ -58,6 +58,10 @@
                             }, {
                                 title : '学科',
                                 field : 'wlqfContent',
+                                width : 150
+                            }, {
+                                title : '学生类型',
+                                field : 'stuTypeContent',
                                 width : 150
                             },{
                                 title : '身份证号',
@@ -118,6 +122,12 @@
                                 handler : function() {
                                     stu_manager_datagrid.datagrid('unselectAll');
                                     stu_manager_datagrid.datagrid('uncheckAll');
+                                }
+                            },'-', {
+                                text : '导出所有学生',
+                                iconCls : 'icon-ok',
+                                handler : function() {
+                                    stu_manager_download_All_Info_Fun();
                                 }
                             }, '-' ],
                             onRowContextMenu : function(e, rowIndex, rowData) {
@@ -197,6 +207,17 @@
             });
         }
     }
+    function stu_manager_download_All_Info_Fun(){
+        var param = "name=";
+        var name = $('#stu_manager_searchForm').find("input[name^='name']").val();
+        param = param+name;
+        param = param +"&classType="+ $('#stu_manager_searchForm').find("input[name^='classType']").val();
+        param = param +"&createdatetimeStart="+ $('#stu_manager_searchForm').find("input[name^='createdatetimeStart']").val();
+        param = param +"&createdatetimeEnd="+ $('#stu_manager_searchForm').find("input[name^='createdatetimeEnd']").val();
+        param = param +"&fractionCountStart="+ $('#stu_manager_searchForm').find("input[name^='fractionCountStart']").val();
+        param = param +"&fractionCountEnd="+ $('#stu_manager_searchForm').find("input[name^='fractionCountEnd']").val();
+        window.open('${pageContext.request.contextPath}/downloadAllStudentInfoAction.action?'+param);
+    }
     function stu_manager_editFun() {
         var rows = stu_manager_datagrid.datagrid('getChecked');
         if (rows.length > 1) {
@@ -249,13 +270,15 @@
         var num = $("#stu_stuSignup_form2").find('#num');
         var num1 = $("#stu_stuSignup_form2").find('#num1');
         var num2 = $("#stu_stuSignup_form2").find('#num2');
+        if(num2.val().length==0){
+            num2.val("XXX");
+        }
         var num3 = $("#stu_stuSignup_form2").find('#num3');
         var num4 = $("#stu_stuSignup_form2").find('#num4');
-        num.val(num1.val()+num2.val()+num3.val()+num4.val());
-        if (num.val().length != 14) {
-            alert("考生号输入不正确！");
-            return;
+        if(num4.val().length==0){
+            num4.val("XXXX");
         }
+        num.val(num1.val()+num2.val()+num3.val()+num4.val());
         var name = $("#stu_stuSignup_form2").find('#name');
         if (name.val().length == 0) {
             alert("请输入姓名！");
@@ -264,21 +287,6 @@
         var idNum = $("#stu_stuSignup_form2").find('#idNum');
         if (idNum.val().length == 0) {
             alert("请输入身份证号！");
-            return;
-        }
-        var fractionCount = $("#stu_stuSignup_form2").find('#fractionCount');
-        if (fractionCount.val().length == 0) {
-            alert("请输入总分！");
-            return;
-        }
-        var tel = $("#stu_stuSignup_form2").find('#tel');
-        var fatherTel = $("#stu_stuSignup_form2").find('#fatherTel');
-        var motherTel = $("#stu_stuSignup_form2").find('#motherTel');
-        if (tel.val().length == 0
-                && fatherTel.val().length == 0
-                && motherTel.val().length == 0) {
-
-            alert("本人电话，父亲电话，母亲电话请至少输入一个！");
             return;
         }
         var classType = $("#stu_stuSignup_form2").find("input[name^='classType']");
@@ -291,6 +299,37 @@
             alert("请输入毕业学校！");
             return;
         }
+        var bankSignUpMoneyFlg = $("#stu_stuSignup_form2").find("input[name^='bankSignUpMoneyFlg']");
+        var lakalaSignUpMoneyFlg = $("#stu_stuSignup_form2").find("input[name^='lakalaSignUpMoneyFlg']");
+        var aliSignUpMoneyFlg = $("#stu_stuSignup_form2").find("input[name^='aliSignUpMoneyFlg']");
+        var checkedCount = 0;
+        if (bankSignUpMoneyFlg.prop("checked") == true){
+            checkedCount = checkedCount+1;
+        }
+        if (lakalaSignUpMoneyFlg.prop("checked") == true){
+            checkedCount = checkedCount+1;
+        }
+        if (aliSignUpMoneyFlg.prop("checked") == true){
+            checkedCount = checkedCount+1;
+        }
+        if(checkedCount > 1) {
+            alert("银行交付，拉卡拉pos机交付，支付宝交付 只能选一个");
+            return;
+        }
+        $('<div id="submitingManager" style="5px;"/>').dialog({
+            href : 'jsp/comn/onload.jsp',
+            width : 200,
+            height :100,
+            modal : true,
+            title : '提交中',
+            closed: false,
+            closable: false,
+            onLoad: function() {
+                } ,
+            onClose : function() {
+                $(this).dialog('destroy');
+            }
+        });
         $('#stu_stuSignup_form2').form('submit', {
             url : '${pageContext.request.contextPath}/stuSignupAction!signup.action',
             success : function(d) {
@@ -300,8 +339,9 @@
                     stu_manager_datagrid.datagrid('unselectAll');
                     stu_manager_datagrid.datagrid('uncheckAll');
                     $('#stu_stuSignup_form2').form('clear');
-                    $('#stuSignupEdit_Open').dialog('destroy');
                 }
+                $('#submitingManager').dialog('destroy');
+                $('#stuSignupEdit_Open').dialog('destroy');
                 $.messager.show({
                     msg : json.msg,
                     title : '提示'
@@ -353,11 +393,14 @@
     }
     function stu_stuSignup_cleanFun() {
         $('#stu_stuSignup_form2').form('clear');
+        $("#stu_stuSignup_form2").find("input[name='wlqf'][value='91']").prop("checked",true);
+        $("#stu_stuSignup_form2").find("input[name='studentType'][value='0']").prop("checked",true);
+        $("#stu_stuSignup_form2").find("input[name='sex'][value='0']").prop("checked",true);
+        $("#stu_stuSignup_form2").find("input[name='stayFlg'][value='0']").prop("checked",true);
         photoImgHide();
     }
     function getNum(){
-        //var htmlobj = $.ajax({url:"${pageContext.request.contextPath}/stuSignupAction!getNum.action",async:false});
-        $.post("${pageContext.request.contextPath}/stuSignupAction!getNum.action",{name:"userName",test:"test123"},callback);
+        $.post("${pageContext.request.contextPath}/stuSignupAction!getNum.action",{},callback);
         var num3 = $("#stu_stuSignup_form2").find('#num3');
         var wlqf = $("#stu_stuSignup_form2").find('#wlqf');
         num3.val(wlqf.val());
@@ -382,6 +425,20 @@
     }
     function ajaxFileUpload()
     {
+        $('<div id="ajaxFileUploadManager" style="5px;"/>').dialog({
+            href : 'jsp/comn/onload.jsp',
+            width : 200,
+            height :100,
+            modal : true,
+            title : '提交中',
+            closed: false,
+            closable: false,
+            onLoad: function() {
+                } ,
+            onClose : function() {
+                $(this).dialog('destroy');
+            }
+        });
         $('#stu_stuSignup_form2')
         .form(
                 'submit',
@@ -394,6 +451,7 @@
                             $("#stu_stuSignup_form2").find('#photoId').val(obj.returnObject[0]);
                             photoImgShow();
                         }
+                        $('#ajaxFileUploadManager').dialog('destroy');
                         $.messager.show({
                             title : '提示',
                             msg : obj.msg

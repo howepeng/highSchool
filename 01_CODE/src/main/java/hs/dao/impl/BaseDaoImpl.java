@@ -65,6 +65,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return (Long) q.uniqueResult();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T get(String hql) {
         Query q = this.getCurrentSession().createQuery(hql);
@@ -75,6 +76,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T get(String hql, Map<String, Object> params) {
         Query q = this.getCurrentSession().createQuery(hql);
@@ -90,11 +92,13 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T getById(Class<T> c, Serializable id) {
         return (T) this.getCurrentSession().get(c, id);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> find(String hql) {
         Query q = this.getCurrentSession().createQuery(hql);
@@ -105,6 +109,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> find(String hql, int page, int rows) {
         Query q = this.getCurrentSession().createQuery(hql).setFirstResult((page - 1) * rows).setMaxResults(rows);
@@ -115,6 +120,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> find(String hql, Map<String, Object> params) {
         Query q = this.getCurrentSession().createQuery(hql);
@@ -130,6 +136,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> find(String hql, Map<String, Object> params, int page, int rows) {
         Query q = this.getCurrentSession().createQuery(hql).setFirstResult((page - 1) * rows).setMaxResults(rows);
@@ -145,6 +152,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> findSQL(String hql) {
         Query q = this.getCurrentSession().createSQLQuery(hql);
@@ -155,6 +163,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> findSQL(String hql, int page, int rows) {
         Query q = this.getCurrentSession().createSQLQuery(hql).setFirstResult((page - 1) * rows).setMaxResults(rows);
@@ -165,6 +174,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> findSQL(String hql, Map<String, Object> params) {
         Query q = this.getCurrentSession().createSQLQuery(hql);
@@ -180,6 +190,7 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> findSQL(String hql, Map<String, Object> params, int page, int rows) {
         Query q = this.getCurrentSession().createSQLQuery(hql).setFirstResult((page - 1) * rows).setMaxResults(rows);
@@ -195,18 +206,21 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> findByE(T t, String type) {
         List<T> results = (ArrayList<T>) this.getCurrentSession().createCriteria(type).add(Example.create(t)).list();
         return results;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public java.util.List<T> findByE(T t, String type, int page, int rows) {
         List<T> results = (ArrayList<T>) this.getCurrentSession().createCriteria(type).setFirstResult((page - 1) * rows).setMaxResults(rows).add(Example.create(t)).list();
         return results;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public java.util.List<T> findByE(T t, String type, int page, int rows, String sortName, String sortOrder) {
         if (sortOrder == "desc") {

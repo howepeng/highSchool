@@ -16,7 +16,7 @@
                             nowrap : false,
                             border : false,
                             idField : 'id',
-                            sortName : 'name',
+                            sortName : 'createdatetime',
                             sortOrder : 'desc',
                             checkOnSelect : false,
                             selectOnCheck : true,
@@ -92,7 +92,9 @@
             $('#stu_stuArrears_editForm').form('load', rows[0]);
             $('#stu_stuArrears_editDialog').dialog('open');
             $('#stu_stuArrears_editForm').find("input[name^='cashPayAgainFee']").val("0");
-            $('#stu_stuArrears_editForm').find("input[name^='transferPayAgainFee']").val("0");
+            $('#stu_stuArrears_editForm').find("input[name^='bankPayAgainFee']").val("0");
+            $('#stu_stuArrears_editForm').find("input[name^='lakalaPayAgainFee']").val("0");
+            $('#stu_stuArrears_editForm').find("input[name^='aliPayAgainFee']").val("0");
         } else {
             $.messager.show({
                 title : '提示',
@@ -102,8 +104,10 @@
     }
     function stu_stuArrears_edit() {
          var cashPayAgainFee = $('#stu_stuArrears_editForm').find("input[name^='cashPayAgainFee']").val();
-         var transferPayAgainFee = $('#stu_stuArrears_editForm').find("input[name^='transferPayAgainFee']").val();
-         if(cashPayAgainFee == "" && transferPayAgainFee == "") {
+         var bankPayAgainFee = $('#stu_stuArrears_editForm').find("input[name^='bankPayAgainFee']").val();
+         var lakalaPayAgainFee = $('#stu_stuArrears_editForm').find("input[name^='lakalaPayAgainFee']").val();
+         var aliPayAgainFee = $('#stu_stuArrears_editForm').find("input[name^='aliPayAgainFee']").val();
+         if(cashPayAgainFee == "" && bankPayAgainFee == "" && lakalaPayAgainFee == ""&& aliPayAgainFee == "") {
              alert("请输入补交金额");
              return;
          }
@@ -112,12 +116,21 @@
              alert("现金补交金额请输入数字");
              return;
          }
-         if(transferPayAgainFee != "" && !$.isNumeric(transferPayAgainFee)) {
-             alert("转账补交金额请输入数字");
+         if(bankPayAgainFee != "" && !$.isNumeric(bankPayAgainFee)) {
+             alert("银行转账补交金额请输入数字");
              return;
          }
-         if (cashPayAgainFee + transferPayAgainFee == 0){
-             alert("请输入退款金额");
+         if(lakalaPayAgainFee != "" && !$.isNumeric(lakalaPayAgainFee)) {
+             alert("拉卡拉pos机补交金额请输入数字");
+             return;
+         }
+         if(aliPayAgainFee != "" && !$.isNumeric(aliPayAgainFee)) {
+             alert("支付宝补交金额请输入数字");
+             return;
+         }
+
+         if (cashPayAgainFee + bankPayAgainFee + lakalaPayAgainFee + aliPayAgainFee == 0){
+             alert("请输入补交金额");
              return;
          }
         $('#stu_stuArrears_editForm').form('submit', {
@@ -213,8 +226,16 @@
                 <td><input id="refundFee" name="cashPayAgainFee" style="width:180px;" value="0"/></td>
             </tr>
             <tr>
-                <th style="width: 120px;">转账补交</th>
-                <td><input id="refundFee" name="transferPayAgainFee" style="width:180px;" value="0"/></td>
+                <th style="width: 120px;">银行转账补交</th>
+                <td><input id="refundFee" name="bankPayAgainFee" style="width:180px;" value="0"/></td>
+            </tr>
+            <tr>
+                <th style="width: 120px;">拉卡拉pos机补交</th>
+                <td><input id="refundFee" name="lakalaPayAgainFee" style="width:180px;" value="0"/></td>
+            </tr>
+            <tr>
+                <th style="width: 120px;">支付宝转账补交</th>
+                <td><input id="refundFee" name="aliPayAgainFee" style="width:180px;" value="0"/></td>
             </tr>
         </table>
     </form>

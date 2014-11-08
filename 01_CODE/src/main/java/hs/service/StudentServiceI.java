@@ -1,9 +1,13 @@
 package hs.service;
 
+import java.util.List;
+
 import hs.model.TbStudent;
+import hs.model.TbUser;
 import hs.pageModel.DataGrid;
 import hs.pageModel.SessionInfo;
 import hs.pageModel.Student;
+import hs.pageModel.StudentInfoHistory;
 
 public interface StudentServiceI {
 
@@ -17,11 +21,13 @@ public interface StudentServiceI {
 
     public DataGrid datagridStudent(Student student);
 
+    public DataGrid datagridStudentInfoHistory(StudentInfoHistory studentInfoHistory);
+
     public TbStudent fileDownload(String attachid);
 
     public TbStudent getInfoFileDownload(String attachid);
 
-    public String deleteStudent(String attachid);
+    public String deleteStudent(String attachid, TbUser tbUser);
 
     public TbStudent idFileDownload(String attachid);
 
@@ -31,4 +37,5 @@ public interface StudentServiceI {
 
     public void refunPay(Student student, SessionInfo sessionInfo);
 
+    public List<TbStudent> getStudentInfo(Student student);
 }

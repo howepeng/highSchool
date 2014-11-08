@@ -44,7 +44,6 @@ public class StuSignupAction extends BaseAction implements ModelDriven<Student> 
                     .getRequest().getSession().getAttribute("sessionInfo");
             String id = stuSignupService.signup(student, sessionInfo);
             student.setId(id);
-            stuSignupService.upload(student);
             json.setReturnObject(id);
             json.setSuccess(true);
             json.setMsg(text);

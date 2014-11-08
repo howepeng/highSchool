@@ -16,6 +16,7 @@ public class Student {
     private String nation;
     private String signedFlg = "0";
     private String wlqf;
+    private String studentType;
     private String photo;
     private String fatherName;
     private String fatherTel;
@@ -65,16 +66,12 @@ public class Student {
     private String sort;
     private String order;
     private String ids;// 删除用 id字符串（用逗号分隔）
-//    private File filedata;// 上传的文件
-//    private String filedataFileName;// 上传文件名
-//    private String filedataContentType;// 上传文件类型
-//    private String filename;
-//    private String upload;
     private File video;// 上传的文件
     private String videoContentType; // 封装上传文件类型的属性
     private String videoFileName; // 封装上传文件名的属性
 
     private String wlqfContent;
+    private String stuTypeContent;
     private String sexContent;
     private String oldFileName;
 
@@ -101,7 +98,9 @@ public class Student {
     private String oldReportFileName;
 
     private BigDecimal cashFee = new BigDecimal(0);
-    private BigDecimal transferFee = new BigDecimal(0);
+    private BigDecimal bankFee = new BigDecimal(0);
+    private BigDecimal lakalaFee = new BigDecimal(0);
+    private BigDecimal aliFee = new BigDecimal(0);
     private BigDecimal preferentialFee = new BigDecimal(0);
     private BigDecimal payAgainFee = new BigDecimal(0);
     private BigDecimal refundFee = new BigDecimal(0);
@@ -116,14 +115,27 @@ public class Student {
     private BigDecimal stu_stuPayment_preferentialHd = new BigDecimal(0);
     private BigDecimal stu_stuPayment_countFee = new BigDecimal(0);
     private String classTypeName;
-    private String transferSignUpMoneyFlg = "0";
-
+    private String bankSignUpMoneyFlg = "0";
+    private String lakalaSignUpMoneyFlg = "0";
+    private String aliSignUpMoneyFlg = "0";
+    private String signedContent;
+    private String stayContent;
+    private String selfstudyNightContent;
+    private String selfstudyNoonContent;
+    private String signUpMoneyContent;
+    private String secureContent;
     public BigDecimal cashRefundFee = new BigDecimal(0);
-    public BigDecimal transferRefundFee = new BigDecimal(0);
+    public BigDecimal bankRefundFee = new BigDecimal(0);
+    public BigDecimal lakalaRefundFee = new BigDecimal(0);
+    public BigDecimal aliRefundFee = new BigDecimal(0);
     public BigDecimal cashPayAgainFee = new BigDecimal(0);
-    public BigDecimal transferPayAgainFee = new BigDecimal(0);
+    public BigDecimal bankPayAgainFee = new BigDecimal(0);
+    public BigDecimal lakalaPayAgainFee = new BigDecimal(0);
+    public BigDecimal aliPayAgainFee = new BigDecimal(0);
     public String fractionCountStart;
     public String fractionCountEnd;
+    public String index;
+
     public String getId() {
         return id;
     }
@@ -836,12 +848,28 @@ public class Student {
         this.cashFee = cashFee;
     }
 
-    public BigDecimal getTransferFee() {
-        return transferFee;
+    public BigDecimal getBankFee() {
+        return bankFee;
     }
 
-    public void setTransferFee(BigDecimal transferFee) {
-        this.transferFee = transferFee;
+    public void setBankFee(BigDecimal bankFee) {
+        this.bankFee = bankFee;
+    }
+
+    public BigDecimal getLakalaFee() {
+        return lakalaFee;
+    }
+
+    public void setLakalaFee(BigDecimal lakalaFee) {
+        this.lakalaFee = lakalaFee;
+    }
+
+    public BigDecimal getAliFee() {
+        return aliFee;
+    }
+
+    public void setAliFee(BigDecimal aliFee) {
+        this.aliFee = aliFee;
     }
 
     public BigDecimal getPreferentialFee() {
@@ -949,11 +977,91 @@ public class Student {
         this.classTypeName = classTypeName;
     }
 
-    public String getTransferSignUpMoneyFlg() {
-        return transferSignUpMoneyFlg;
+    public String getBankSignUpMoneyFlg() {
+        return bankSignUpMoneyFlg;
     }
 
-    public void setTransferSignUpMoneyFlg(String transferSignUpMoneyFlg) {
-        this.transferSignUpMoneyFlg = transferSignUpMoneyFlg;
+    public void setBankSignUpMoneyFlg(String bankSignUpMoneyFlg) {
+        this.bankSignUpMoneyFlg = bankSignUpMoneyFlg;
     }
+
+    public String getLakalaSignUpMoneyFlg() {
+        return lakalaSignUpMoneyFlg;
+    }
+
+    public void setLakalaSignUpMoneyFlg(String lakalaSignUpMoneyFlg) {
+        this.lakalaSignUpMoneyFlg = lakalaSignUpMoneyFlg;
+    }
+
+    public String getAliSignUpMoneyFlg() {
+        return aliSignUpMoneyFlg;
+    }
+
+    public void setAliSignUpMoneyFlg(String aliSignUpMoneyFlg) {
+        this.aliSignUpMoneyFlg = aliSignUpMoneyFlg;
+    }
+
+    public String getStudentType() {
+        return studentType;
+    }
+
+    public void setStudentType(String studentType) {
+        this.studentType = studentType;
+    }
+
+    public String getStuTypeContent() {
+        return stuTypeContent;
+    }
+
+    public void setStuTypeContent(String stuTypeContent) {
+        this.stuTypeContent = stuTypeContent;
+    }
+
+    public String getSignedContent() {
+        return signedContent;
+    }
+
+    public void setSignedContent(String signedContent) {
+        this.signedContent = signedContent;
+    }
+
+    public String getStayContent() {
+        return stayContent;
+    }
+
+    public void setStayContent(String stayContent) {
+        this.stayContent = stayContent;
+    }
+
+    public String getSelfstudyNightContent() {
+        return selfstudyNightContent;
+    }
+
+    public void setSelfstudyNightContent(String selfstudyNightContent) {
+        this.selfstudyNightContent = selfstudyNightContent;
+    }
+
+	public String getSelfstudyNoonContent() {
+		return selfstudyNoonContent;
+	}
+
+	public void setSelfstudyNoonContent(String selfstudyNoonContent) {
+		this.selfstudyNoonContent = selfstudyNoonContent;
+	}
+
+	public String getSignUpMoneyContent() {
+		return signUpMoneyContent;
+	}
+
+	public void setSignUpMoneyContent(String signUpMoneyContent) {
+		this.signUpMoneyContent = signUpMoneyContent;
+	}
+
+	public String getSecureContent() {
+		return secureContent;
+	}
+
+	public void setSecureContent(String secureContent) {
+		this.secureContent = secureContent;
+	}
 }

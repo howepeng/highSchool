@@ -12,6 +12,10 @@ import javax.persistence.Entity;
 @Entity
 public class Finances implements java.io.Serializable {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     // Fields
     private List<Finance> finance;
     private String num;
@@ -22,6 +26,8 @@ public class Finances implements java.io.Serializable {
     private String name;
     private String idNum;
     private String studentId;
+    private String cancelflg;
+    private String crashHistoryType;
 
     private BigDecimal studyFee;
     private BigDecimal stayFee;
@@ -31,7 +37,9 @@ public class Finances implements java.io.Serializable {
     private BigDecimal safetyFee;
     private BigDecimal waterFee;
     private BigDecimal cashFee;
-    private BigDecimal transferFee;
+    private BigDecimal bankFee;
+    private BigDecimal lakalaFee;
+    private BigDecimal aliFee;
     private BigDecimal payAgainFee;
     private BigDecimal countPayFee;
     private BigDecimal preferentialFee;
@@ -197,11 +205,23 @@ public class Finances implements java.io.Serializable {
     public void setCashFee(BigDecimal cashFee) {
         this.cashFee = cashFee;
     }
-    public BigDecimal getTransferFee() {
-        return transferFee;
+    public BigDecimal getBankFee() {
+        return bankFee;
     }
-    public void setTransferFee(BigDecimal transferFee) {
-        this.transferFee = transferFee;
+    public void setBankFee(BigDecimal bankFee) {
+        this.bankFee = bankFee;
+    }
+    public BigDecimal getLakalaFee() {
+        return lakalaFee;
+    }
+    public void setLakalaFee(BigDecimal lakalaFee) {
+        this.lakalaFee = lakalaFee;
+    }
+    public BigDecimal getAliFee() {
+        return aliFee;
+    }
+    public void setAliFee(BigDecimal aliFee) {
+        this.aliFee = aliFee;
     }
     public BigDecimal getPayAgainFee() {
         return payAgainFee;
@@ -232,6 +252,18 @@ public class Finances implements java.io.Serializable {
     }
     public void setNum(String num) {
         this.num = num;
+    }
+    public String getCancelflg() {
+        return cancelflg;
+    }
+    public void setCancelflg(String cancelflg) {
+        this.cancelflg = cancelflg;
+    }
+    public String getCrashHistoryType() {
+        return crashHistoryType;
+    }
+    public void setCrashHistoryType(String crashHistoryType) {
+        this.crashHistoryType = crashHistoryType;
     }
 
 

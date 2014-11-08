@@ -1,0 +1,16 @@
+StudyFee
+StayFee
+SelfFee
+SignFee
+
+ScoreFee
+SafetyFee
+WaterFee
+PreferentialFee
+ArrearFee
+CountFee
+
+Arrearflg
+SignUpMoneyFlg
+
+RefundFee

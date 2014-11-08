@@ -91,16 +91,21 @@
                     readonly="readonly" /></td>
             </tr>
             <tr>
-                <th style="width: 120px;"></th>
-                <td></td>
                 <th style="width: 120px;">现金</th>
                 <td><input id="cashFee" name="cashFee" style="width: 180px;"/></td>
+                <th style="width: 120px;">银行转账</th>
+                <td><input id="bankFee" name="bankFee" style="width: 180px;"/></td>
+            </tr>
+            <tr>
+                <th style="width: 120px;">拉卡拉pos机转账</th>
+                <td><input id="lakalaFee" name="lakalaFee" style="width: 180px;"/></td>
+                <th style="width: 120px;">支付宝转账</th>
+                <td><input id="aliFee" name="aliFee" style="width: 180px;"/></td>
             </tr>
             <tr>
                 <th style="width: 120px;"></th>
                 <td></td>
-                <th style="width: 120px;">转账</th>
-                <td><input id="transferFee" name="transferFee" style="width: 180px;"/></td>
+
             </tr>
             <tr>
                 <th style="width: 120px;"></th>

@@ -1,0 +1,109 @@
+--缴费和报名费
+update tb_student ts 
+INNER JOIN (
+SELECT ss.id, 
+sum(tf.study_fee) as StudyFee,
+sum(tf.stay_fee) as StayFee,
+sum(tf.self_fee) as SelfFee,
+sum(tf.sign_fee) as SignFee,
+sum(tf.score_fee) as ScoreFee,
+sum(tf.safety_fee) as SafetyFee,
+sum(tf.water_fee) as WaterFee,
+sum(tf.preferentialFee) as PreferentialFee,
+sum(tf.arrearFee) as ArrearFee,
+sum(tf.count_pay_fee) as CountFee
+from 
+tb_finance tf,
+tb_student ss
+where  
+tf.studentId = ss.id
+and (tf.crashHistoryType = '缴费' or tf.crashHistoryType = '报名费' )
+and tf.cancel_flg = 0
+and ss.count_fee <= ss.sign_fee
+group by ss.id
+ORDER BY  ss.id,tf.createdatetime desc
+) t 
+on t.id = ts.id
+set 
+ts.study_fee = t.StudyFee,
+ts.stay_fee = t.StayFee,
+ts.self_fee = t.SelfFee,
+ts.sign_fee = t.SignFee,
+ts.score_fee = t.ScoreFee,
+ts.safety_fee = t.SafetyFee,
+ts.water_fee = t.WaterFee,
+ts.preferentialFee = t.preferentialFee,
+ts.arrearFee = t.ArrearFee,
+ts.count_fee = t.CountFee;
+
+--补交费 合计
+update tb_student ts 
+INNER JOIN (
+SELECT ss.id,
+sum(tf.count_pay_fee) as CountFee
+from 
+tb_finance tf,
+tb_student ss
+where  
+tf.studentId = ss.id
+and (tf.crashHistoryType = '补交费')
+and tf.cancel_flg = 0
+group by ss.id
+ORDER BY  ss.id,tf.createdatetime desc
+) t 
+on t.id = ts.id
+set 
+ts.count_fee = ts.count_fee+t.CountFee;
+
+--补交费欠费
+update tb_student ts 
+INNER JOIN (
+SELECT ss.id, 
+tf.arrearFee
+from 
+tb_finance tf,
+tb_student ss
+where  
+tf.studentId = ss.id
+and (tf.crashHistoryType = '补交费')
+and tf.cancel_flg = 0
+ORDER BY  ss.id,tf.createdatetime desc
+limit 1
+) t 
+on t.id = ts.id
+set 
+ts.arrearFee = t.arrearFee;
+
+--补交费退款
+update tb_student ts 
+INNER JOIN (
+SELECT ss.id, 
+sum(tf.refundFee) as RefundFee,
+sum(tf.count_pay_fee) as CountFee
+from 
+tb_finance tf,
+tb_student ss
+where  
+tf.studentId = ss.id
+and (tf.crashHistoryType = '退款')
+and tf.cancel_flg = 0
+group by ss.id
+ORDER BY  ss.id,tf.createdatetime desc
+) t 
+on t.id = ts.id
+set 
+ts.RefundFee = ts.RefundFee,
+ts.count_fee = ts.count_fee+t.CountFee;
+--欠款flag
+update tb_student ts set ts.Arrearflg = 1
+where ts.arrearFee > 0;
+update tb_student ts set ts.Arrearflg = 0
+where ts.arrearFee = 0;
+--报名费flag
+update tb_student ts set ts.signup_money_flg = 1
+where ts.sign_fee > 0;
+update tb_student ts set ts.signup_money_flg = 0
+where ts.sign_fee = 0;
+
+
+
