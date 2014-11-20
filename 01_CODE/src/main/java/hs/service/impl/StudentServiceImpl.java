@@ -377,6 +377,33 @@ public class StudentServiceImpl implements StudentServiceI {
             }
             hql += " t.fractionCount <= "+student.fractionCountEnd;
         }
+        if (student.getStayType() != null && !student.getStayType().trim().equals("")) {
+            if (student.getName() != null && !student.getName().trim().equals("") ||
+                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) ||
+                    (student.getClassType() != null && !student.getClassType().trim().equals("")) ||
+                    (student.fractionCountStart != null && !student.fractionCountStart.trim().equals("")) ||
+                    (student.fractionCountEnd != null && !student.fractionCountEnd.trim().equals(""))) {
+                hql += " AND";
+            }else {
+                hql += " WHERE";
+            }
+            hql += " t.stayFlg LIKE :stayFlg";
+            params.put("stayFlg", "%%" + student.getStayType() + "%%");
+        }
+        if (student.getSecureType() != null && !student.getSecureType().trim().equals("")) {
+            if (student.getName() != null && !student.getName().trim().equals("") ||
+                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) ||
+                    (student.getClassType() != null && !student.getClassType().trim().equals("")) ||
+                    (student.fractionCountStart != null && !student.fractionCountStart.trim().equals("")) ||
+                    (student.fractionCountEnd != null && !student.fractionCountEnd.trim().equals("")) ||
+                    (student.getStayType() != null && !student.getStayType().trim().equals(""))) {
+                hql += " AND";
+            }else {
+                hql += " WHERE";
+            }
+            hql += " t.secureFlg LIKE :secureFlg";
+            params.put("secureFlg", "%%" + student.getSecureType() + "%%");
+        }
         if (student.getSort() != null) {
             hql += " ORDER BY " + student.getSort() + " " + student.getOrder();
         }

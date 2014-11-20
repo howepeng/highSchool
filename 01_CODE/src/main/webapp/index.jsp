@@ -16,10 +16,11 @@
 <link rel="stylesheet" href="jslib/jquery-easyui-1.3.4/themes/default/easyui.css" type="text/css"></link>
 <link rel="stylesheet" href="jslib/jquery-easyui-1.3.4/themes/icon.css" type="text/css"></link>
 <link rel="stylesheet" href="css/hsCss.css" type="text/css"></link>
+
 </head>
 <body class="easyui-layout">
-	<jsp:include page="jsp/comn/login.jsp"></jsp:include>
-	<jsp:include page="jsp/comn/register.jsp"></jsp:include>
+    <jsp:include page="jsp/comn/login.jsp"></jsp:include>
+    <jsp:include page="jsp/comn/register.jsp"></jsp:include>
 
 </body>
 </html>

@@ -12,9 +12,14 @@
 <link rel="stylesheet" href="jslib/jquery-easyui-1.3.4/themes/default/easyui.css" type="text/css"></link>
 <link rel="stylesheet" href="jslib/jquery-easyui-1.3.4/themes/icon.css" type="text/css"></link>
 <link rel="stylesheet" href="jslib/uploadify/uploadify.css" type="text/css"></link>
+<link rel='stylesheet' href='jslib/fullcalendar-2.1.1/fullcalendar.css'  />
+<link rel='stylesheet' href='jslib/fullcalendar-2.1.1/fullcalendar.print.css'  media='print' />
 <script type="text/javascript" src="jslib/jquery-easyui-1.3.4/jquery.min.js"></script>
 <script type="text/javascript" src="jslib/jquery-easyui-1.3.4/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="jslib/jquery-easyui-1.3.4/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src='jslib/fullcalendar-2.1.1/moment.min.js'></script>
+<script type="text/javascript" src='jslib/fullcalendar-2.1.1/fullcalendar.min.js'></script>
+<script type="text/javascript" src='jslib/fullcalendar-2.1.1/lang-all.js'></script>
 <script type="text/javascript" src="jslib/hsUtil.js"></script>
 <script type="text/javascript" src="jslib/My97DatePicker/WdatePicker.js"></script>
 <script type="text/javascript" src="jslib/uploadify/jquery.uploadify.min.js"></script>

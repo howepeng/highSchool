@@ -49,32 +49,54 @@
                             }, {
                                 title : '姓名',
                                 field : 'name',
-                                width : 150
+                                width : 100
                             } ] ],
                             columns : [ [ {
                                 title : '性别',
                                 field : 'sexContent',
-                                width : 150
+                                width : 100
                             }, {
                                 title : '学科',
                                 field : 'wlqfContent',
-                                width : 150
+                                width : 100
                             }, {
                                 title : '学生类型',
                                 field : 'stuTypeContent',
-                                width : 150
+                                width : 100
                             },{
                                 title : '身份证号',
                                 field : 'idNum',
-                                width : 150
+                                width : 200
                             }, {
                                 title : '班级类型',
                                 field : 'classTypeName',
-                                width : 200
+                                width : 150
                             },{
                                 title : '高考总分',
                                 field : 'fractionCount',
-                                width : 150
+                                width : 100
+                            },{
+                                title : '是否住宿',
+                                field : 'stayFlg',
+                                width : 100,
+                                formatter : function(value,row,index){
+                                    if (value == 1) {
+                                        return '住宿';
+                                    } else {
+                                        return '走读';
+                                    }
+                                }
+                            },{
+                                title : '是否缴纳保险',
+                                field : 'secureFlg',
+                                width : 150,
+                                formatter : function(value,row,index){
+                                    if (value == 1) {
+                                        return '已缴纳';
+                                    } else {
+                                        return '未缴纳';
+                                    }
+                                }
                             } , {
                                 title : '报名时间',
                                 field : 'createdatetime',
@@ -481,7 +503,7 @@
     }
 </script>
 <div class="easyui-layout" data-options="fit:true">
-<div data-options="region:'north',border:false,title:'过滤条件'" style="height: 120px;overflow: hidden;" align="left">
+<div data-options="region:'north',border:false,title:'过滤条件'" style="height: 150px;overflow: hidden;" align="left">
         <form id="stu_manager_searchForm">
             <table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
                 <tr>
@@ -506,6 +528,24 @@
                     <td>
                         <input name="fractionCountStart" style="width:75px;" /> 至
                         <input name="fractionCountEnd" style="width:75px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>是否住宿</th>
+                    <td>
+                        <select name="stayType" class="easyui-combobox" style="width:180px;">
+                            <option value=" "></option>
+                            <option value="1">住宿</option>
+                            <option value="0">走读</option>
+                        </select>
+                    </td>
+                    <th>保险</th>
+                    <td>
+                        <select name="secureType" class="easyui-combobox" style="width:180px;">
+                            <option value=" "></option>
+                            <option value="1">已缴纳</option>
+                            <option value="0">未缴纳</option>
+                        </select>
                     </td>
                 </tr>
                 <tr>

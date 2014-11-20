@@ -245,12 +245,15 @@
         }
     }
     function comn_menuManager_edit() {
+        //var node = treegrid.treegrid('getSelected');
+        //alert("test7   "+ node.id);
         $('#comn_menuManager_editForm').form('submit', {
             url : '${pageContext.request.contextPath}/menuAction!edit.action',
             success : function(d) {
                 var json = $.parseJSON(d);
                 if (json.success) {
                     treegrid.treegrid('reload');
+                    //treegrid.treegrid('expandTo', node.id);
                     $('#comn_menuManager_editDialog').dialog('close');
                 }
                 $.messager.show({

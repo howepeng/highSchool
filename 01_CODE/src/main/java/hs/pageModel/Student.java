@@ -135,6 +135,8 @@ public class Student {
     public String fractionCountStart;
     public String fractionCountEnd;
     public String index;
+    public String stayType;
+    public String secureType;
 
     public String getId() {
         return id;
@@ -1041,27 +1043,43 @@ public class Student {
         this.selfstudyNightContent = selfstudyNightContent;
     }
 
-	public String getSelfstudyNoonContent() {
-		return selfstudyNoonContent;
-	}
+    public String getSelfstudyNoonContent() {
+        return selfstudyNoonContent;
+    }
 
-	public void setSelfstudyNoonContent(String selfstudyNoonContent) {
-		this.selfstudyNoonContent = selfstudyNoonContent;
-	}
+    public void setSelfstudyNoonContent(String selfstudyNoonContent) {
+        this.selfstudyNoonContent = selfstudyNoonContent;
+    }
 
-	public String getSignUpMoneyContent() {
-		return signUpMoneyContent;
-	}
+    public String getSignUpMoneyContent() {
+        return signUpMoneyContent;
+    }
 
-	public void setSignUpMoneyContent(String signUpMoneyContent) {
-		this.signUpMoneyContent = signUpMoneyContent;
-	}
+    public void setSignUpMoneyContent(String signUpMoneyContent) {
+        this.signUpMoneyContent = signUpMoneyContent;
+    }
 
-	public String getSecureContent() {
-		return secureContent;
-	}
+    public String getSecureContent() {
+        return secureContent;
+    }
 
-	public void setSecureContent(String secureContent) {
-		this.secureContent = secureContent;
-	}
+    public void setSecureContent(String secureContent) {
+        this.secureContent = secureContent;
+    }
+
+    public String getStayType() {
+        return stayType;
+    }
+
+    public void setStayType(String stayType) {
+        this.stayType = stayType;
+    }
+
+    public String getSecureType() {
+        return secureType;
+    }
+
+    public void setSecureType(String secureType) {
+        this.secureType = secureType;
+    }
 }
