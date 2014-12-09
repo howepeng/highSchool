@@ -102,6 +102,10 @@
         stu_info_history_datagrid.datagrid('load',
                 serializeObject($('#stu_info_history_searchForm')));
     }
+    function stu_info_history_cleanFun() {
+        $('#stu_info_history_searchForm input').val('');
+        stu_info_history_datagrid.datagrid('load', {});
+    }
 </script>
 <div class="easyui-layout" data-options="fit:true">
 <div data-options="region:'north',border:false,title:'过滤条件'" style="height: 120px;overflow: hidden;" align="left">
@@ -135,7 +139,7 @@
                     <td colspan="4" align="center">
                         <a href="javascript:void(0);" class="easyui-linkbutton" onclick="stu_info_history_searchForm();">过滤</a>
                         &nbsp;&nbsp;&nbsp;
-                        <a href="javascript:void(0);" class="easyui-linkbutton" onclick="stu_manager_cleanFun();">取消</a>
+                        <a href="javascript:void(0);" class="easyui-linkbutton" onclick="stu_info_history_cleanFun();">取消</a>
                     </td>
                 </tr>
             </table>

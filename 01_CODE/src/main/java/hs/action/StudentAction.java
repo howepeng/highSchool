@@ -38,6 +38,10 @@ public class StudentAction extends BaseAction implements ModelDriven<Student> {
         this.studentService = studentService;
     }
 
+    public void combox() {
+        super.writeJson(studentService.combox(student));
+    }
+
     /**
      * 缴费
      */

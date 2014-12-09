@@ -187,7 +187,11 @@
                     $('#comn_logTypeManager_editForm').form('load', {
                         id : rows[0].id,
                         name : rows[0].name,
-                        roleIds : getList(rows[0].roleIds)
+                        typeId : rows[0].typeId,
+                        modeId : rows[0].modeId,
+                        count : rows[0].count,
+                        score : rows[0].score,
+                        remark : rows[0].remark
                     });
                     } ,
                 onClose : function() {

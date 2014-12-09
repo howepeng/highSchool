@@ -30,6 +30,10 @@ public class ClassTimeAction extends BaseAction implements ModelDriven<ClassTime
         this.classTimeService = classTimeService;
     }
 
+    public void combox() {
+        super.writeJson(classTimeService.combox());
+    }
+
     public void datagrid(){
         super.writeJson(classTimeService.datagrid(classTime));
     }

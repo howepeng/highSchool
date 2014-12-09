@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context>
+    <Resource
+         name="jdbc/DataSource"
+         type="javax.sql.DataSource"
+         driverClassName="com.mysql.jdbc.Driver"
+         username="root"
+         password="root"
+         maxIdle="4"
+         maxWait="5000"
+         url="jdbc:mysql://localhost:3306/highschool"
+         maxActive="10">
+        <min-pool-size>0</min-pool-size>
+        <max-pool-size>20</max-pool-size>
+        <blocking-timeout-millis>5000</blocking-timeout-millis>
+        <idle-timeout-minutes>3</idle-timeout-minutes>
+        <prepared-statement-cache-size>50</prepared-statement-cache-size>
+    </Resource>
+</Context>
+<!--
+<Context>
+  <Resource
+     name="jdbc/DataSource"
+     type="javax.sql.DataSource"
+     driverClassName="org.h2.Driver"
+     username="sa"
+     password=""
+     url="jdbc:h2:tcp://localhost/~/AjaxSSI"
+     maxIdle="2"
+     maxWait="5000"
+     maxActive="4"/>
+</Context>-->

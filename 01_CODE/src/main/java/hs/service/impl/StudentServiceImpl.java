@@ -15,6 +15,7 @@ import hs.model.TbPreferential;
 import hs.model.TbStudent;
 import hs.model.TbStudentInfoHistory;
 import hs.model.TbUser;
+import hs.pageModel.Combobox;
 import hs.pageModel.DataGrid;
 import hs.pageModel.SessionInfo;
 import hs.pageModel.Student;
@@ -101,6 +102,20 @@ public class StudentServiceImpl implements StudentServiceI {
         this.reportFileDaoI = reportFileDaoI;
     }
 
+    @Override
+    public List<Combobox> combox(Student student) {
+        List<Combobox> rl = new ArrayList<Combobox>();
+        List<TbStudent> l = studentDao.find("from TbStudent");
+        if (l != null && l.size() > 0) {
+            for (TbStudent t : l) {
+                Combobox r = new Combobox();
+                r.setId(t.getId());
+                r.setText(t.getName());
+                rl.add(r);
+            }
+        }
+        return rl;
+    }
     /**
      * 缴费
      */

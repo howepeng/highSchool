@@ -29,11 +29,11 @@
                                 sortable : true
                             } ] ],
                             columns : [ [ {
-                                field : 'startDicName',
+                                field : 'showStartTime',
                                 title : '开始时间',
                                 width : 150
                             },{
-                                field : 'endDicName',
+                                field : 'showEndTime',
                                 title : '结束时间',
                                 width : 150
                             } ] ],
@@ -175,7 +175,8 @@
                     $('#comn_classTimeManager_editForm').form('load', {
                         id : rows[0].id,
                         name : rows[0].name,
-                        roleIds : getList(rows[0].roleIds)
+                        startTime : rows[0].showStartTime,
+                        endTime : rows[0].showEndTime
                     });
                     } ,
                 onClose : function() {

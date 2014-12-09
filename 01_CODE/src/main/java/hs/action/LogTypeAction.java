@@ -30,6 +30,10 @@ public class LogTypeAction extends BaseAction implements ModelDriven<LogType> {
         this.logTypeService = logTypeService;
     }
 
+    public void combox() {
+        super.writeJson(logTypeService.combox());
+    }
+
     public void datagrid(){
         super.writeJson(logTypeService.datagrid(logType));
     }

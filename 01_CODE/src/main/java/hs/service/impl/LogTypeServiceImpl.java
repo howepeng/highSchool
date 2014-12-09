@@ -88,7 +88,7 @@ public class LogTypeServiceImpl implements LogTypeServiceI {
     public LogType getLogType(String id) {
         LogType logType = new LogType();
         TbLogType tbLogType = logTypeDao.getById(TbLogType.class, id.trim());
-        BeanUtils.copyProperties(tbLogType, logType, new String[] { "id" });
+        BeanUtils.copyProperties(tbLogType, logType);
         return logType;
     }
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+            PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+            "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- SqlMap定義 -->
+<sqlMap namespace="com">
+
+  <select id="getLogCalendar"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.pageModel.ShowCalendarInfo">
+    <![CDATA[
+        select
+        t3.id as classTimeId,
+        t3.name as classTimeName,
+        t2.id as logTypeId,
+        t2.name as logTypeName,
+        t1.date as date,
+        t1.classId as classId,
+        t1.startTime,
+        t1.endTime,
+        count(t1.id) as count
+        FROM tb_log_info t1, tb_log_type t2, tb_class_time t3
+        where t1.classTimeId = t3.id
+        and t1.typeId = t2.id
+        and t1.date >= str_to_date(#start#,'%Y-%m-%d')
+        and t1.date <= str_to_date(#end#,'%Y-%m-%d')
+        GROUP BY t3.id,t3.name,t2.id,t2.name,t1.date,t1.classId,t1.startTime,t1.endTime
+        order by t1.date desc
+    ]]>
+  </select>
+</sqlMap>

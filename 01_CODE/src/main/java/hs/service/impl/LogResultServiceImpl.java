@@ -78,7 +78,7 @@ public class LogResultServiceImpl implements LogResultServiceI {
     public LogResult getLogResult(String id) {
         LogResult logResult = new LogResult();
         TbLogResult TbLogResult = logResultDao.getById(TbLogResult.class, id.trim());
-        BeanUtils.copyProperties(TbLogResult, logResult, new String[] { "id" });
+        BeanUtils.copyProperties(TbLogResult, logResult);
         return logResult;
     }
 }

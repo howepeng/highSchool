@@ -18,8 +18,9 @@
 <script type="text/javascript" src="jslib/jquery-easyui-1.3.4/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="jslib/jquery-easyui-1.3.4/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src='jslib/fullcalendar-2.1.1/moment.min.js'></script>
-<script type="text/javascript" src='jslib/fullcalendar-2.1.1/fullcalendar.min.js'></script>
+<script type="text/javascript" src='jslib/fullcalendar-2.1.1/fullcalendar.js'></script>
 <script type="text/javascript" src='jslib/fullcalendar-2.1.1/lang-all.js'></script>
+<script type="text/javascript" src='jslib/fullcalendar-2.1.1/moment.min.js'></script>
 <script type="text/javascript" src="jslib/hsUtil.js"></script>
 <script type="text/javascript" src="jslib/My97DatePicker/WdatePicker.js"></script>
 <script type="text/javascript" src="jslib/uploadify/jquery.uploadify.min.js"></script>

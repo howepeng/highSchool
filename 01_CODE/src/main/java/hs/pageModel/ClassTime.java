@@ -1,6 +1,7 @@
 package hs.pageModel;
 
 import java.io.Serializable;
+import java.sql.Time;
 
 /**
  * @author Administrator
@@ -18,10 +19,10 @@ public class ClassTime implements Serializable {
     private static final long serialVersionUID = 1L;
     private String id;
     private String name;
-    private String startDicId;
-    private String startDicName;
-    private String endDicId;
-    private String endDicName;
+    private Time startTime;
+    private Time endTime;
+    private String showStartTime;
+    private String showEndTime;
     private int page;
     private int rows;
     private String sort;
@@ -38,30 +39,6 @@ public class ClassTime implements Serializable {
     }
     public void setName(String name) {
         this.name = name;
-    }
-    public String getStartDicId() {
-        return startDicId;
-    }
-    public void setStartDicId(String startDicId) {
-        this.startDicId = startDicId;
-    }
-    public String getStartDicName() {
-        return startDicName;
-    }
-    public void setStartDicName(String startDicName) {
-        this.startDicName = startDicName;
-    }
-    public String getEndDicId() {
-        return endDicId;
-    }
-    public void setEndDicId(String endDicId) {
-        this.endDicId = endDicId;
-    }
-    public String getEndDicName() {
-        return endDicName;
-    }
-    public void setEndDicName(String endDicName) {
-        this.endDicName = endDicName;
     }
     public int getPage() {
         return page;
@@ -92,5 +69,29 @@ public class ClassTime implements Serializable {
     }
     public void setIds(String ids) {
         this.ids = ids;
+    }
+    public Time getStartTime() {
+        return startTime;
+    }
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
+    }
+    public Time getEndTime() {
+        return endTime;
+    }
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
+    }
+    public String getShowStartTime() {
+        return showStartTime;
+    }
+    public void setShowStartTime(String showStartTime) {
+        this.showStartTime = showStartTime;
+    }
+    public String getShowEndTime() {
+        return showEndTime;
+    }
+    public void setShowEndTime(String showEndTime) {
+        this.showEndTime = showEndTime;
     }
 }

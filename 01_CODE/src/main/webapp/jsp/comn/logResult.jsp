@@ -166,8 +166,7 @@
                 onLoad: function() {
                     $('#comn_logResultManager_editForm').form('load', {
                         id : rows[0].id,
-                        name : rows[0].name,
-                        roleIds : getList(rows[0].roleIds)
+                        name : rows[0].name
                     });
                     } ,
                 onClose : function() {

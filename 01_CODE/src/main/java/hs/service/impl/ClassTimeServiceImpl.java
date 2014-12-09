@@ -1,14 +1,13 @@
 package hs.service.impl;
 
 import hs.dao.ClassTimeDaoI;
-import hs.dao.DictionaryDaoI;
 import hs.model.TbClassTime;
-import hs.model.TbDictionary;
 import hs.pageModel.ClassTime;
 import hs.pageModel.Combobox;
 import hs.pageModel.DataGrid;
 import hs.service.ClassTimeServiceI;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -25,13 +24,6 @@ public class ClassTimeServiceImpl implements ClassTimeServiceI {
     @Autowired
     public void setClassTimeDao(ClassTimeDaoI classTimeDao) {
         this.classTimeDao = classTimeDao;
-    }
-
-    private DictionaryDaoI dictionaryDao;
-
-    @Autowired
-    public void setictionaryDao(DictionaryDaoI dictionaryDao) {
-        this.dictionaryDao = dictionaryDao;
     }
 
     @Override
@@ -53,8 +45,19 @@ public class ClassTimeServiceImpl implements ClassTimeServiceI {
     public DataGrid datagrid(ClassTime classTime) {
         DataGrid j = new DataGrid();
         List<TbClassTime> classTimes = classTimeDao.find("FROM TbClassTime", classTime.getPage(), classTime.getRows());
-        j.setRows(getClassTimeName(classTimes));
-        j.setTotal(classTimeDao.count("SELECT count(*) FROM TbClassTime"));
+        List<ClassTime> times = new ArrayList<ClassTime>();
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        if (classTimes != null) {
+            for (TbClassTime item : classTimes) {
+                ClassTime n = new ClassTime();
+                BeanUtils.copyProperties(item, n);
+                n.setShowStartTime(format.format(n.getStartTime()));
+                n.setShowEndTime(format.format(n.getEndTime()));
+                times.add(n);
+            }
+            j.setRows(times);
+            j.setTotal(classTimeDao.count("SELECT count(*) FROM TbClassTime"));
+        }
         return j;
     }
 
@@ -88,27 +91,7 @@ public class ClassTimeServiceImpl implements ClassTimeServiceI {
     public ClassTime getClassTime(String id) {
         ClassTime classTime = new ClassTime();
         TbClassTime tbClassTime = classTimeDao.getById(TbClassTime.class, id.trim());
-        BeanUtils.copyProperties(tbClassTime, classTime, new String[] { "id" });
+        BeanUtils.copyProperties(tbClassTime, classTime);
         return classTime;
-    }
-
-    private List<ClassTime> getClassTimeName(List<TbClassTime> classTimes) {
-        List<ClassTime> ret = new ArrayList<ClassTime>();
-        if (classTimes != null && classTimes.size() > 0) {
-            for (TbClassTime item : classTimes) {
-                ClassTime n = new ClassTime();
-                BeanUtils.copyProperties(item, n);
-                List<TbDictionary> start = dictionaryDao.find("FROM TbDictionary WHERE id = '"+ item.getStartDicId() +"'");
-                if (start != null && 1 == start.size()) {
-                    n.setStartDicName(start.get(0).getName());
-                }
-                List<TbDictionary> end = dictionaryDao.find("FROM TbDictionary WHERE id = '"+ item.getEndDicId() +"'");
-                if (end != null && 1 == end.size()) {
-                    n.setEndDicName(end.get(0).getName());
-                }
-                ret.add(n);
-            }
-        }
-        return ret;
     }
 }

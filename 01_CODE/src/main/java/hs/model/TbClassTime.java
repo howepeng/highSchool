@@ -1,5 +1,7 @@
 package hs.model;
 
+import java.sql.Time;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,8 +22,8 @@ public class TbClassTime implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
     private String id;
     private String name;
-    private String startDicId;
-    private String endDicId;
+    private Time startTime;
+    private Time endTime;
 
     // Constructors
 
@@ -49,21 +51,21 @@ public class TbClassTime implements java.io.Serializable {
         this.name = name;
     }
 
-    @Column(name = "startDicId", length = 36, nullable = false)
-    public String getStartDicId() {
-        return this.startDicId;
+    @Column(name = "startTime", nullable = false)
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setStartDicId(String startDicId) {
-        this.startDicId = startDicId;
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
     }
 
-    @Column(name = "endDicId", length = 36, nullable = false)
-    public String getEndDicId() {
-        return this.endDicId;
+    @Column(name = "endTime", nullable = false)
+    public Time getEndTime() {
+        return endTime;
     }
 
-    public void setEndDicId(String endDicId) {
-        this.endDicId = endDicId;
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
     }
 }

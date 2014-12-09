@@ -1,5 +1,5 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
-    <form id="comn_classTimeManager_editForm" method="post">
+    <form id="comn_logResultManager_editForm" method="post">
         <table>
             <tr>
                 <th>名称</th>

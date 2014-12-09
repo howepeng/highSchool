@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <context:annotation-config />
+    <context:component-scan base-package="com.smart.lazy.service,com.smart.lazy.dao" scoped-proxy="targetClass"/>
+
+    <bean id="DataSource"
+          class="org.springframework.jndi.JndiObjectFactoryBean">
+      <property name="jndiName">
+        <value>java:comp/env/jdbc/DataSource</value>
+      </property>
+    </bean>
+    <bean id="operationLogInterceptor" class="hs.common.log.OperationLogInterceptor"/>
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="DataSource" />
+    </bean>
+    <bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource">
+      <property name="basenames" value="application-messages, system-messages"/>
+    </bean>
+    <bean id="sqlMapClient"
+          class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+      <property name="configLocation" value="classpath:sqlMapConfig.xml">
+      </property>
+      <property name="dataSource" ref="DataSource" />
+    </bean>
+
+    <bean id="QueryDAO" class="hs.common.dao.QueryDAOiBatisImpl">
+        <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+        </property>
+    </bean>
+
+    <bean id="UpdateDAO" class="hs.common.dao.UpdateDAOiBatisImpl">
+        <property name="sqlMapClient">
+            <ref local="sqlMapClient"/>
+        </property>
+    </bean>
+    <bean id="appContext" class="hs.common.DemoApplicationContext"/>
+    <bean id="codeList" class="hs.common.vo.CodeListBean" init-method="init"/>
+    <bean id="systemSetting" class="hs.common.vo.SystemSettingBean" init-method="load"/>
+</beans>

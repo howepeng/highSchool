@@ -30,6 +30,10 @@ public class LogResultAction extends BaseAction implements ModelDriven<LogResult
         this.logResultService = logResultService;
     }
 
+    public void combox() {
+        super.writeJson(logResultService.combox());
+    }
+
     public void datagrid(){
         super.writeJson(logResultService.datagrid(logResult));
     }

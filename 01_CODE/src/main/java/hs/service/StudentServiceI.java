@@ -4,6 +4,7 @@ import java.util.List;
 
 import hs.model.TbStudent;
 import hs.model.TbUser;
+import hs.pageModel.Combobox;
 import hs.pageModel.DataGrid;
 import hs.pageModel.SessionInfo;
 import hs.pageModel.Student;
@@ -38,4 +39,6 @@ public interface StudentServiceI {
     public void refunPay(Student student, SessionInfo sessionInfo);
 
     public List<TbStudent> getStudentInfo(Student student);
+
+    public List<Combobox> combox(Student student);
 }
