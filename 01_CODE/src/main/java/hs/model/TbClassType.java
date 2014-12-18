@@ -41,20 +41,6 @@ public class TbClassType implements java.io.Serializable {
         this.id = id;
     }
 
-    /** full constructor */
-    public TbClassType(String id, String classType, BigDecimal studyFee, BigDecimal stayFee, BigDecimal selfFee, BigDecimal signFee, BigDecimal scoreFee, BigDecimal safetyFee, BigDecimal waterFee, BigDecimal countFee) {
-        this.id = id;
-        this.classType = classType;
-        this.studyFee = studyFee;
-        this.stayFee = stayFee;
-        this.selfFee = selfFee;
-        this.signFee = signFee;
-        this.scoreFee = scoreFee;
-        this.safetyFee = safetyFee;
-        this.waterFee = waterFee;
-        this.countFee = countFee;
-    }
-
     // Property accessors
     @Id
     @Column(name = "id", unique = true, nullable = false, length = 36)

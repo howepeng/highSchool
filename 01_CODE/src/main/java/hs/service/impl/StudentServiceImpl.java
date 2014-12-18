@@ -253,6 +253,12 @@ public class StudentServiceImpl implements StudentServiceI {
                     f.setPhotoId(t.getTbPhotoFile().getId());
                     f.setPhotoImgSrc(t.getTbPhotoFile().getFilePath());
                 }
+                if (t.getTbYearInfo() != null) {
+                    f.setYearId(t.getTbYearInfo().getId());
+                }
+                if (t.getTbClassInfo() != null) {
+                    f.setClassId(t.getTbClassInfo().getId());
+                }
                 finList.add(f);
             }
         }
@@ -262,7 +268,7 @@ public class StudentServiceImpl implements StudentServiceI {
     }
 
     @Override
-    public List<TbStudent> getStudentInfo(Student student) {
+    public List<Student> getStudentInfo(Student student) {
         List<Student> finList = new ArrayList<Student>();
         Map<String, Object> params = new HashMap<String, Object>();
         String hql = "FROM TbStudent t";
@@ -306,10 +312,16 @@ public class StudentServiceImpl implements StudentServiceI {
                     f.setPhotoId(t.getTbPhotoFile().getId());
                     f.setPhotoImgSrc(t.getTbPhotoFile().getFilePath());
                 }
+                if (t.getTbYearInfo() != null) {
+                    f.setYearId(t.getTbYearInfo().getId());
+                }
+                if (t.getTbClassInfo() != null) {
+                    f.setClassId(t.getTbClassInfo().getId());
+                }
                 finList.add(f);
             }
         }
-        return tbStuList;
+        return finList;
     }
 
     @Override

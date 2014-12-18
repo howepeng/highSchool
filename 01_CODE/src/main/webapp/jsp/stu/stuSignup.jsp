@@ -209,6 +209,7 @@
             <input type="hidden" name="id" />
             <input type="hidden" name="num" id="num">
             <input type="hidden" name="photoId" id="photoId">
+            <input type="hidden" name="yearId" id="yearId">
             <table cellspacing="0" cellpadding="0" style="width: 100%;height: 100%;">
                <tr>
                     <td><span style="color:red">*</span>姓名</td>
@@ -427,7 +428,7 @@
                 </tr>
                 <tr>
                     <td>班级</td>
-                    <td><input name="className" maxlength="20"/>
+                    <td><input name="classId" maxlength="20"/>
                     </td>
                     <td >
                       <table>

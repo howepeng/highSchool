@@ -4,6 +4,7 @@
             <input type="hidden" name="id" />
             <input type="hidden" name="num" id="num">
             <input type="hidden" name="photoId" id="photoId">
+            <input type="hidden" name="yearId" id="yearId">
             <table style="width: 100%;height: 100%;">
                <tr>
                     <td><span style="color:red">*</span>姓名</td>
@@ -222,7 +223,11 @@
                 </tr>
                 <tr>
                     <td>班级</td>
-                    <td><input name="className"  maxlength="20"/>
+                    <td>
+                        <input id="classId" name="classId" class="easyui-combobox"
+                                   data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath}/classInfoAction!combox.action'"
+                                   style="width: 180px;" />
+
                     </td>
                     <td >
                       <table>

@@ -38,7 +38,6 @@ public class Student {
     private String fractionComp3;
     private String fractionCompCount;
     private String fractionCount;
-    private String className;
     private String stayFlg = "0";
     private String stayNum;
     private String stayTel;
@@ -46,11 +45,13 @@ public class Student {
     private String selfstudyNightflg = "0";
     private String selfstudyNoonflg = "0";
     private String remark;
+    private String classId;
+    private String yearId;
+    private int score;
     private Timestamp createdatetime;
     private Timestamp createdatetimeStart;
     private Timestamp createdatetimeEnd;
     private Timestamp modifydatetime;
-    private String year;
     private BigDecimal studyFee = new BigDecimal(0);
     private BigDecimal stayFee = new BigDecimal(0);
     private BigDecimal selfFee = new BigDecimal(0);
@@ -338,14 +339,6 @@ public class Student {
         this.fractionCount = fractionCount;
     }
 
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     public String getStayFlg() {
         return stayFlg;
     }
@@ -416,14 +409,6 @@ public class Student {
 
     public void setModifydatetime(Timestamp modifydatetime) {
         this.modifydatetime = modifydatetime;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
     }
 
     public BigDecimal getStudyFee() {
@@ -1081,5 +1066,29 @@ public class Student {
 
     public void setSecureType(String secureType) {
         this.secureType = secureType;
+    }
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
+
+    public String getYearId() {
+        return yearId;
+    }
+
+    public void setYearId(String yearId) {
+        this.yearId = yearId;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

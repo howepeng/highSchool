@@ -6,6 +6,7 @@ import hs.dao.UserRoleDaoI;
 import hs.model.TbRole;
 import hs.model.TbUser;
 import hs.model.TbUserRole;
+import hs.pageModel.Combobox;
 import hs.pageModel.DataGrid;
 import hs.pageModel.User;
 import hs.service.UserServiceI;
@@ -46,6 +47,20 @@ public class UserServiceImpl implements UserServiceI {
         this.userRoleDao = userRoleDao;
     }
 
+    @Override
+    public List<Combobox> combox() {
+        List<Combobox> rl = new ArrayList<Combobox>();
+        List<TbUser> l = userDao.find("from TbUser");
+        if (l != null && l.size() > 0) {
+            for (TbUser t : l) {
+                Combobox r = new Combobox();
+                r.setId(t.getId());
+                r.setText(t.getName());
+                rl.add(r);
+            }
+        }
+        return rl;
+    }
     @Override
     public User saveRegisterMessage(User user) {
         TbUser tbUser = new TbUser();

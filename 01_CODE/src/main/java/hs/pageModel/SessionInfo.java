@@ -12,6 +12,7 @@ public class SessionInfo implements Serializable{
     private String username;
     private String password;
     private String roleIds;
+    private String yearId;
     public String getId() {
         return id;
     }
@@ -36,6 +37,12 @@ public class SessionInfo implements Serializable{
     public void setRoleIds(String roleIds) {
         this.roleIds = roleIds;
     }
+	public String getYearId() {
+		return yearId;
+	}
+	public void setYearId(String yearId) {
+		this.yearId = yearId;
+	}
 
 
 }

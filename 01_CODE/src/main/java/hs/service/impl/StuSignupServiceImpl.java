@@ -1,5 +1,6 @@
 package hs.service.impl;
 
+import hs.dao.ClassInfoDaoI;
 import hs.dao.ClassTypeDaoI;
 import hs.dao.FileDaoI;
 import hs.dao.FinanceDaoI;
@@ -9,6 +10,8 @@ import hs.dao.ReportFileDaoI;
 import hs.dao.StudentDaoI;
 import hs.dao.StudentInfoHistoryDaoI;
 import hs.dao.UserDaoI;
+import hs.dao.YearInfoDaoI;
+import hs.model.TbClassInfo;
 import hs.model.TbClassType;
 import hs.model.TbFile;
 import hs.model.TbFinance;
@@ -18,6 +21,7 @@ import hs.model.TbReportFile;
 import hs.model.TbStudent;
 import hs.model.TbStudentInfoHistory;
 import hs.model.TbUser;
+import hs.model.TbYearInfo;
 import hs.pageModel.SessionInfo;
 import hs.pageModel.Student;
 import hs.service.StuSignupServiceI;
@@ -75,6 +79,20 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
         this.classTypeDao = classTypeDao;
     }
 
+    private ClassInfoDaoI classInfoDao;
+
+    @Autowired
+    public void setClassInfoDao(ClassInfoDaoI classInfoDao) {
+        this.classInfoDao = classInfoDao;
+    }
+
+    private YearInfoDaoI yearInfoDao;
+
+    @Autowired
+    public void setYearInfoDao(YearInfoDaoI yearInfoDao) {
+        this.yearInfoDao = yearInfoDao;
+    }
+
     private FileDaoI fileDao;
 
     @Autowired
@@ -109,6 +127,8 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
         String updateType = "";
         TbUser tbUser = userDao.getById(TbUser.class, sessionInfo.getId());
         TbClassType tbClassType = null;
+        TbClassInfo tbClassInfo = null;
+        TbYearInfo tbYearInfo = null;
         TbStudentInfoHistory tbStuHis = new TbStudentInfoHistory();
         if (student.getId() == null || "".equals(student.getId())) {
             tbStu = new TbStudent();
@@ -119,6 +139,11 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             tbStu.setTbUser(tbUser);
             tbClassType = classTypeDao.getById(TbClassType.class, student.getClassType());
             tbStu.setTbClassType(tbClassType);
+            tbClassInfo = classInfoDao.getById(TbClassInfo.class, student.getClassId());
+            tbStu.setTbClassInfo(tbClassInfo);
+            tbYearInfo = yearInfoDao.getById(TbYearInfo.class, sessionInfo.getYearId());
+            tbStu.setTbYearInfo(tbYearInfo);
+            tbStu.setScore(100);
             if ("1".equals(tbStu.getSignUpMoneyFlg())) {
                 tbStu.setSignFee(tbClassType.getSignFee());
                 tbStu.setCountFee(tbClassType.getSignFee());
@@ -175,6 +200,10 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             tbStu.setTbUser(tbUser);
             tbClassType = classTypeDao.getById(TbClassType.class, student.getClassType());
             tbStu.setTbClassType(tbClassType);
+            tbClassInfo = classInfoDao.getById(TbClassInfo.class, student.getClassId());
+            tbStu.setTbClassInfo(tbClassInfo);
+            tbYearInfo = yearInfoDao.getById(TbYearInfo.class, student.getYearId());
+            tbStu.setTbYearInfo(tbYearInfo);
             if ("1".equals(tbStu.getSignUpMoneyFlg())
                     && "0".equals(oldSignUpMoneyFlg)) {
                 tbStu.setSignFee(tbClassType.getSignFee());
@@ -327,7 +356,6 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             tbStu.setFractionComp3(student.getFractionComp3());
             tbStu.setFractionCompCount(student.getFractionCompCount());
             tbStu.setFractionCount(student.getFractionCount());
-            tbStu.setClassName(student.getClassName());
             tbStu.setSignUpMoneyFlg(student.getSignUpMoneyFlg());
             tbStu.setBankSignUpMoneyFlg(student.getBankSignUpMoneyFlg());
             tbStu.setLakalaSignUpMoneyFlg(student.getLakalaSignUpMoneyFlg());
@@ -344,6 +372,7 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             tbStu.setOldReportFileName(student.getOldReportFileName());
             tbStu.setOldIdFileName(student.getOldIdFileName());
             tbStu.setRemark(student.getRemark());
+            tbStu.setScore(student.getScore());
         }
     }
 

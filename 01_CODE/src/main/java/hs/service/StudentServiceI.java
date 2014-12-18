@@ -38,7 +38,7 @@ public interface StudentServiceI {
 
     public void refunPay(Student student, SessionInfo sessionInfo);
 
-    public List<TbStudent> getStudentInfo(Student student);
+    public List<Student> getStudentInfo(Student student);
 
     public List<Combobox> combox(Student student);
 }

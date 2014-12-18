@@ -1,6 +1,5 @@
 package hs.action;
 
-import hs.model.TbStudent;
 import hs.pageModel.Student;
 import hs.pageModel.Students;
 import hs.service.StudentServiceI;
@@ -72,7 +71,7 @@ public class DownloadAllStudentInfoAction extends ActionSupport {
         studentS.setCreatedatetimeEnd(createdatetimeEnd);
         studentS.fractionCountStart = this.fractionCountStart;
         studentS.fractionCountEnd = this.fractionCountEnd;
-        List<TbStudent> tbStudentList = studentService.getStudentInfo(studentS);
+        List<Student> tbStudentList = studentService.getStudentInfo(studentS);
         String fileName = "全部学生";
         List<Student> studentList = new ArrayList<Student>();
         int index = 0;
@@ -83,7 +82,7 @@ public class DownloadAllStudentInfoAction extends ActionSupport {
             if(count == 0){
                 return "noStudentInfo";
             }
-            for (TbStudent item : tbStudentList){
+            for (Student item : tbStudentList){
                 if ("91".equals(item.getWlqf())) {
                     item.setWlqfContent("文科");
                 } else if ("95".equals(item.getWlqf())) {
@@ -141,8 +140,8 @@ public class DownloadAllStudentInfoAction extends ActionSupport {
                 } else{
                     item.setSecureContent("不需要保险 ");
                 }
-                if (item.getTbClassType() != null) {
-                    item.setClassTypeName(item.getTbClassType().getClassType());
+                if (item.getClassTypeName() != null) {
+                    item.setClassTypeName(item.getClassTypeName());
                     if(this.classType != null
                             && !"".equals(this.classType)
                             && "全部学生".equals(fileName)) {

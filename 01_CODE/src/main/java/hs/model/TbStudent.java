@@ -32,6 +32,8 @@ public class TbStudent implements java.io.Serializable {
     private TbIdFile tbIdFile;
     private TbClassType tbClassType;
     private TbUser tbUser;
+    private TbClassInfo tbClassInfo;
+    private TbYearInfo tbYearInfo;
     private String name;
     private String sex;
     private String nation;
@@ -59,7 +61,6 @@ public class TbStudent implements java.io.Serializable {
     private String fractionComp3;
     private String fractionCompCount;
     private String fractionCount;
-    private String className;
     private String stayFlg;
     private String stayNum;
     private String stayTel;
@@ -69,7 +70,6 @@ public class TbStudent implements java.io.Serializable {
     private String remark;
     private Date createdatetime;
     private Date modifydatetime;
-    private String year;
     private BigDecimal studyFee;
     private BigDecimal stayFee;
     private BigDecimal selfFee;
@@ -108,7 +108,8 @@ public class TbStudent implements java.io.Serializable {
     private BigDecimal refundFee;
     //优惠
     private BigDecimal preferentialFee;
-
+    //积分
+    private int score;
     // Constructors
 
     /** default constructor */
@@ -120,68 +121,6 @@ public class TbStudent implements java.io.Serializable {
         this.id = id;
     }
 
-    /** full constructor */
-    public TbStudent(String id, String num, TbPreferential tbPreferential, TbFile tbFile,TbIdFile tbIdFile,TbReportFile tbReportFile,TbPhotoFile tbPhotoFile, TbClassType tbClassType, TbUser tbUser, String name, String sex, String nation, String signedFlg, String tel, String intention, String wlqf, String photo, String fatherName, String fatherTel, String fatherWork, String motherName, String motherTel, String motherWork, String idNum, String address, String homeTel, String graduateSchool, String fractionLanguage, String fractionMath, String fractionEnglish, String fractionComp1, String fractionComp2, String fractionComp3, String fractionCompCount, String fractionCount, String className, String stayFlg, String stayNum, String stayTel, String stuNum, String selfstudyNightflg, String selfstudyNoonflg, String remark, Date createdatetime, Date modifydatetime, String year, BigDecimal studyFee, BigDecimal stayFee, BigDecimal selfFee, BigDecimal signFee, BigDecimal scoreFee, BigDecimal safetyFee, BigDecimal waterFee, BigDecimal countFee, String arrearflg, String isPaymentFlg,BigDecimal arrearFee,BigDecimal refundFee,BigDecimal preferentialFee) {
-        this.id = id;
-        this.num = num;
-        this.tbPreferential = tbPreferential;
-        this.tbFile = tbFile;
-        this.tbIdFile = tbIdFile;
-        this.tbReportFile = tbReportFile;
-        this.tbPhotoFile = tbPhotoFile;
-        this.tbClassType = tbClassType;
-        this.tbUser = tbUser;
-        this.name = name;
-        this.sex = sex;
-        this.nation=nation;
-        this.signedFlg=signedFlg;
-        this.tel=tel;
-        this.intention=intention;
-        this.wlqf = wlqf;
-        this.photo = photo;
-        this.fatherName = fatherName;
-        this.fatherTel = fatherTel;
-        this.fatherWork = fatherWork;
-        this.motherName = motherName;
-        this.motherTel = motherTel;
-        this.motherWork = motherWork;
-        this.idNum = idNum;
-        this.address = address;
-        this.homeTel = homeTel;
-        this.graduateSchool = graduateSchool;
-        this.fractionLanguage = fractionLanguage;
-        this.fractionMath = fractionMath;
-        this.fractionEnglish = fractionEnglish;
-        this.fractionComp1 = fractionComp1;
-        this.fractionComp2 = fractionComp2;
-        this.fractionComp3 = fractionComp3;
-        this.fractionCompCount = fractionCompCount;
-        this.fractionCount = fractionCount;
-        this.className = className;
-        this.stayFlg = stayFlg;
-        this.stayNum = stayNum;
-        this.stayTel = stayTel;
-        this.stuNum = stuNum;
-        this.selfstudyNightflg = selfstudyNightflg;
-        this.selfstudyNoonflg = selfstudyNoonflg;
-        this.remark = remark;
-        this.createdatetime = createdatetime;
-        this.modifydatetime = modifydatetime;
-        this.year = year;
-        this.studyFee = studyFee;
-        this.stayFee = stayFee;
-        this.selfFee = selfFee;
-        this.signFee = signFee;
-        this.scoreFee = scoreFee;
-        this.safetyFee = safetyFee;
-        this.waterFee = waterFee;
-        this.countFee = countFee;
-        this.arrearflg = arrearflg;
-        this.isPaymentFlg = isPaymentFlg;
-        this.arrearFee = arrearFee;
-        this.refundFee = refundFee;
-        this.preferentialFee = preferentialFee;
-    }
 
     // Property accessors
     @Id
@@ -462,15 +401,6 @@ public class TbStudent implements java.io.Serializable {
         this.fractionCount = fractionCount;
     }
 
-    @Column(name = "class_name", length = 36)
-    public String getClassName() {
-        return this.className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     @Column(name = "stay_flg", length = 2)
     public String getStayFlg() {
         return this.stayFlg;
@@ -550,15 +480,6 @@ public class TbStudent implements java.io.Serializable {
 
     public void setModifydatetime(Date modifydatetime) {
         this.modifydatetime = modifydatetime;
-    }
-
-    @Column(name = "year", length = 4)
-    public String getYear() {
-        return this.year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
     }
 
     @Column(name = "study_fee", precision = 22, scale = 0)
@@ -1148,9 +1069,20 @@ public class TbStudent implements java.io.Serializable {
             sb.append("无");
         }
         sb.append("，");
+        sb.append("学年：");
+        if (this.tbYearInfo != null
+                && this.tbYearInfo.getName() != null
+                && !"".equals(this.tbYearInfo.getName())) {
+            sb.append(this.tbYearInfo.getName());
+        } else{
+            sb.append("无");
+        }
+        sb.append("，");
         sb.append("班级：");
-        if(this.className !=null && !"".equals(this.className)) {
-            sb.append(this.className);
+        if (this.tbClassInfo != null
+                && this.tbClassInfo.getName() != null
+                && !"".equals(this.tbClassInfo.getName())) {
+            sb.append(this.tbClassInfo.getName());
         } else{
             sb.append("无");
         }
@@ -1256,6 +1188,9 @@ public class TbStudent implements java.io.Serializable {
             sb.append("无");
         }
         sb.append("，");
+        sb.append("积分：");
+        sb.append(this.score);
+        sb.append("，");
         sb.append("备注：");
         if(this.remark !=null && !"".equals(this.remark)) {
             sb.append(this.remark);
@@ -1271,5 +1206,34 @@ public class TbStudent implements java.io.Serializable {
 
     public void setStuTypeContent(String stuTypeContent) {
         this.stuTypeContent = stuTypeContent;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id")
+    public TbClassInfo getTbClassInfo() {
+        return tbClassInfo;
+    }
+
+    public void setTbClassInfo(TbClassInfo tbClassInfo) {
+        this.tbClassInfo = tbClassInfo;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "year_id")
+    public TbYearInfo getTbYearInfo() {
+        return tbYearInfo;
+    }
+
+    public void setTbYearInfo(TbYearInfo tbYearInfo) {
+        this.tbYearInfo = tbYearInfo;
+    }
+
+    @Column(name = "score", nullable = false)
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

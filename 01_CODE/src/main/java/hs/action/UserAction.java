@@ -1,9 +1,11 @@
 package hs.action;
 
+import hs.model.TbYearInfo;
 import hs.pageModel.Json;
 import hs.pageModel.SessionInfo;
 import hs.pageModel.User;
 import hs.service.UserServiceI;
+import hs.service.YearInfoServiceI;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
@@ -32,6 +34,13 @@ public class UserAction extends BaseAction implements ModelDriven<User> {
         this.userService = userService;
     }
 
+    private YearInfoServiceI yearInfoService;
+
+    @Autowired
+    public void setYearInfoService(YearInfoServiceI yearInfoService) {
+        this.yearInfoService = yearInfoService;
+    }
+
     public String doNotNeedSession_main() {
         return "main";
     }
@@ -56,6 +65,10 @@ public class UserAction extends BaseAction implements ModelDriven<User> {
         if (null != user) {
             SessionInfo sessionInfo = new SessionInfo();
             BeanUtils.copyProperties(user, sessionInfo);
+            TbYearInfo tbYearInfo = yearInfoService.getDefaultYear();
+            if (tbYearInfo != null) {
+                sessionInfo.setYearId(tbYearInfo.getId());
+            }
             ServletActionContext.getRequest().getSession().setAttribute("sessionInfo", sessionInfo);
             json.setSuccess(true);
             json.setMsg("登陆成功");
@@ -63,6 +76,10 @@ public class UserAction extends BaseAction implements ModelDriven<User> {
             json.setMsg("登陆失败  </br> 用户名或密码错误");
         }
         super.writeJson(json);
+    }
+
+    public void combox() {
+        super.writeJson(userService.combox());
     }
 
     public void datagrid() {

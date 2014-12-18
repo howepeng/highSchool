@@ -1,12 +1,11 @@
 package hs.common.vo;
 
+import hs.common.dao.QueryDAO;
+
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
-import hs.common.dao.QueryDAO;
-import hs.common.vo.MstCodeVO;
 
 public class CodeListBean extends BaseBean {
 
@@ -59,14 +58,5 @@ public class CodeListBean extends BaseBean {
 
     public Map<Integer, List<CodeInfoBean>> getCodeMap() {
         return codeMap;
-    }
-
-    private CodeInfoBean createCodeInfo(MstCodeVO mstCode) {
-
-        CodeInfoBean codeInfo = new CodeInfoBean();
-        codeInfo.setName(mstCode.getCodeName());
-        codeInfo.setValue(String.valueOf(mstCode.getCodeValue()));
-
-        return codeInfo;
     }
 }
