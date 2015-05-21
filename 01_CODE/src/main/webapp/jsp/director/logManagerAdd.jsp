@@ -22,6 +22,23 @@ $("#director_logManager_addForm").find('#classTimeId').combobox({
         });
     }
 });
+$("#director_logManager_addForm").find("input[name^='classId']").combobox({
+    onChange:function(){
+        var classId = $("#director_logManager_addForm").find("input[name^='classId']").val();
+        if (classId != "") {
+            var url = '${pageContext.request.contextPath}/studentAction!combox.action?classId='+classId;
+            $("#director_logManager_addForm").find("input[id^='studentId']").combobox({
+                url:url,
+                valueField:'id',
+                textField:'text',
+                multiple:false,
+                editable:true,
+                panelHeight:'200'
+            });
+            $("#director_logManager_addForm").find("input[name^='studentId']").remove();
+        }
+    }
+});
 </script>
 <form id="director_logManager_addForm" method="post">
     <table>
@@ -32,8 +49,8 @@ $("#director_logManager_addForm").find('#classTimeId').combobox({
                                     valueField : 'id',
                                     textField : 'text',
                                     multiple : false,
-                                    editable : false,
-                                    panelHeight : 'auto'" />
+                                    editable : true,
+                                    panelHeight : '200'" />
             </td>
             <th>课程</th>
             <td><input id = "classTimeId" name="classTimeId" class="easyui-combobox"
@@ -41,8 +58,8 @@ $("#director_logManager_addForm").find('#classTimeId').combobox({
                                     valueField : 'id',
                                     textField : 'text',
                                     multiple : false,
-                                    editable : false,
-                                    panelHeight : 'auto'" />
+                                    editable : true,
+                                    panelHeight : '200'" />
             </td>
         </tr>
         <tr>
@@ -64,21 +81,24 @@ $("#director_logManager_addForm").find('#classTimeId').combobox({
         <tr>
             <th>班级</th>
             <td><input id = "classId" name="classId" class="easyui-combobox"
-                data-options="url : '${pageContext.request.contextPath}/logResultAction!combox.action',
+                data-options="url : '${pageContext.request.contextPath}/classInfoAction!combox.action',
                                     valueField : 'id',
                                     textField : 'text',
                                     multiple : false,
-                                    editable : false,
-                                    panelHeight : 'auto'" />
+                                    editable : true,
+                                    panelHeight : '200'
+                                    " />
             </td>
             <th>学生</th>
-            <td><input id = "studentId" name="studentId" class="easyui-combobox"
+            <td><input id = "studentId" name="studentId"/>
+                <%-- <input id = "studentId" name="studentId" class="easyui-combobox"
                 data-options="url : '${pageContext.request.contextPath}/studentAction!combox.action',
                                     valueField : 'id',
                                     textField : 'text',
                                     multiple : false,
                                     editable : true,
-                                    panelHeight : 'auto'" />
+                                    panelHeight : '200'
+                                    " /> --%>
             </td>
         </tr>
         <tr>
@@ -88,8 +108,8 @@ $("#director_logManager_addForm").find('#classTimeId').combobox({
                                     valueField : 'id',
                                     textField : 'text',
                                     multiple : false,
-                                    editable : false,
-                                    panelHeight : 'auto'" />
+                                    editable : true,
+                                    panelHeight : '200'" />
             </td>
         </tr>
         <tr>

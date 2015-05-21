@@ -1,14 +1,10 @@
 package hs.pageModel;
 
 import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * TbStuSingup entity. @author MyEclipse Persistence Tools
  */
-@Entity
-@Table(name = "tb_stu_singup", catalog = "highschool")
 public class StuSignup implements java.io.Serializable {
 
     /**

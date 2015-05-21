@@ -17,7 +17,7 @@
                             nowrap : false,
                             border : false,
                             idField : 'id',
-                            sortName : 'name',
+                            sortName : 'classType',
                             sortOrder : 'desc',
                             checkOnSelect : false,
                             selectOnCheck : true,
@@ -32,39 +32,52 @@
                                 field : 'classType',
                                 width : 150,
                                 sortable : true
+                            }, {
+                                title : '专业',
+                                field : 'professionalName',
+                                width : 120,
+                                sortable : true
                             } ] ],
                             columns : [ [ {
                                 title : '学费',
                                 field : 'studyFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }, {
                                 title : '住宿费',
                                 field : 'stayFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }, {
                                 title : '晚自习费',
                                 field : 'selfFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }, {
                                 title : '报名费',
                                 field : 'signFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '成绩单押金',
                                 field : 'scoreFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '保险费',
                                 field : 'safetyFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '水费',
                                 field : 'waterFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '合计',
                                 field : 'countFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             toolbar : [ {
                                 text : '增加',
@@ -359,6 +372,18 @@
             <tr>
                 <th style="width: 55px;">班级种别</th>
                 <td><input name="classType" class="easyui-validatebox" data-options="required:true,missingMessage:'请填写班级种别'" style="width:150px;" maxlength="20"/></td>
+                <th style="width: 55px;">专业</th>
+                <td>
+                    <input id="professionalId" name="professionalId" class="easyui-combobox"
+                           data-options="url : '${pageContext.request.contextPath}/dictionaryAction!combox.action?fatherId=112',
+                           valueField : 'id',
+                           textField : 'name',
+                           multiple : false,
+                           editable : true,
+                           panelHeight : '200'" />
+                </td>
+            </tr>
+            <tr>
                 <th style="width: 55px;">学费</th>
                 <td><input name="studyFee"  style="width:150px;" maxlength="10"/></td>
             </tr>
@@ -384,7 +409,7 @@
     </form>
 </div>
 <div id="stu_classType_editDialog" align="center" class="easyui-dialog" style="width:460px;heighe:220px;padding: 5px;"
-    data-options="closed:true,modal:true,title:'修改角色',buttons:[ {
+    data-options="closed:true,modal:true,title:'修改班级种别',buttons:[ {
                 text : '修改',
                 handler : function() {
                     stu_classType_edit();
@@ -396,6 +421,18 @@
             <tr>
                 <th style="width: 55px;">班级种别</th>
                 <td><input name="classType" class="easyui-validatebox" data-options="required:true,missingMessage:'请填写班级种别'" style="width:150px;" maxlength="20"/></td>
+                <th style="width: 55px;">专业</th>
+                <td>
+                    <input id="professionalId" name="professionalId" class="easyui-combobox"
+                           data-options="url : '${pageContext.request.contextPath}/dictionaryAction!combox.action?fatherId=112',
+                           valueField : 'id',
+                           textField : 'name',
+                           multiple : false,
+                           editable : true,
+                           panelHeight : '200'" />
+                </td>
+            </tr>
+            <tr>
                 <th style="width: 55px;">学费</th>
                 <td><input name="studyFee"  style="width:150px;" maxlength="10"/></td>
             </tr>

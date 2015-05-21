@@ -20,6 +20,8 @@ public class ClassType implements Serializable {
 
     private String id;
     private String classType;
+    private String professionalId;
+    private String professionalName;
     private BigDecimal studyFee;
     private BigDecimal stayFee;
     private BigDecimal selfFee;
@@ -152,6 +154,22 @@ public class ClassType implements Serializable {
 
     public void setSafetyFee(BigDecimal safetyFee) {
         this.safetyFee = safetyFee;
+    }
+
+    public String getProfessionalId() {
+        return professionalId;
+    }
+
+    public void setProfessionalId(String professionalId) {
+        this.professionalId = professionalId;
+    }
+
+    public String getProfessionalName() {
+        return professionalName;
+    }
+
+    public void setProfessionalName(String professionalName) {
+        this.professionalName = professionalName;
     }
 
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbook>
+    <worksheet name="月考成绩录入">
+        <loop startRow="1" endRow="1" items="monthScores"
+            var="monthScore" varType="hs.pageModel.MonthScoreJXL">
+            <section startRow="1" endRow="1">
+                <mapping row="2" col="6">monthScore.fractionLanguage</mapping>
+                <mapping row="2" col="7">monthScore.fractionMath</mapping>
+                <mapping row="2" col="8">monthScore.fractionEnglish</mapping>
+                <mapping row="2" col="9">monthScore.fractionComp1</mapping>
+                <mapping row="2" col="10">monthScore.fractionComp2</mapping>
+                <mapping row="2" col="11">monthScore.fractionComp3</mapping>
+                <mapping row="2" col="12">monthScore.fractionComp_count</mapping>
+                <mapping row="2" col="13">monthScore.fractionCount</mapping>
+                <mapping row="2" col="14">monthScore.studentId</mapping>
+            </section>
+            <loopbreakcondition>
+                <rowcheck offset="0">
+                <cellcheck offset="0"></cellcheck>
+                </rowcheck>
+            </loopbreakcondition>
+        </loop>
+    </worksheet>
+</workbook>

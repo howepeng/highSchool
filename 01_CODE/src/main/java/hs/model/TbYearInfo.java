@@ -6,10 +6,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * TbClassType entity. @author MyEclipse Persistence Tools
+ * TbYearInfo entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_year_info", catalog = "highschool")
+@Table(name = "tb_year_info", catalog = "highschool2015")
 public class TbYearInfo implements java.io.Serializable {
 
     // Fields

@@ -11,8 +11,8 @@
                                         valueField : 'id',
                                         textField : 'name',
                                         multiple : false,
-                                        editable : false,
-                                        panelHeight : 'auto'" />
+                                        editable : true,
+                                        panelHeight : '200'" />
                 </td>
             </tr>
             <tr>
@@ -22,14 +22,23 @@
                                         valueField : 'id',
                                         textField : 'name',
                                         multiple : false,
-                                        editable : false,
-                                        panelHeight : 'auto'" />
+                                        editable : true,
+                                        panelHeight : '200'" />
                 </td>
                 <th>满N次</th>
                 <td><input name="count" class="easyui-validatebox"/>
                 </td>
                 <th>积分</th>
                 <td><input name="score" class="easyui-validatebox" data-options="required:true,missingMessage:'请填写积分'" />
+                </td>
+            </tr>
+            <tr>
+                <th>计入考勤</th>
+                <td>
+                    <select id="attence" name="attence" style="width: 180px;">
+                        <option value="0" SELECTED>否</option>
+                        <option value="1">是</option>
+                    </select>
                 </td>
             </tr>
             <tr>

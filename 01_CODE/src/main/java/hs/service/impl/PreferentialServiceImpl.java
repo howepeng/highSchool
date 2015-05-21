@@ -47,7 +47,11 @@ public class PreferentialServiceImpl implements PreferentialServiceI {
     @Override
     public DataGrid datagrid(Preferential preferential) {
         DataGrid j = new DataGrid();
-        j.setRows(preferentialDao.find("FROM TbPreferential", preferential.getPage(), preferential.getRows()));
+        String hql = "FROM TbPreferential";
+        if (preferential.getSort() != null) {
+            hql += " ORDER BY " + preferential.getSort() + " " + preferential.getOrder();
+        }
+        j.setRows(preferentialDao.find(hql, preferential.getPage(), preferential.getRows()));
         j.setTotal(preferentialDao.count("SELECT count(*) FROM TbPreferential"));
         return j;
     }

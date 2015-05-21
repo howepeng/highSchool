@@ -1,8 +1,9 @@
 package hs.action;
 
+import hs.common.Property;
 import hs.model.TbStudent;
+import hs.pageModel.Student;
 import hs.service.StudentServiceI;
-import hs.util.HSConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +26,7 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -48,70 +50,78 @@ public class DownloadStudentInfoAction extends ActionSupport {
     public String execute() throws Exception {
 
         TbStudent student = studentService.getInfoFileDownload(attachid);
+        Student st = new Student();
+        BeanUtils.copyProperties(student, st);
         if ("91".equals(student.getWlqf())) {
-            student.setWlqfContent("文科");
+            st.setWlqfContent("文科");
         } else if ("95".equals(student.getWlqf())) {
-            student.setWlqfContent("理科");
+            st.setWlqfContent("理科");
         } else if ("93".equals(student.getWlqf())) {
-            student.setWlqfContent("艺术文科");
+            st.setWlqfContent("艺术文科");
         } else if ("97".equals(student.getWlqf())) {
-            student.setWlqfContent("艺术理科");
+            st.setWlqfContent("艺术理科");
         } else if ("94".equals(student.getWlqf())) {
-            student.setWlqfContent("体育文科");
+            st.setWlqfContent("体育文科");
         } else if ("98".equals(student.getWlqf())) {
-            student.setWlqfContent("体育理科");
+            st.setWlqfContent("体育理科");
         }
         if ("0".equals(student.getStudentType())) {
-            student.setStuTypeContent("复读");
+            st.setStuTypeContent("复读");
         } else if ("1".equals(student.getStudentType())) {
-            student.setStuTypeContent("应届");
+            st.setStuTypeContent("应届");
         } else if ("2".equals(student.getStudentType())) {
-            student.setStuTypeContent("往届");
+            st.setStuTypeContent("往届");
         }
 
         if ("0".equals(student.getSex())) {
-            student.setSexContent("男");
+            st.setSexContent("男");
         } else if ("1".equals(student.getSex())) {
-            student.setSexContent("女");
+            st.setSexContent("女");
         }
 
         if ("0".equals(student.getSignedFlg())) {
-            student.setSignedContent("未签约");
+            st.setSignedContent("未签约");
         } else if ("1".equals(student.getSignedFlg())) {
-            student.setSignedContent("已签约");
+            st.setSignedContent("已签约");
         }
 
         if ("1".equals(student.getStayFlg())) {
-            student.setStayContent("住宿");
+            st.setStayContent("住宿");
         } else if ("0".equals(student.getStayFlg())) {
-            student.setStayContent("走读");
+            st.setStayContent("走读");
         }
 
         if ("1".equals(student.getSelfstudyNightflg())) {
-            student.setSelfstudyNightContent("晚自习");
+            st.setSelfstudyNightContent("晚自习");
         }
 
         if ("1".equals(student.getSelfstudyNoonflg())) {
-            student.setSelfstudyNoonContent("午  休 ");
+            st.setSelfstudyNoonContent("午  休 ");
         }
         if ("1".equals(student.getSignUpMoneyFlg())) {
-            student.setSignUpMoneyContent("报名费已交 ");
+            st.setSignUpMoneyContent("报名费已交 ");
         } else{
-            student.setSignUpMoneyContent("报名费未交 ");
+            st.setSignUpMoneyContent("报名费未交 ");
         }
 
         if ("1".equals(student.getSecureFlg())) {
-            student.setSecureContent("需要保险 ");
+            st.setSecureContent("需要保险 ");
         } else{
-            student.setSecureContent("不需要保险 ");
+            st.setSecureContent("不需要保险 ");
         }
 
         if(student.getTbClassType() != null){
-            student.setClassTypeName(student.getTbClassType().getClassType());;
+            st.setClassTypeName(student.getTbClassType().getClassType());
         }
-        String filePath=HSConstants.ROOT_PATH+HSConstants.FILE_PATH+"\\output\\"+student.getName()+".xls";
-        String fileTemplatePath=HSConstants.ROOT_PATH+HSConstants.FILE_PATH+"\\template\\template.xls";
-        outputExcel(fileTemplatePath, filePath, student);
+        if(student.getTbClassInfo() != null){
+            st.setClassName(student.getTbClassInfo().getName());
+        }
+        if(student.getTbDormitoryInfo() != null){
+            st.setDormitoryName(student.getTbDormitoryInfo().getName());
+        }
+        String filePath=Property.getProperty("uploadPath")+"\\output\\"+student.getName()+".xls";
+        String fileTemplatePath=Property.getProperty("uploadPath")+"\\template\\template.xls";
+        outputExcel(fileTemplatePath, filePath, st);
 
         setFileName(student.getName()+".xls");
         setFilePath(filePath);
@@ -141,11 +151,11 @@ public class DownloadStudentInfoAction extends ActionSupport {
      * @param file  待读取的文件
      * @return
      */
-    public void outputExcel(String fileTemplatePath, String destFileName, TbStudent student){
+    public void outputExcel(String fileTemplatePath, String destFileName, Student student){
         try {
-            Collection<TbStudent> staff = new HashSet<TbStudent>();
+            Collection<Student> staff = new HashSet<Student>();
             staff.add(student);
-            Map<String, Collection<TbStudent>> beans = new HashMap<String, Collection<TbStudent>>();
+            Map<String, Collection<Student>> beans = new HashMap<String, Collection<Student>>();
             beans.put("student", staff);
             Configuration config = new Configuration();
             XLSTransformer transformer = new XLSTransformer(config);

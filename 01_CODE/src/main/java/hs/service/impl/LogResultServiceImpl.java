@@ -6,6 +6,7 @@ import hs.pageModel.Combobox;
 import hs.pageModel.DataGrid;
 import hs.pageModel.LogResult;
 import hs.service.LogResultServiceI;
+import hs.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,11 @@ public class LogResultServiceImpl implements LogResultServiceI {
     @Override
     public DataGrid datagrid(LogResult logResult) {
         DataGrid j = new DataGrid();
-        j.setRows(logResultDao.find("FROM TbLogResult", logResult.getPage(), logResult.getRows()));
+        String hql = "FROM TbLogResult";
+        if (StringUtil.isNotEmpty(logResult.getSort())) {
+            hql += " ORDER BY " + logResult.getSort() + " " + logResult.getOrder();
+        }
+        j.setRows(logResultDao.find(hql, logResult.getPage(), logResult.getRows()));
         j.setTotal(logResultDao.count("SELECT count(*) FROM TbLogResult"));
         return j;
     }

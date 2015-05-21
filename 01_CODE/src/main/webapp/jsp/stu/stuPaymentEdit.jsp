@@ -83,6 +83,11 @@
                     readonly="readonly" /></td>
             </tr>
             <tr>
+                <th style="width: 120px;">应扣费用</th>
+                <td><input id="stu_stuPayment_deductionFee" name="stu_stuPayment_deductionFee" style="width: 180px;"
+                    readonly="readonly" /></td>
+            </tr>
+            <tr>
                 <th style="width: 120px;">应交全款</th>
                 <td><input id="stu_stuPayment_countFee" name="stu_stuPayment_countFee"style="width: 180px;"
                     readonly="readonly" /></td>

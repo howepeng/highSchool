@@ -1,9 +1,9 @@
 package hs.action;
 
+import hs.common.Property;
 import hs.model.TbStudent;
 import hs.pageModel.Finances;
 import hs.service.FinanceServiceI;
-import hs.util.HSConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,9 +57,9 @@ public class DownloadcrashHistoryAction extends ActionSupport {
         Map<String, List<Finances>> beans = financeService
                 .getReportData(attachid);
         if (beans != null) {
-            String destFileName = HSConstants.ROOT_PATH+HSConstants.FILE_PATH+"\\output\\"
+            String destFileName = Property.getProperty("uploadPath")+"\\output\\"
                     + attachid + ".xls";
-            String templateFileName = HSConstants.ROOT_PATH+HSConstants.FILE_PATH+"\\template\\report_template.xls";
+            String templateFileName = Property.getProperty("uploadPath")+"\\template\\report_template.xls";
 
             XLSTransformer transformer = new XLSTransformer();
             transformer.transformXLS(templateFileName, beans, destFileName);

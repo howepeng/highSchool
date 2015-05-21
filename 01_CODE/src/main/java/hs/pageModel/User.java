@@ -34,6 +34,7 @@ public class User implements Serializable {
     private String ids;//删除用 id字符串（用逗号分隔）
     private String roleIds;
     private String roleNames;
+    private boolean isOnlyDirector = false;
 
     public String getId() {
         return id;
@@ -136,5 +137,11 @@ public class User implements Serializable {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public boolean isOnlyDirector() {
+        return isOnlyDirector;
+    }
+    public void setOnlyDirector(boolean isOnlyDirector) {
+        this.isOnlyDirector = isOnlyDirector;
     }
 }

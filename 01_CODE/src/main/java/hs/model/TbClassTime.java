@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * TbClassType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_class_time", catalog = "highschool")
+@Table(name = "tb_class_time", catalog = "highschool2015")
 public class TbClassTime implements java.io.Serializable {
 
     // Fields

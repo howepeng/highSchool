@@ -52,7 +52,20 @@ public class LogTypeServiceImpl implements LogTypeServiceI {
     @Override
     public DataGrid datagrid(LogType logType) {
         DataGrid j = new DataGrid();
-        List<TbLogType> logTypes = logTypeDao.find("FROM TbLogType", logType.getPage(), logType.getRows());
+        String hql = "FROM TbLogType t";
+        if (logType.getSort() != null) {
+            if ("typeName".equals(logType.getSort())) {
+                hql += " ORDER BY t.typeId";
+            } else if ("modeName".equals(logType.getSort())) {
+                hql += " ORDER BY t.modeId";
+            } else if ("attenceText".equals(logType.getSort())) {
+                hql += " ORDER BY t.attence";
+            } else {
+                hql += " ORDER BY t." + logType.getSort();
+            }
+            hql += " " + logType.getOrder();
+        }
+        List<TbLogType> logTypes = logTypeDao.find(hql, logType.getPage(), logType.getRows());
         j.setRows(getLogTypeName(logTypes));
         j.setTotal(logTypeDao.count("SELECT count(*) FROM TbLogType"));
         return j;
@@ -76,6 +89,9 @@ public class LogTypeServiceImpl implements LogTypeServiceI {
     public void remove(String ids) {
         if (ids != null) {
             for (String id : ids.split(",")) {
+                if ("51c9b56b-fac6-4bc6-8079-94fb2ee718be".equals(id.trim())) {
+                    continue;
+                }
                 TbLogType r = logTypeDao.getById(TbLogType.class, id.trim());
                 if (r != null) {
                     logTypeDao.delete(r);
@@ -105,6 +121,11 @@ public class LogTypeServiceImpl implements LogTypeServiceI {
                 List<TbDictionary> end = dictionaryDao.find("FROM TbDictionary WHERE id = '"+ item.getModeId() +"'");
                 if (end != null && 1 == end.size()) {
                     n.setModeName(end.get(0).getName());
+                }
+                if (n.getAttence() == 1) {
+                    n.setAttenceText("是");
+                } else {
+                    n.setAttenceText("否");
                 }
                 ret.add(n);
             }

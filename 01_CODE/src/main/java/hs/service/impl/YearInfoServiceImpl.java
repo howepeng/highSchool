@@ -51,9 +51,18 @@ public class YearInfoServiceImpl implements YearInfoServiceI {
     }
 
     @Override
-    public DataGrid datagrid(YearInfo YearInfo) {
+    public DataGrid datagrid(YearInfo yearInfo) {
         DataGrid j = new DataGrid();
-        List<TbYearInfo> years = yearInfoDao.find("FROM TbYearInfo", YearInfo.getPage(), YearInfo.getRows());
+        String hql = "FROM TbYearInfo t";
+        if (yearInfo.getSort() != null) {
+            if ("showIsDefault".equals(yearInfo.getSort())) {
+                hql += " ORDER BY t.isDefault";
+            } else {
+                hql += " ORDER BY t." + yearInfo.getSort();
+            }
+            hql += " " + yearInfo.getOrder();
+        }
+        List<TbYearInfo> years = yearInfoDao.find(hql, yearInfo.getPage(), yearInfo.getRows());
         j.setRows(getYearInfo(years));
         j.setTotal(yearInfoDao.count("SELECT count(*) FROM TbYearInfo"));
         return j;

@@ -30,28 +30,34 @@
                             }, {
                                 title : '姓名',
                                 field : 'name',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             columns : [ [ {
                                 title : '身份证',
                                 field : 'idNum',
-                                width : 300
+                                width : 300,
+                                sortable : true
                             }, {
                                 title : '高考总分',
                                 field : 'fractionCount',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }, {
                                 title : '班级类型',
                                 field : 'classTypeName',
-                                width : 200
+                                width : 200,
+                                sortable : true
                             } , {
                                 title : '登记人',
                                 field : 'payee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '报名时间',
                                 field : 'createdatetime',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             toolbar : [ {
                                 text : '缴费',
@@ -92,7 +98,7 @@
             $('<div id="stuPaymentEdit_Open"/>').dialog({
                 href : 'jsp/stu/stuPaymentEdit.jsp',
                 width : 620,
-                height : 480,
+                height : 520,
                 modal : true,
                 title : '缴费',
                 onLoad: function() {
@@ -240,6 +246,7 @@
                 $('#stu_stuPayment_editForm').find('#stu_stuPayment_waterFee').val(r.waterFee);
                 $('#stu_stuPayment_editForm input[name=waterFee]').val(r.waterFee);
                 var stu_stuPayment_preferentialHd = $('#stu_stuPayment_editForm input[name=stu_stuPayment_preferentialHd]');
+                var stu_stuPayment_deductionFee = $('#stu_stuPayment_editForm input[name=stu_stuPayment_deductionFee]');
                 var countFee = $('#stu_stuPayment_editForm input[name=countFee]');
                 var stu_stuPayment_countFee = $('#stu_stuPayment_editForm').find('#stu_stuPayment_countFee');
 
@@ -254,6 +261,10 @@
                     countFee.val(count);
                     stu_stuPayment_preferentialHd.val("0");
                 }
+                // 扣费
+                stu_stuPayment_countFee.val(count-stu_stuPayment_deductionFee.val());
+                countFee.val(count-stu_stuPayment_deductionFee.val());
+
                 var arrearFee = $('#stu_stuPayment_editForm').find('#arrearFee');
                 arrearFee.val("0");
 
@@ -300,6 +311,14 @@
         count = Number(count) + Number($('#stu_stuPayment_editForm input[name=stu_stuPayment_safetyFee]').val());
         count = Number(count) + Number($('#stu_stuPayment_editForm input[name=stu_stuPayment_waterFee]').val());
         count = Number(count) - Number($('#stu_stuPayment_editForm input[name=stu_stuPayment_preferentialHd]').val());
+        // 扣费
+        var stu_stuPayment_deductionFee = $('#stu_stuPayment_editForm input[name=stu_stuPayment_deductionFee]');
+        count = Number(count) - Number(stu_stuPayment_deductionFee.val());
+        if (count < 0) {
+            count = 0;
+            stu_stuPayment_deductionFee = Number(count) + Number(stu_stuPayment_deductionFee.val());
+            stu_stuPayment_deductionFee.val(stu_stuPayment_deductionFee);
+        }
         var countFee = $('#stu_stuPayment_editForm input[name=stu_stuPayment_countFee]');
         countFee.val(count);
     }
@@ -366,6 +385,14 @@
         count = Number(count) + Number($('#stu_stuPayment_editForm input[name=safetyFee]').val());
         count = Number(count) + Number($('#stu_stuPayment_editForm input[name=waterFee]').val());
         count = Number(count) - Number($('#stu_stuPayment_editForm input[name=stu_stuPayment_preferentialHd]').val());
+        // 扣费
+        var stu_stuPayment_deductionFee = $('#stu_stuPayment_editForm input[name=stu_stuPayment_deductionFee]');
+        count = Number(count) - Number(stu_stuPayment_deductionFee.val());
+        if (count < 0) {
+            count = 0;
+            stu_stuPayment_deductionFee = Number(count) + Number(stu_stuPayment_deductionFee.val());
+            stu_stuPayment_deductionFee.val(stu_stuPayment_deductionFee);
+        }
         var arrearv = Number($('#stu_stuPayment_editForm input[name=stu_stuPayment_countFee]').val()) - Number(count);
         var arrearFee = $('#stu_stuPayment_editForm').find('#arrearFee');
         var countFee = $('#stu_stuPayment_editForm input[name=countFee]');

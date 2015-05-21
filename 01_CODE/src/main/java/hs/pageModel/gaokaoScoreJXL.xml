@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbook>
+    <worksheet name="高考成绩录入">
+        <loop startRow="1" endRow="1" items="gaokaoScores"
+            var="gaokaoScore" varType="hs.pageModel.GaokaoScoreJXL">
+            <section startRow="1" endRow="1">
+                <mapping row="2" col="5">gaokaoScore.gaokaoNum</mapping>
+                <mapping row="2" col="6">gaokaoScore.fractionLanguage</mapping>
+                <mapping row="2" col="7">gaokaoScore.fractionMath</mapping>
+                <mapping row="2" col="8">gaokaoScore.fractionEnglish</mapping>
+                <mapping row="2" col="9">gaokaoScore.fractionComp1</mapping>
+                <mapping row="2" col="10">gaokaoScore.fractionComp2</mapping>
+                <mapping row="2" col="11">gaokaoScore.fractionComp3</mapping>
+                <mapping row="2" col="12">gaokaoScore.fractionComp_count</mapping>
+                <mapping row="2" col="13">gaokaoScore.fractionCount</mapping>
+                <mapping row="2" col="14">gaokaoScore.admissionSchoolName</mapping>
+                <mapping row="2" col="15">gaokaoScore.studentId</mapping>
+            </section>
+            <loopbreakcondition>
+                <rowcheck offset="0">
+                <cellcheck offset="0"></cellcheck>
+                </rowcheck>
+            </loopbreakcondition>
+        </loop>
+    </worksheet>
+</workbook>

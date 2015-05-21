@@ -43,6 +43,7 @@ public class Finances implements java.io.Serializable {
     private BigDecimal payAgainFee;
     private BigDecimal countPayFee;
     private BigDecimal preferentialFee;
+    private BigDecimal deductionFee;
     private BigDecimal arrearFee;
     private BigDecimal refundFee;
     private BigDecimal countReport;
@@ -265,6 +266,12 @@ public class Finances implements java.io.Serializable {
     public void setCrashHistoryType(String crashHistoryType) {
         this.crashHistoryType = crashHistoryType;
     }
+	public BigDecimal getDeductionFee() {
+		return deductionFee;
+	}
+	public void setDeductionFee(BigDecimal deductionFee) {
+		this.deductionFee = deductionFee;
+	}
 
 
 

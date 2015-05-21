@@ -21,6 +21,7 @@
                                 field : 'id',
                                 title : '编号',
                                 width : 150,
+                                sortable : true,
                                 checkbox : true
                             }, {
                                 field : 'name',
@@ -31,7 +32,8 @@
                             columns : [ [ {
                                 field : 'showIsDefault',
                                 title : '是否当前学年',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             toolbar : [ {
                                 text : '增加',

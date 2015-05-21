@@ -30,95 +30,143 @@
                             }, {
                                 title : '姓名',
                                 field : 'name',
-                                width : 100
+                                width : 100,
+                                sortable : true
+                            }, {
+                                title : '性别',
+                                field : 'sexContent',
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '身份证',
                                 field : 'idNum',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '班级类型',
                                 field : 'classTypeName',
-                                width : 100
+                                width : 100,
+                                sortable : true
+                            }, {
+                                title : '班级',
+                                field : 'className',
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '学费',
                                 field : 'studyFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '住宿费',
                                 field : 'stayFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '晚自习费',
                                 field : 'selfFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '成绩单押金',
                                 field : 'scoreFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '保险费',
                                 field : 'safetyFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '水费',
                                 field : 'waterFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '报名费',
                                 field : 'signFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '减免费用',
                                 field : 'preferentialFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
+                            } , {
+                                title : '按时扣费',
+                                field : 'deductionFee',
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '现金',
                                 field : 'cashFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '银行转账',
                                 field : 'bankFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '拉卡拉pos机转账',
                                 field : 'lakalaFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '支付宝转账',
                                 field : 'aliFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '退款',
                                 field : 'refundFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '补交费 ',
                                 field : 'payAgainFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '总计交付',
                                 field : 'countPayFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '欠费',
                                 field : 'arrearFee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '收款人',
                                 field : 'payee',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
-                                title : '收款时间',
+                                title : '产生时间',
                                 field : 'createdatetime',
-                                width : 150
+                                width : 150,
+                                sortable : true
+                            } , {
+                                title : '缴其时间',
+                                field : 'payFinishdatetime',
+                                width : 150,
+                                sortable : true
+                            } , {
+                                title : '已缴',
+                                field : 'payFinishFee',
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '账单类型',
                                 field : 'crashHistoryType',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '撤消状态',
                                 field : 'cancelflg',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }   ] ],
                              toolbar : [ {
 //                                 text : '修改',
@@ -526,11 +574,6 @@
     </div>
     <div data-options="region:'center',border:false" style="overflow: hidden;">
         <table id="fin_crashHistory_datagrid"></table>
-    </div>
-
-    <div id="fin_crashHistory_menu" class="easyui-menu" style="width:120px;display: none;">
-        <div onclick="fin_crashHistory_editFun();" data-options="iconCls:'icon-edit'">编辑</div>
-        <div onclick="fin_crashHistory_deleteFun();" data-options="iconCls:'icon-remove'">删除</div>
     </div>
 </div>
 

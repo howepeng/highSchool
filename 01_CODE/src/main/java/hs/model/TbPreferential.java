@@ -15,7 +15,7 @@ import javax.persistence.Table;
  * TbPreferential entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_preferential", catalog = "highschool")
+@Table(name = "tb_preferential", catalog = "highschool2015")
 public class TbPreferential implements java.io.Serializable {
 
     // Fields

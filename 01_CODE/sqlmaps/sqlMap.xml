@@ -15,17 +15,257 @@
         t2.id as logTypeId,
         t2.name as logTypeName,
         t1.date as date,
-        t1.classId as classId,
         t1.startTime,
         t1.endTime,
         count(t1.id) as count
-        FROM tb_log_info t1, tb_log_type t2, tb_class_time t3
+        FROM tb_log_info t1, tb_log_type t2, tb_class_time t3, tb_student t4, tb_year_info t5
         where t1.classTimeId = t3.id
         and t1.typeId = t2.id
+        and t4.id = t1.studentId
+        and t5.id = t4.year_id
+        and t5.is_default = '105001'
+        and t1.is_delete = 0
         and t1.date >= str_to_date(#start#,'%Y-%m-%d')
         and t1.date <= str_to_date(#end#,'%Y-%m-%d')
-        GROUP BY t3.id,t3.name,t2.id,t2.name,t1.date,t1.classId,t1.startTime,t1.endTime
+        GROUP BY t3.id,t3.name,t2.id,t2.name,t1.date,t1.startTime,t1.endTime
         order by t1.date desc
     ]]>
   </select>
+
+  <select id="getLogSubtotal"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+    <![CDATA[
+       select count(li.id) as subtotal
+       from tb_log_info li, tb_log_type lt, tb_log_result lr
+       where 1=1
+        and li.typeId = lt.id
+        and li.resultId = lr.id
+        and li.is_delete = 0
+        and lr.id = '48f883d5-cb83-4cfa-a743-671b89be5d77'
+        and lt.id = #logTypeId#
+    ]]>
+  </select>
+
+  <delete id="deleteScoreCount"
+        parameterClass="hs.common.vo.SqlParameterVO">
+    <![CDATA[
+    delete from  tb_score_count
+    where month_time1 = #monthTime1#
+    and month_time2 = #monthTime2#
+    and student_id in (SELECT st.id from tb_student st,tb_class_type ct where ct.id = st.class_type and ct.professional_id= #professionalId#)
+    and year_id = (SELECT ty.id FROM tb_year_info ty where ty.is_default = '105001' );
+    ]]>
+  </delete>
+
+  <select id="getScoreCountForFractionLine"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+      select t.$modeName$ as value
+      from tb_score_count t, tb_student ts, tb_year_info yi
+      where t.month_time1 = #monthTime1#
+      and t.month_time2 = #monthTime2#
+      and yi.id = ts.year_id
+      and yi.is_default = '105001'
+      and ts.id = t.student_id
+      and t.subject_id = #subjectId#
+      and t.student_id = #studentId#
+  </select>
+
+  <select id="getFractionForFractionLine"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+      select t.$modeName$ as value
+      from tb_month_score t, tb_student ts, tb_year_info yi
+      where t.month_time_id = #monthTimeId#
+      and ts.id = t.student_id
+      and yi.id = ts.year_id
+      and yi.is_default = '105001'
+      and t.student_id = #studentId#
+  </select>
+
+  <select id="getStudentListForFractionLine"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+      select ts.name as name,ts.id as studentId
+      from tb_student ts,tb_class_info tc,tb_year_info yi
+      where ts.class_id = tc.id
+      and yi.id = ts.year_id
+      and yi.is_default = '105001'
+      and tc.id= #classId#
+      <isNotEmpty property="studentIds">
+      and ts.id in <iterate property="studentIds" open="(" close=")" conjunction=",">#studentIds[]#</iterate>
+      </isNotEmpty>
+  </select>
+
+  <select id="averageAllMonthScore"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+      select
+      mi.id as id ,
+      mi.name as name,
+      round(avg(tms.fraction_language), 2) as fractionLanguage,
+      round(avg(tms.fraction_math), 2) as fractionMath,
+      round(avg(tms.fraction_english), 2) as fractionEnglish,
+      round(avg(tms.fraction_comp1), 2) as fractionComp1,
+      round(avg(tms.fraction_comp2), 2) as fractionComp2,
+      round(avg(tms.fraction_comp3), 2) as fractionComp3,
+      round(avg(tms.fraction_comp_count), 2) as fractionCompCount,
+      round(avg(tms.fraction_count), 2) as fractionCount
+      from
+      tb_month_score tms,
+      tb_student s,
+      tb_class_info ci,
+      tb_class_type ct,
+      tb_month_info mi,
+      tb_year_info yi
+      where tms.student_id = s.id
+      and s.class_type = ct.id
+      and s.class_id = ci.id
+      and tms.month_time_id = mi.id
+      and yi.id = s.year_id
+      and yi.is_default = '105001'
+      and tms.month_time_id = #monthTimeId#
+      <isNotEmpty property="professionalId">
+      and ct.professional_id = #professionalId#
+      </isNotEmpty>
+      <isNotEmpty property="classId">
+      and ci.id = #classId#
+      </isNotEmpty>
+      GROUP BY mi.id,mi.name
+  </select>
+
+  <select id="getDeductionFee"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+        select
+        df.start_date,
+        df.end_date,
+        (TO_DAYS(Now())-TO_DAYS(df.start_date)) as days,
+        (period_diff(date_format(now(),'%Y%m'),date_format(df.start_date,'%Y%m'))) as months,
+        (TIMESTAMPDIFF(week, df.start_date, now())) as weeks,
+        df.deduction_fee,
+        df.time_type
+        from tb_deduction_fee df ,tb_year_info yi
+        where yi.id = df.year_id
+        and yi.is_default = '105001'
+        and df.`status` = '111001'
+        <![CDATA[
+        and df.start_date <= NOW()
+        and df.end_date >= NOW();
+        ]]>
+  </select>
+
+  <select id="getStudentForExaminationRoom"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+        select st.`name`,st.num,sc.grade_rank
+        from tb_student st, tb_class_type ct, tb_score_count sc, tb_year_info yi
+        where st.class_type = ct.id
+        and st.id = sc.student_id
+        and yi.id = st.year_id
+        and yi.is_default = '105001'
+        and sc.month_time1 = #monthTime1#
+        and sc.month_time2 = #monthTime2#
+        and ct.professional_id = #professionalId#
+        order by sc.grade_rank $rangeOrder$;
+  </select>
+
+  <select id="averageAllGaokaoScore"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+      select
+      round(avg(tgs.fraction_language), 2) as fractionLanguage,
+      round(avg(tgs.fraction_math), 2) as fractionMath,
+      round(avg(tgs.fraction_english), 2) as fractionEnglish,
+      round(avg(tgs.fraction_comp1), 2) as fractionComp1,
+      round(avg(tgs.fraction_comp2), 2) as fractionComp2,
+      round(avg(tgs.fraction_comp3), 2) as fractionComp3,
+      round(avg(tgs.fraction_comp_count), 2) as fractionCompCount,
+      round(avg(tgs.fraction_count), 2) as fractionCount
+      from
+      tb_gaokao_score tgs,
+      tb_student s,
+      tb_class_info ci,
+      tb_class_type ct,
+      tb_year_info yi
+      where tgs.student_id = s.id
+      and s.class_type = ct.id
+      and s.class_id = ci.id
+      and yi.id = s.year_id
+      and yi.is_default = '105001'
+      <isNotEmpty property="professionalId">
+      and ct.professional_id = #professionalId#
+      </isNotEmpty>
+      <isNotEmpty property="classId">
+      and ci.id = #classId#
+      </isNotEmpty>
+  </select>
+  <select id="getGaokaoScoreStudents"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+        select
+        st.id,
+        st.`name`,
+        ct.class_type,
+        ci.`name` as class_name,
+        st.sex,
+        gs.gaokao_num,
+        gs.fraction_language,gs.fraction_math,gs.fraction_english,
+        gs.fraction_comp1,gs.fraction_comp2,gs.fraction_comp3,gs.fraction_comp_count,
+        gs.fraction_count,gs.admission_school_name
+        from
+        tb_class_info ci,
+        tb_class_type ct,
+        tb_year_info yi,
+        tb_student st
+        left join tb_gaokao_score gs on st.id = gs.student_id
+        where ci.id = st.class_id
+        and ct.id = st.class_type
+        and yi.id = st.year_id
+        and yi.is_default = '105001'
+        and class_id = #classId#
+  </select>
+  <select id="getStudentCountByClassId"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+        select count(1) as sCount
+        from tb_student ts,tb_class_info tc,tb_year_info yi
+        where ts.class_id = tc.id
+        and yi.id = ts.year_id
+        and yi.is_default = '105001'
+        and ts.class_id = #classId#
+  </select>
+  <select id="getStudentCountByAttence"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+        select count(distinct ts.id) as sCount
+        from tb_log_info tl, tb_student ts,tb_year_info ty,tb_log_type tlt
+        where tl.is_delete = 0
+        and tl.studentId = ts.id
+        and ty.id = ts.year_id
+        and ty.is_default = '105001'
+        and tlt.id = tl.typeId
+        and tlt.attence = 1
+        and ts.class_id  = #classId#
+        and tl.date = #date#
+        and tl.classTimeId = #classTimeId#
+  </select>
+  <select id="getStudentCountByDelay"
+        parameterClass="hs.common.vo.SqlParameterVO"
+        resultClass="hs.common.vo.SqlResultVO">
+        select count(distinct ts.id) as sCount
+        from tb_log_info tl, tb_student ts,tb_year_info ty,tb_log_type tlt
+        where tl.is_delete = 0
+        and tl.studentId = ts.id
+        and ty.id = ts.year_id
+        and ty.is_default = '105001'
+        and tlt.id = tl.typeId
+        and tl.typeId = '51c9b56b-fac6-4bc6-8079-94fb2ee718be'
+        and ts.class_id  = #classId#
+        and tl.date = #date#
+        and tl.classTimeId = #classTimeId#
+  </select>
 </sqlMap>
+
+

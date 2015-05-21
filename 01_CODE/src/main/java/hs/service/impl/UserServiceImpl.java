@@ -101,8 +101,13 @@ public class UserServiceImpl implements UserServiceI {
         if (reslut != null && reslut.size() > 0) {
             BeanUtils.copyProperties(reslut.get(0), user);
             if(reslut.get(0).getTbUserRoles() != null) {
+                int count = reslut.get(0).getTbUserRoles().size();
                 for (TbUserRole item : reslut.get(0).getTbUserRoles()) {
                     TbRole tbRole = item.getTbRole();
+                    if (count == 1
+                            && "df3ab88d-c5a2-4f82-aef0-597468fd70d0".equals(tbRole.getId())) {
+                        user.setOnlyDirector(true);
+                    }
                     rids.append(tbRole.getId()+",");
                 }
             }

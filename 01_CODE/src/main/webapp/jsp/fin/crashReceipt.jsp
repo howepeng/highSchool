@@ -30,24 +30,29 @@
                             }, {
                                 title : '收款原因',
                                 field : 'text',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             columns : [ [ {
                                 title : '收款详细原因',
                                 field : 'detail',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }, {
                                 title : '金额',
                                 field : 'money',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '收款人',
                                 field : 'payee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '收款时间',
                                 field : 'createdatetime',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }  ] ],
                             toolbar : [ {
                                 text : '收款',

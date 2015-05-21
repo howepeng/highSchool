@@ -21,6 +21,7 @@
                                 field : 'id',
                                 title : '编号',
                                 width : 150,
+                                sortable : true,
                                 checkbox : true
                             }, {
                                 field : 'name',
@@ -31,23 +32,33 @@
                             columns : [ [ {
                                 field : 'typeName',
                                 title : '方式',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             },{
                                 field : 'modeName',
                                 title : '模式',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             },{
                                 field : 'count',
                                 title : '次数',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             },{
                                 field : 'score',
                                 title : '积分',
-                                width : 150
+                                width : 150,
+                                sortable : true
+                            },{
+                                field : 'attenceText',
+                                title : '计入考勤',
+                                width : 150,
+                                sortable : true
                             },{
                                 field : 'remark',
                                 title : '备注',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             toolbar : [ {
                                 text : '增加',

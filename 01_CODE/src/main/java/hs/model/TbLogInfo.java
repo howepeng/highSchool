@@ -15,7 +15,7 @@ import javax.persistence.Table;
  * TbClassType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_log_info", catalog = "highschool")
+@Table(name = "tb_log_info", catalog = "highschool2015")
 public class TbLogInfo implements java.io.Serializable {
 
     // Fields
@@ -28,22 +28,15 @@ public class TbLogInfo implements java.io.Serializable {
     private Time startTime;
     private Time endTime;
     private Date date;
-    private String classId;
     private String remark;
     private TbLogType tbLogType;
     private TbClassTime tbClassTime;
     private TbStudent tbStudent;
     private TbLogResult tbLogResult;
+    //积分
+    private int score;
+    private int isDelete;
     // Constructors
-    @Column(name = "classId", length = 36, nullable = false)
-    public String getClassId() {
-        return classId;
-    }
-
-    public void setClassId(String classId) {
-        this.classId = classId;
-    }
-
     @Column(name = "remark", length = 100)
     public String getRemark() {
         return remark;
@@ -125,12 +118,30 @@ public class TbLogInfo implements java.io.Serializable {
         this.tbLogResult = tbLogResult;
     }
 
+    @Column(name = "date", nullable = false)
     public Date getDate() {
         return date;
     }
 
-    @Column(name = "date", nullable = false)
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Column(name = "score", nullable = false)
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    @Column(name = "is_delete", nullable = false)
+    public int getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
     }
 }

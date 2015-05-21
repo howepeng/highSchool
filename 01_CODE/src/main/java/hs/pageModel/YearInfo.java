@@ -6,10 +6,6 @@ import java.io.Serializable;
  * @author Administrator
  *
  */
-/**
- * @author Administrator
- *
- */
 public class YearInfo implements Serializable {
 
     /**

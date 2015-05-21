@@ -44,6 +44,10 @@ public class LogInfo implements Serializable {
     private String sort;
     private String order;
     private String ids;//删除用 id字符串（用逗号分隔）
+    private String isReturnCalendar = "0";
+    //积分
+    private int score;
+
     public String getId() {
         return id;
     }
@@ -199,5 +203,17 @@ public class LogInfo implements Serializable {
     }
     public void setEnd(String end) {
         this.end = end;
+    }
+    public String getIsReturnCalendar() {
+        return isReturnCalendar;
+    }
+    public void setIsReturnCalendar(String isReturnCalendar) {
+        this.isReturnCalendar = isReturnCalendar;
+    }
+    public int getScore() {
+        return score;
+    }
+    public void setScore(int score) {
+        this.score = score;
     }
 }

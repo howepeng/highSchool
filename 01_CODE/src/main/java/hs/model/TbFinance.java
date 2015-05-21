@@ -15,7 +15,7 @@ import javax.persistence.Table;
  * TbFinance entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_finance", catalog = "highschool")
+@Table(name = "tb_finance", catalog = "highschool2015")
 public class TbFinance implements java.io.Serializable {
 
     // Fields
@@ -27,10 +27,10 @@ public class TbFinance implements java.io.Serializable {
     private String id;
     private TbUser tbUser;
     private TbClassType tbClassType;
+    private TbStudent tbStudent;
     private String name;
     private String idNum;
     private Date createdatetime;
-    private String studentId;
 
     private BigDecimal studyFee = new BigDecimal(0);
     private BigDecimal stayFee = new BigDecimal(0);
@@ -46,6 +46,7 @@ public class TbFinance implements java.io.Serializable {
     private BigDecimal payAgainFee = new BigDecimal(0);
     private BigDecimal countPayFee = new BigDecimal(0);
     private BigDecimal preferentialFee = new BigDecimal(0);
+    private BigDecimal deductionFee = new BigDecimal(0);
     private BigDecimal arrearFee = new BigDecimal(0);
     private BigDecimal refundFee = new BigDecimal(0);
     private BigDecimal cashRefundFee = new BigDecimal(0);
@@ -104,7 +105,6 @@ public class TbFinance implements java.io.Serializable {
         this.aliFee = aliFee;
         this.payAgainFee = payAgainFee;
         this.countPayFee = countPayFee;
-        this.studentId = studentId;
         this.preferentialFee = preferentialFee;
     }
 
@@ -299,14 +299,6 @@ public class TbFinance implements java.io.Serializable {
     public void setAliFee(BigDecimal aliFee) {
         this.aliFee = aliFee;
     }
-    @Column(name = "studentId", length = 36)
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
 
     @Column(name = "preferentialFee", precision = 22, scale = 0)
     public BigDecimal getPreferentialFee() {
@@ -405,6 +397,25 @@ public class TbFinance implements java.io.Serializable {
 
     public void setCrashHistoryType(String crashHistoryType) {
         this.crashHistoryType = crashHistoryType;
+    }
+
+    @Column(name = "deductionFee", precision = 22, scale = 0)
+    public BigDecimal getDeductionFee() {
+        return deductionFee;
+    }
+
+    public void setDeductionFee(BigDecimal deductionFee) {
+        this.deductionFee = deductionFee;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "studentId")
+    public TbStudent getTbStudent() {
+        return tbStudent;
+    }
+
+    public void setTbStudent(TbStudent tbStudent) {
+        this.tbStudent = tbStudent;
     }
 
 

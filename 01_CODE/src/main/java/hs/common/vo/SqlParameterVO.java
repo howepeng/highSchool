@@ -97,6 +97,11 @@ public class SqlParameterVO extends HashMap<String, Object> {
 
     @Override
     public Object put(String name, Object data) {
+        if (data != null) {
+            putData(name, data);
+        } else {
+            putData(name, null);
+        }
         return null;
     }
 

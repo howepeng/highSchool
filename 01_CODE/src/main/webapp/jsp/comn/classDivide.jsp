@@ -24,28 +24,34 @@
                                 title : '编号',
                                 field : 'id',
                                 width : 150,
+                                sortable : true,
                                 checkbox : true
                             }, {
                                 title : '班级名称',
                                 field : 'name',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             columns : [ [ {
                                 title : '年限',
                                 field : 'yearId',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '班级类型',
                                 field : 'classType',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '分班方式',
                                 field : 'classMode',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } , {
                                 title : '班主任',
                                 field : 'userId',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }] ],
                             toolbar : [ {
                                 text : '分班',
@@ -87,13 +93,13 @@
     });
 
     function comn_classDivide_searchFun() {
-        stu_manager_datagrid.datagrid('load',
+        comn_classDivide_datagrid.datagrid('load',
                 serializeObject($('#comn_classDivide_SearchForm')));
     }
 
     function comn_classDivide_cleanFun() {
         $('#comn_classDivide_SearchForm input').val('');
-        stu_manager_datagrid.datagrid('load', {});
+        comn_classDivide_datagrid.datagrid('load', {});
     }
 
     function comn_classDivide_addFun() {
@@ -246,7 +252,7 @@
     }
 </script>
 <div class="easyui-layout" data-options="fit:true">
-<div data-options="region:'north',border:false,title:'分班条件'" style="height: 120px;overflow: hidden;" align="left">
+<div data-options="region:'north',border:false,title:'过滤条件'" style="height: 110px;overflow: hidden;" align="left">
         <form id="comn_classDivide_SearchForm" method="post">
             <table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
                 <tr>
@@ -268,13 +274,13 @@
                 <tr>
                     <th>分班方式</th>
                     <td>
-                        <input name="classModeId" class="easyui-combobox" style="width:160px;"
+                        <input id="classMode" name="classMode" class="easyui-combobox" style="width:160px;"
                             data-options="url : '${pageContext.request.contextPath}/dictionaryAction!combox.action?fatherId=104',
                                                 valueField : 'id',
                                                 textField : 'name',
                                                 multiple : false,
-                                                editable : false,
-                                                panelHeight : 'auto'" />
+                                                editable : true,
+                                                panelHeight : '200'" />
                     </td>
                 </tr>
                 <tr>

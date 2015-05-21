@@ -1,5 +1,9 @@
 package hs.service.impl;
 
+import hs.common.dao.QueryDAO;
+import hs.common.vo.SqlParameterVO;
+import hs.common.vo.SqlResultVO;
+import hs.dao.ClassInfoDaoI;
 import hs.dao.ClassTypeDaoI;
 import hs.dao.FileDaoI;
 import hs.dao.FinanceDaoI;
@@ -9,12 +13,15 @@ import hs.dao.ReportFileDaoI;
 import hs.dao.StudentDaoI;
 import hs.dao.StudentInfoHistoryDaoI;
 import hs.dao.UserDaoI;
+import hs.dao.YearInfoDaoI;
+import hs.model.TbClassInfo;
 import hs.model.TbClassType;
 import hs.model.TbFinance;
 import hs.model.TbPreferential;
 import hs.model.TbStudent;
 import hs.model.TbStudentInfoHistory;
 import hs.model.TbUser;
+import hs.model.TbYearInfo;
 import hs.pageModel.Combobox;
 import hs.pageModel.DataGrid;
 import hs.pageModel.SessionInfo;
@@ -102,10 +109,30 @@ public class StudentServiceImpl implements StudentServiceI {
         this.reportFileDaoI = reportFileDaoI;
     }
 
+    private ClassInfoDaoI classInfoDao;
+
+    @Autowired
+    public void setClassInfoDao(ClassInfoDaoI classInfoDao) {
+        this.classInfoDao = classInfoDao;
+    }
+
+    private YearInfoDaoI yearInfoDao;
+
+    @Autowired
+    public void setYearInfoDao(YearInfoDaoI yearInfoDao) {
+        this.yearInfoDao = yearInfoDao;
+    }
+
+    @Autowired
+    protected QueryDAO queryDAO = null;
+
     @Override
-    public List<Combobox> combox(Student student) {
+    public List<Combobox> combox(Student student, SessionInfo sessionInfo) {
         List<Combobox> rl = new ArrayList<Combobox>();
-        List<TbStudent> l = studentDao.find("from TbStudent");
+        Map<String, Object> params = new HashMap<String, Object>();
+        String hql = "from TbStudent t where t.tbYearInfo.isDefault = '105001' ";
+        hql += this.addConditionAND(student, params, sessionInfo);
+        List<TbStudent> l = studentDao.find(hql, params);
         if (l != null && l.size() > 0) {
             for (TbStudent t : l) {
                 Combobox r = new Combobox();
@@ -114,18 +141,44 @@ public class StudentServiceImpl implements StudentServiceI {
                 rl.add(r);
             }
         }
+        System.out.println(rl.size());
         return rl;
     }
     /**
      * 缴费
      */
     @Override
-    public DataGrid datagridBeforePay(Student student) {
+    public DataGrid datagridBeforePay(Student student, SessionInfo sessionInfo) {
         DataGrid j = new DataGrid();
+        // 计算扣费
+        BigDecimal deductionFee = new BigDecimal(0);
+        List<SqlResultVO> deductionFeeList = getDeductionFeeList();
+        if (deductionFeeList != null && deductionFeeList.size() > 0) {
+            for (SqlResultVO item : deductionFeeList) {
+                Double deductionFeeItem = item.getDouble("deduction_fee");
+                int count = 0;
+                if ("110001".equals(item.getString("time_type"))) {
+                    // 按天
+                    count = item.getInteger("days");
+                } else if ("110002".equals(item.getString("time_type"))) {
+                    // 按月
+                    count = item.getInteger("months");
+                } else if ("110003".equals(item.getString("time_type"))) {
+                    // 按周
+                    count = item.getInteger("weeks");
+                }
+                BigDecimal bd1 = new BigDecimal(Double.toString(deductionFeeItem));
+                BigDecimal bd2 = new BigDecimal(0);
+                if(count > 0) {
+                    bd2 = new BigDecimal(count);
+                }
+                deductionFee = bd1.multiply(bd2);
+            }
+        }
         List<Student> finList = new ArrayList<Student>();
         Map<String, Object> params = new HashMap<String, Object>();
         String hql = "FROM TbStudent t WHERE t.isPaymentFlg = '0'";
-        hql += this.addConditionAND(student, params);
+        hql += this.addConditionAND(student, params, sessionInfo);
         List<TbStudent> tbStuList = studentDao.find(hql, params, student.getPage(), student.getRows());
         if (tbStuList != null && tbStuList.size() > 0) {
             for (TbStudent t : tbStuList) {
@@ -135,8 +188,8 @@ public class StudentServiceImpl implements StudentServiceI {
                     f.setClassType(t.getTbClassType().getId());
                     f.setClassTypeName(t.getTbClassType().getClassType());
                 }
-
                 f.setPayee(t.getTbUser().getName());
+                f.setStu_stuPayment_deductionFee(deductionFee);
                 finList.add(f);
             }
         }
@@ -145,16 +198,22 @@ public class StudentServiceImpl implements StudentServiceI {
         return j;
     }
 
+    private List<SqlResultVO> getDeductionFeeList() {
+        SqlParameterVO param = new SqlParameterVO();
+        return queryDAO.queryForList("com.getDeductionFee",
+                param, SqlResultVO.class);
+    }
+
     /**
      * 补交费
      */
     @Override
-    public DataGrid datagridAfterPay(Student student) {
+    public DataGrid datagridAfterPay(Student student, SessionInfo sessionInfo) {
         DataGrid j = new DataGrid();
         List<Student> finList = new ArrayList<Student>();
         Map<String, Object> params = new HashMap<String, Object>();
         String hql = "FROM TbStudent t WHERE t.arrearflg='1'";
-        hql += this.addConditionAND(student, params);
+        hql += this.addConditionAND(student, params, sessionInfo);
         List<TbStudent> tbStuList = studentDao.find(hql, params, student.getPage(), student.getRows());
         if (tbStuList != null && tbStuList.size() > 0) {
             for (TbStudent t : tbStuList) {
@@ -162,6 +221,7 @@ public class StudentServiceImpl implements StudentServiceI {
                 BeanUtils.copyProperties(t, f);
                 f.setPayee(t.getTbUser().getName());
                 f.setArrearFee(t.getArrearFee());
+                f.setAllFee(t.getArrearFee().add(t.getCountFee()));
                 if(t.getTbClassType() != null) {
                     f.setClassType(t.getTbClassType().getId());
                     f.setClassTypeName(t.getTbClassType().getClassType());
@@ -178,12 +238,12 @@ public class StudentServiceImpl implements StudentServiceI {
      * 退款
      */
     @Override
-    public DataGrid datagridReturnPay(Student student) {
+    public DataGrid datagridReturnPay(Student student, SessionInfo sessionInfo) {
         DataGrid j = new DataGrid();
         List<Student> finList = new ArrayList<Student>();
         Map<String, Object> params = new HashMap<String, Object>();
         String hql = "FROM TbStudent t WHERE t.countFee > t.signFee";
-        hql += this.addConditionAND(student, params);
+        hql += this.addConditionAND(student, params, sessionInfo);
         List<TbStudent> tbStuList = studentDao.find(hql, params, student.getPage(), student.getRows());
         if (tbStuList != null && tbStuList.size() > 0) {
             for (TbStudent t : tbStuList) {
@@ -203,12 +263,12 @@ public class StudentServiceImpl implements StudentServiceI {
     }
 
     @Override
-    public DataGrid datagridStudent(Student student) {
+    public DataGrid datagridStudent(Student student, SessionInfo sessionInfo) {
         DataGrid j = new DataGrid();
         List<Student> finList = new ArrayList<Student>();
         Map<String, Object> params = new HashMap<String, Object>();
-        String hql = "FROM TbStudent t";
-        hql += this.addCondition(student, params);
+        String hql = "FROM TbStudent t where 1=1 ";
+        hql += this.addCondition(student, params, sessionInfo);
         List<TbStudent> tbStuList = studentDao.find(hql, params, student.getPage(), student.getRows());
         if (tbStuList != null && tbStuList.size() > 0) {
             for (TbStudent t : tbStuList) {
@@ -255,9 +315,14 @@ public class StudentServiceImpl implements StudentServiceI {
                 }
                 if (t.getTbYearInfo() != null) {
                     f.setYearId(t.getTbYearInfo().getId());
+                    f.setYearInfoName(t.getTbYearInfo().getName());
                 }
                 if (t.getTbClassInfo() != null) {
                     f.setClassId(t.getTbClassInfo().getId());
+                }
+                if (t.getTbDormitoryInfo() != null) {
+                    f.setDormitoryNum(t.getTbDormitoryInfo().getId());
+                    f.setDormitoryName(t.getTbDormitoryInfo().getName());
                 }
                 finList.add(f);
             }
@@ -268,11 +333,11 @@ public class StudentServiceImpl implements StudentServiceI {
     }
 
     @Override
-    public List<Student> getStudentInfo(Student student) {
+    public List<Student> getStudentInfo(Student student, SessionInfo sessionInfo) {
         List<Student> finList = new ArrayList<Student>();
         Map<String, Object> params = new HashMap<String, Object>();
-        String hql = "FROM TbStudent t";
-        hql += this.addCondition(student, params);
+        String hql = "FROM TbStudent t where 1=1 ";
+        hql += this.addCondition(student, params, sessionInfo);
         List<TbStudent> tbStuList = studentDao.find(hql, params, student.getPage(), student.getRows());
         if (tbStuList != null && tbStuList.size() > 0) {
             for (TbStudent t : tbStuList) {
@@ -317,6 +382,11 @@ public class StudentServiceImpl implements StudentServiceI {
                 }
                 if (t.getTbClassInfo() != null) {
                     f.setClassId(t.getTbClassInfo().getId());
+                    f.setClassName(t.getTbClassInfo().getName());
+                }
+                if (t.getTbDormitoryInfo() != null) {
+                    f.setDormitoryNum(t.getTbDormitoryInfo().getId());
+                    f.setDormitoryName(t.getTbDormitoryInfo().getName());
                 }
                 finList.add(f);
             }
@@ -354,91 +424,83 @@ public class StudentServiceImpl implements StudentServiceI {
      * @param params
      * @return
      */
-    private String addCondition(Student student, Map<String, Object> params) {
-        String hql = "";
+    private String addCondition(Student student, Map<String, Object> params, SessionInfo sessionInfo) {
+        String hql = " AND t.tbYearInfo.isDefault = '105001'";
 
         if (student.getName() != null && !student.getName().trim().equals("")) {
-            hql += " WHERE t.name LIKE :name";
+            hql += " t.name LIKE :name";
             params.put("name", "%%" + student.getName() + "%%");
         }
         if (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) {
-
-            if (student.getName() != null && !student.getName().trim().equals("")) {
-                hql += " AND";
-            }else {
-                hql += " WHERE";
-            }
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             String createdatetimeEnd =df.format(student.getCreatedatetimeEnd()) + " 24:00:00";
-            hql += " t.createdatetime>= :createdatetimeStart AND t.createdatetime<= '" + createdatetimeEnd +"'";
+            hql += " AND t.createdatetime>= :createdatetimeStart AND t.createdatetime<= '" + createdatetimeEnd +"'";
             params.put("createdatetimeStart", student.getCreatedatetimeStart());
         }
+        if (student.getPayFinishdatetimeStart() != null && student.getPayFinishdatetimeEnd() != null) {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String payFinishdatetimeEnd =df.format(student.getPayFinishdatetimeEnd()) + " 24:00:00";
+            hql += " AND t.payFinishdatetime>= :payFinishdatetimeStart AND t.payFinishdatetime<= '" + payFinishdatetimeEnd +"'";
+            params.put("payFinishdatetimeStart", student.getPayFinishdatetimeStart());
+        }
         if (student.getClassType() != null && !student.getClassType().trim().equals("")) {
-            if ((student.getName() != null && !student.getName().trim().equals("")) ||
-                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null)) {
-                hql += " AND";
-            }else {
-                hql += " WHERE";
-            }
-            hql += " t.tbClassType.id LIKE :classType";
+            hql += " AND t.tbClassType.id LIKE :classType";
             params.put("classType", "%%" + student.getClassType() + "%%");
         }
         if (student.fractionCountStart != null && !student.fractionCountStart.trim().equals("")) {
-            if ((student.getName() != null && !student.getName().trim().equals("")) ||
-                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) ||
-                    (student.getClassType() != null && !student.getClassType().trim().equals(""))) {
-                hql += " AND";
-            }else {
-                hql += " WHERE";
-            }
-            hql += " t.fractionCount >= "+student.fractionCountStart;
+            hql += " AND t.fractionCount >= "+student.fractionCountStart;
         }
         if (student.fractionCountEnd != null && !student.fractionCountEnd.trim().equals("")) {
-            if (student.getName() != null && !student.getName().trim().equals("") ||
-                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) ||
-                    (student.getClassType() != null && !student.getClassType().trim().equals("")) ||
-                    (student.fractionCountStart != null && !student.fractionCountStart.trim().equals(""))) {
-                hql += " AND";
-            }else {
-                hql += " WHERE";
-            }
-            hql += " t.fractionCount <= "+student.fractionCountEnd;
+            hql += " AND t.fractionCount <= "+student.fractionCountEnd;
         }
         if (student.getStayType() != null && !student.getStayType().trim().equals("")) {
-            if (student.getName() != null && !student.getName().trim().equals("") ||
-                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) ||
-                    (student.getClassType() != null && !student.getClassType().trim().equals("")) ||
-                    (student.fractionCountStart != null && !student.fractionCountStart.trim().equals("")) ||
-                    (student.fractionCountEnd != null && !student.fractionCountEnd.trim().equals(""))) {
-                hql += " AND";
-            }else {
-                hql += " WHERE";
-            }
-            hql += " t.stayFlg LIKE :stayFlg";
+            hql += " AND t.stayFlg LIKE :stayFlg";
             params.put("stayFlg", "%%" + student.getStayType() + "%%");
         }
         if (student.getSecureType() != null && !student.getSecureType().trim().equals("")) {
-            if (student.getName() != null && !student.getName().trim().equals("") ||
-                    (student.getCreatedatetimeStart() != null && student.getCreatedatetimeEnd() != null) ||
-                    (student.getClassType() != null && !student.getClassType().trim().equals("")) ||
-                    (student.fractionCountStart != null && !student.fractionCountStart.trim().equals("")) ||
-                    (student.fractionCountEnd != null && !student.fractionCountEnd.trim().equals("")) ||
-                    (student.getStayType() != null && !student.getStayType().trim().equals(""))) {
-                hql += " AND";
-            }else {
-                hql += " WHERE";
-            }
-            hql += " t.secureFlg LIKE :secureFlg";
+            hql += " AND t.secureFlg LIKE :secureFlg";
             params.put("secureFlg", "%%" + student.getSecureType() + "%%");
         }
+        if (student.getClassId() != null && ! "".equals(student.getClassId().trim())) {
+            hql += " AND t.tbClassInfo.id LIKE :classId";
+            params.put("classId", "%%" + student.getClassId() + "%%");
+        }
+        if (sessionInfo != null && sessionInfo.isOnlyDirector()) {
+            String classId = getClassIdByUserId(sessionInfo);
+            hql += " AND t.tbClassInfo.id in (" + classId + ")";
+        }
+        if (student.getNativePlace() != null && !"".equals(student.getNativePlace())) {
+            hql += " AND t.nativePlace = :nativePlace";
+            params.put("nativePlace", "%%" + student.getNativePlace() + "%%");
+        }
+        if (student.getGraduateSchool() != null && !"".equals(student.getGraduateSchool())) {
+            hql += " AND t.graduateSchool = :graduateSchool";
+            params.put("graduateSchool", "%%" + student.getGraduateSchool() + "%%");
+        }
+        if (sessionInfo != null && sessionInfo.isOnlyDirector()) {
+            String classId = getClassIdByUserId(sessionInfo);
+            hql += " AND t.tbClassInfo.id in (" + classId + ")";
+        }
         if (student.getSort() != null) {
-            hql += " ORDER BY " + student.getSort() + " " + student.getOrder();
+            if("sexContent".equals(student.getSort())) {
+                hql += " ORDER BY t.sex " + student.getOrder();
+            } else if("wlqfContent".equals(student.getSort())) {
+                hql += " ORDER BY t.wlqf " + student.getOrder();
+            } else if("stuTypeContent".equals(student.getSort())) {
+                hql += " ORDER BY t.studentType " + student.getOrder();
+            } else if("classTypeName".equals(student.getSort())) {
+                hql += " ORDER BY t.tbClassInfo.name " + student.getOrder();
+            } else if("yearInfoName".equals(student.getSort())) {
+                hql += " ORDER BY t.tbYearInfo.name " + student.getOrder();
+            } else {
+                hql += " ORDER BY " + student.getSort() + " " + student.getOrder();
+            }
         }
         return hql;
     }
 
-    private String addConditionAND(Student student, Map<String, Object> params) {
-        String hql = "";
+    private String addConditionAND(Student student, Map<String, Object> params, SessionInfo sessionInfo) {
+        String hql = " AND t.tbYearInfo.isDefault = '105001'";
 
         if (student.getName() != null && !student.getName().trim().equals("")) {
             hql += " AND t.name LIKE :name";
@@ -450,6 +512,12 @@ public class StudentServiceImpl implements StudentServiceI {
             hql += " AND t.createdatetime>= :createdatetimeStart AND t.createdatetime<= '" + createdatetimeEnd +"'";
             params.put("createdatetimeStart", student.getCreatedatetimeStart());
         }
+        if (student.getPayFinishdatetimeStart() != null && student.getPayFinishdatetimeEnd() != null) {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String payFinishdatetimeEnd =df.format(student.getPayFinishdatetimeEnd()) + " 24:00:00";
+            hql += " AND t.payFinishdatetime>= :payFinishdatetimeStart AND t.payFinishdatetime<= '" + payFinishdatetimeEnd +"'";
+            params.put("payFinishdatetimeStart", student.getPayFinishdatetimeStart());
+        }
         if (student.getClassType() != null && !student.getClassType().trim().equals("")) {
             hql += " AND t.tbClassType.id LIKE :classType";
             params.put("classType", "%%" + student.getClassType() + "%%");
@@ -460,10 +528,50 @@ public class StudentServiceImpl implements StudentServiceI {
         if (student.fractionCountEnd != null && !student.fractionCountEnd.trim().equals("")) {
             hql += " AND t.fractionCount < "+student.fractionCountEnd;
         }
-        if (student.getSort() != null) {
-            hql += " ORDER BY " + student.getSort() + " " + student.getOrder();
+        if (student.getClassId() != null && ! "".equals(student.getClassId().trim())) {
+            hql += " AND t.tbClassInfo.id = :classId";
+            params.put("classId", student.getClassId());
         }
+        if (sessionInfo != null && sessionInfo.isOnlyDirector()) {
+            String classId = getClassIdByUserId(sessionInfo);
+            hql += " AND t.tbClassInfo.id in (" + classId + ")";
+        }
+        if (student.getSort() != null) {
+            if("sexContent".equals(student.getSort())) {
+                hql += " ORDER BY t.sex " + student.getOrder();
+            } else if("wlqfContent".equals(student.getSort())) {
+                hql += " ORDER BY t.wlqf " + student.getOrder();
+            } else if("stuTypeContent".equals(student.getSort())) {
+                hql += " ORDER BY t.studentType " + student.getOrder();
+            } else if("classTypeName".equals(student.getSort())) {
+                hql += " ORDER BY t.tbClassInfo.name " + student.getOrder();
+            } else if("yearInfoName".equals(student.getSort())) {
+                hql += " ORDER BY t.tbYearInfo.name " + student.getOrder();
+            } else {
+                hql += " ORDER BY " + student.getSort() + " " + student.getOrder();
+            }
+        }
+
         return hql;
+    }
+
+    private String getClassIdByUserId(SessionInfo sessionInfo) {
+        String ret = "";
+        Map<String, Object> params = new HashMap<String, Object>();
+        String hql = "from TbClassInfo t  where 1=1 ";
+        hql += " AND t.tbUser.id = :userId";
+        params.put("userId", sessionInfo.getId());
+        hql += " order by t.createdatetime desc";
+        List<TbClassInfo> l = classInfoDao.find(hql, params);
+        if (l != null && l.size() > 0) {
+            for (TbClassInfo t : l) {
+                ret = "'" + t.getId() + "',";
+            }
+        }
+        if (ret != null && 1 < ret.length()) {
+            ret = ret.substring(0, ret.length() - 1);
+        }
+        return ret;
     }
 
     /**
@@ -568,6 +676,7 @@ public class StudentServiceImpl implements StudentServiceI {
             tbStudent.setArrearflg("1");
         } else {
             tbStudent.setArrearflg("0");
+            tbStudent.setPayFinishdatetime(new Date());
         }
         // 已缴费
         tbStudent.setIsPaymentFlg("1");
@@ -666,6 +775,12 @@ public class StudentServiceImpl implements StudentServiceI {
         } else {
             tbFinance.setPreferentialFee(student.getStu_stuPayment_preferentialHd());
         }
+        // 扣款
+        if(student.getStu_stuPayment_deductionFee() == null) {
+            tbFinance.setDeductionFee(new BigDecimal(0));
+        } else {
+            tbFinance.setDeductionFee(student.getStu_stuPayment_deductionFee());
+        }
         // 欠费
         if(arrearFee == null) {
             tbFinance.setArrearFee(new BigDecimal(0));
@@ -694,7 +809,7 @@ public class StudentServiceImpl implements StudentServiceI {
         tbFinance.setTbClassType(tbClassType);
         tbFinance.setTbUser(userDao.getById(TbUser.class, sessionInfo.getId()));
         tbFinance.setCreatedatetime(new Date());
-        tbFinance.setStudentId(tbStudent.getId());
+        tbFinance.setTbStudent(tbStudent);
         financeDao.save(tbFinance);
     }
 
@@ -738,6 +853,7 @@ public class StudentServiceImpl implements StudentServiceI {
             tbStudent.setArrearflg("1");
         } else {
             tbStudent.setArrearflg("0");
+            tbStudent.setPayFinishdatetime(new Date());
         }
         TbFinance  tbFinance = new TbFinance();
         tbFinance.setId(UUID.randomUUID().toString());
@@ -828,7 +944,7 @@ public class StudentServiceImpl implements StudentServiceI {
         }
         tbFinance.setTbUser(userDao.getById(TbUser.class, sessionInfo.getId()));
         tbFinance.setCreatedatetime(new Date());
-        tbFinance.setStudentId(tbStudent.getId());
+        tbFinance.setTbStudent(tbStudent);
         // 撤销状态
         tbFinance.setCancelflg("0");
         // 账单类型
@@ -931,7 +1047,7 @@ public class StudentServiceImpl implements StudentServiceI {
         }
         tbFinance.setTbUser(userDao.getById(TbUser.class, sessionInfo.getId()));
         tbFinance.setCreatedatetime(new Date());
-        tbFinance.setStudentId(tbStudent.getId());
+        tbFinance.setTbStudent(tbStudent);
         financeDao.save(tbFinance);
     }
 
@@ -1023,6 +1139,20 @@ public class StudentServiceImpl implements StudentServiceI {
         } finally {
             studentDao.delete(tbStudent);
             studentInfoHistoryDao.save(tbStuHis);
+        }
+        return "success";
+    }
+
+    @Override
+    public String updateYearInfo(Student student, SessionInfo sessionInfo) {
+        try {
+            TbStudent tbStudent = studentDao.getById(TbStudent.class,
+                    student.getId());
+            TbYearInfo tbYearInfo = yearInfoDao.getById(TbYearInfo.class, student.getYearId());
+            tbStudent.setTbYearInfo(tbYearInfo);
+            tbStudent.setModifydatetime(new Date());
+        } catch (Exception e) {
+            return "fail";
         }
         return "success";
     }

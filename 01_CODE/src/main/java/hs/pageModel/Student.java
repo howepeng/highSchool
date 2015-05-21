@@ -46,12 +46,17 @@ public class Student {
     private String selfstudyNoonflg = "0";
     private String remark;
     private String classId;
+    private String className;
     private String yearId;
+    private String yearInfoName;
     private int score;
     private Timestamp createdatetime;
     private Timestamp createdatetimeStart;
     private Timestamp createdatetimeEnd;
     private Timestamp modifydatetime;
+    private Timestamp payFinishdatetime;
+    private Timestamp payFinishdatetimeStart;
+    private Timestamp payFinishdatetimeEnd;
     private BigDecimal studyFee = new BigDecimal(0);
     private BigDecimal stayFee = new BigDecimal(0);
     private BigDecimal selfFee = new BigDecimal(0);
@@ -60,6 +65,7 @@ public class Student {
     private BigDecimal waterFee = new BigDecimal(0);
     private BigDecimal safetyFee = new BigDecimal(0);
     private BigDecimal countFee = new BigDecimal(0);
+    private BigDecimal allFee = new BigDecimal(0);
     private String arrearflg = "0";
     private BigDecimal arrearFee = new BigDecimal(0);
     private int page;
@@ -90,6 +96,7 @@ public class Student {
     private String photoId;
     private String photoImgSrc;
     private String dormitoryNum;
+    private String dormitoryName;
     private String signUpMoneyFlg = "0";
     private String secureFlg = "0";
     private String artType;
@@ -115,6 +122,7 @@ public class Student {
     private BigDecimal stu_stuPayment_waterFee = new BigDecimal(0);
     private BigDecimal stu_stuPayment_preferentialHd = new BigDecimal(0);
     private BigDecimal stu_stuPayment_countFee = new BigDecimal(0);
+    private BigDecimal stu_stuPayment_deductionFee = new BigDecimal(0);
     private String classTypeName;
     private String bankSignUpMoneyFlg = "0";
     private String lakalaSignUpMoneyFlg = "0";
@@ -125,6 +133,8 @@ public class Student {
     private String selfstudyNoonContent;
     private String signUpMoneyContent;
     private String secureContent;
+    //籍贯
+    private String nativePlace ;
     public BigDecimal cashRefundFee = new BigDecimal(0);
     public BigDecimal bankRefundFee = new BigDecimal(0);
     public BigDecimal lakalaRefundFee = new BigDecimal(0);
@@ -138,7 +148,6 @@ public class Student {
     public String index;
     public String stayType;
     public String secureType;
-
     public String getId() {
         return id;
     }
@@ -1091,4 +1100,77 @@ public class Student {
     public void setScore(int score) {
         this.score = score;
     }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public Timestamp getPayFinishdatetime() {
+        return payFinishdatetime;
+    }
+
+    public void setPayFinishdatetime(Timestamp payFinishdatetime) {
+        this.payFinishdatetime = payFinishdatetime;
+    }
+
+    public Timestamp getPayFinishdatetimeStart() {
+        return payFinishdatetimeStart;
+    }
+
+    public void setPayFinishdatetimeStart(Timestamp payFinishdatetimeStart) {
+        this.payFinishdatetimeStart = payFinishdatetimeStart;
+    }
+
+    public Timestamp getPayFinishdatetimeEnd() {
+        return payFinishdatetimeEnd;
+    }
+
+    public void setPayFinishdatetimeEnd(Timestamp payFinishdatetimeEnd) {
+        this.payFinishdatetimeEnd = payFinishdatetimeEnd;
+    }
+
+    public String getYearInfoName() {
+        return yearInfoName;
+    }
+
+    public void setYearInfoName(String yearInfoName) {
+        this.yearInfoName = yearInfoName;
+    }
+
+    public BigDecimal getStu_stuPayment_deductionFee() {
+        return stu_stuPayment_deductionFee;
+    }
+
+    public void setStu_stuPayment_deductionFee(
+            BigDecimal stu_stuPayment_deductionFee) {
+        this.stu_stuPayment_deductionFee = stu_stuPayment_deductionFee;
+    }
+
+    public BigDecimal getAllFee() {
+        return allFee;
+    }
+
+    public void setAllFee(BigDecimal allFee) {
+        this.allFee = allFee;
+    }
+
+    public String getNativePlace() {
+        return nativePlace;
+    }
+
+    public void setNativePlace(String nativePlace) {
+        this.nativePlace = nativePlace;
+    }
+
+	public String getDormitoryName() {
+		return dormitoryName;
+	}
+
+	public void setDormitoryName(String dormitoryName) {
+		this.dormitoryName = dormitoryName;
+	}
 }

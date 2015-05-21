@@ -2,12 +2,10 @@ package hs.service.impl;
 
 import hs.dao.ClassInfoDaoI;
 import hs.dao.ClassTypeDaoI;
-import hs.dao.DictionaryDaoI;
 import hs.dao.StudentDaoI;
 import hs.dao.YearInfoDaoI;
 import hs.model.TbClassInfo;
 import hs.model.TbClassType;
-import hs.model.TbDictionary;
 import hs.model.TbStudent;
 import hs.model.TbYearInfo;
 import hs.pageModel.ClassDivide;
@@ -53,15 +51,16 @@ public class ClassDivideServiceImpl implements ClassDivideServiceI {
         this.yearInfoDao = yearInfoDao;
     }
 
-    private DictionaryDaoI dictionaryDao;
-
-    @Autowired
-    public void setDictionaryDao(DictionaryDaoI dictionaryDao) {
-        this.dictionaryDao = dictionaryDao;
-    }
-
     @Override
     public String divide(ClassDivide classDivide) {
+
+        String hql1 = "FROM TbClassInfo t WHERE t.tbClassType.id LIKE :classType";
+        Map<String, Object> params1 = new HashMap<String, Object>();
+        params1.put("classType", "%%" + classDivide.getClassType() + "%%");
+        List<TbClassInfo> tbClsInfo = classInfoDao.find(hql1,params1);
+        if(tbClsInfo != null && tbClsInfo.size() >= 0) {
+            return "改班级类型已经被分班！";
+        }
         //检索符合条件的学生
         String hql = "FROM TbStudent t WHERE t.tbClassType.id LIKE :classType AND t.tbYearInfo.id LIKE :yearId ORDER BY t.fractionCount desc";
         Map<String, Object> params = new HashMap<String, Object>();
@@ -70,13 +69,12 @@ public class ClassDivideServiceImpl implements ClassDivideServiceI {
         List<TbStudent> tbStuList = studentDao.find(hql,params);
 
         int classNum = Integer.parseInt(classDivide.getClassNum());
-        if(tbStuList.size() >= classNum) {
+        if(tbStuList != null && tbStuList.size() >= classNum) {
 
             //生成班级信息
             String[] classId = new String[classNum];
             TbYearInfo tbYearInfo = yearInfoDao.getById(TbYearInfo.class, classDivide.getYearId().trim());
             TbClassType tbClassType = classTypeDao.getById(TbClassType.class, classDivide.getClassType().trim());
-            TbDictionary tbDictionary = dictionaryDao.getById(TbDictionary.class, classDivide.getClassModeId().trim());
             for(int i=1; i<=classNum; i++){
                 String id = UUID.randomUUID().toString();
                 classId[i-1] = id;
@@ -86,7 +84,7 @@ public class ClassDivideServiceImpl implements ClassDivideServiceI {
                 tbClassInfo.setName(classDivide.getClassPrefixion() + i);
                 tbClassInfo.setTbYearInfo(tbYearInfo);
                 tbClassInfo.setTbClassType(tbClassType);
-                tbClassInfo.setClassMode(tbDictionary.getName());
+                tbClassInfo.setClassMode(classDivide.getClassModeId());
                 tbClassInfo.setCreatedatetime(new Date());
                 classInfoDao.save(tbClassInfo);
             }

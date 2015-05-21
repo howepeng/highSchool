@@ -29,7 +29,7 @@ public class ClassTimeServiceImpl implements ClassTimeServiceI {
     @Override
     public List<Combobox> combox() {
         List<Combobox> rl = new ArrayList<Combobox>();
-        List<TbClassTime> l = classTimeDao.find("from TbClassTime");
+        List<TbClassTime> l = classTimeDao.find("from TbClassTime order by startTime");
         if (l != null && l.size() > 0) {
             for (TbClassTime t : l) {
                 Combobox r = new Combobox();
@@ -44,7 +44,18 @@ public class ClassTimeServiceImpl implements ClassTimeServiceI {
     @Override
     public DataGrid datagrid(ClassTime classTime) {
         DataGrid j = new DataGrid();
-        List<TbClassTime> classTimes = classTimeDao.find("FROM TbClassTime", classTime.getPage(), classTime.getRows());
+        String hql = "FROM TbClassTime t";
+        if (classTime.getSort() != null) {
+            if ("showStartTime".equals(classTime.getSort())) {
+                hql += " ORDER BY t.startTime";
+            } else if ("showEndTime".equals(classTime.getSort())) {
+                hql += " ORDER BY t.endTime";
+            } else {
+                hql += " ORDER BY t." + classTime.getSort();
+            }
+            hql += " " + classTime.getOrder();
+        }
+        List<TbClassTime> classTimes = classTimeDao.find(hql, classTime.getPage(), classTime.getRows());
         List<ClassTime> times = new ArrayList<ClassTime>();
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         if (classTimes != null) {

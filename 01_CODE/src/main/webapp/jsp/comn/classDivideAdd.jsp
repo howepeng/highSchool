@@ -10,10 +10,7 @@
             <th>班级类型</th>
             <td>
                 <input id="classType" name="classType" class="easyui-combobox"
-                               data-options="valueField:'id',textField:'text',required:true,missingMessage:'请选择班级类型',url:'${pageContext.request.contextPath}/classTypeAction!combox.action',
-                                                                                           onSelect: function(combobox){
-                                                                                               classes_divide_classTypeCombox(combobox);
-                                                                                        }"
+                               data-options="valueField:'id',textField:'text',required:true,missingMessage:'请选择班级类型',url:'${pageContext.request.contextPath}/classTypeAction!combox.action'"
                                style="width: 180px;" />
             </td>
         </tr>
@@ -29,8 +26,8 @@
                                         valueField : 'id',
                                         textField : 'name',
                                         multiple : false,
-                                        editable : false,
-                                        panelHeight : 'auto'" />
+                                        editable : true,
+                                        panelHeight : '200'" />
             </td>
         </tr>
         <tr>

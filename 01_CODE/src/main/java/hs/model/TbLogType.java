@@ -9,7 +9,7 @@ import javax.persistence.Table;
  * TbClassType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_log_type", catalog = "highschool")
+@Table(name = "tb_log_type", catalog = "highschool2015")
 public class TbLogType implements java.io.Serializable {
 
     // Fields
@@ -25,6 +25,7 @@ public class TbLogType implements java.io.Serializable {
     private String typeId;
     private String modeId;
     private String remark;
+    private int attence;
 
     // Constructors
 
@@ -95,5 +96,14 @@ public class TbLogType implements java.io.Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "attence", length = 1, nullable = false)
+    public int getAttence() {
+        return attence;
+    }
+
+    public void setAttence(int attence) {
+        this.attence = attence;
     }
 }

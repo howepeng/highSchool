@@ -1,18 +1,24 @@
 package hs.service.impl;
 
+import hs.common.dao.QueryDAO;
+import hs.common.vo.SqlParameterVO;
+import hs.common.vo.SqlResultVO;
 import hs.dao.ClassInfoDaoI;
 import hs.dao.ClassTypeDaoI;
+import hs.dao.DictionaryDaoI;
 import hs.dao.StudentDaoI;
 import hs.dao.UserDaoI;
 import hs.dao.YearInfoDaoI;
 import hs.model.TbClassInfo;
 import hs.model.TbClassType;
+import hs.model.TbDictionary;
 import hs.model.TbStudent;
 import hs.model.TbUser;
 import hs.model.TbYearInfo;
 import hs.pageModel.ClassInfo;
 import hs.pageModel.Combobox;
 import hs.pageModel.DataGrid;
+import hs.pageModel.SessionInfo;
 import hs.service.ClassInfoServiceI;
 
 import java.util.ArrayList;
@@ -21,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,10 +70,28 @@ public class ClassInfoServiceImpl implements ClassInfoServiceI {
         this.studentDao = studentDao;
     }
 
+    private DictionaryDaoI dictionaryDao;
+
+    @Autowired
+    public void setictionaryDao(DictionaryDaoI dictionaryDao) {
+        this.dictionaryDao = dictionaryDao;
+    }
+
+    @Autowired
+    protected QueryDAO queryDAO = null;
+
     @Override
     public List<Combobox> combox() {
         List<Combobox> rl = new ArrayList<Combobox>();
-        List<TbClassInfo> l = classInfoDao.find("from TbClassInfo");
+        SessionInfo sessionInfo = (SessionInfo)ServletActionContext.getRequest().getSession().getAttribute("sessionInfo");
+        Map<String, Object> params = new HashMap<String, Object>();
+        String hql = "from TbClassInfo t where t.tbYearInfo.isDefault = '105001' ";
+        if (sessionInfo != null && sessionInfo.isOnlyDirector()) {
+               hql += " AND t.tbUser.id = :userId";
+               params.put("userId", sessionInfo.getId());
+        }
+        hql += " order by t.tbClassType.professionalId";
+        List<TbClassInfo> l = classInfoDao.find(hql, params);
         if (l != null && l.size() > 0) {
             for (TbClassInfo t : l) {
                 Combobox r = new Combobox();
@@ -81,7 +106,11 @@ public class ClassInfoServiceImpl implements ClassInfoServiceI {
     @Override
     public DataGrid datagrid(ClassInfo classInfo) {
         DataGrid j = new DataGrid();
-        j.setRows(classInfoDao.find("FROM TbClassInfo", classInfo.getPage(), classInfo.getRows()));
+        String hql = "FROM TbClassInfo";
+        if (classInfo.getSort() != null) {
+            hql += " ORDER BY " + classInfo.getSort() + " " + classInfo.getOrder();
+        }
+        j.setRows(classInfoDao.find(hql, classInfo.getPage(), classInfo.getRows()));
         j.setTotal(classInfoDao.count("SELECT count(*) FROM TbClassInfo"));
         return j;
     }
@@ -89,32 +118,83 @@ public class ClassInfoServiceImpl implements ClassInfoServiceI {
      public DataGrid datagridClassInfo(ClassInfo classInfo){
          DataGrid j = new DataGrid();
          List<ClassInfo> finList = new ArrayList<ClassInfo>();
-         //Map<String, Object> params = new HashMap<String, Object>();
+         Map<String, Object> params = new HashMap<String, Object>();
          String hql = "FROM TbClassInfo t";
-         //hql += this.addCondition(student, params);
-         //List<TbStudent> tbStuList = classInfoDao.find(hql, params, student.getPage(), student.getRows());
-         List<TbClassInfo> tbClassInfoList= classInfoDao.find(hql, classInfo.getPage(), classInfo.getRows());
-         if (tbClassInfoList != null && tbClassInfoList.size() > 0) {
-             for (TbClassInfo t : tbClassInfoList) {
+         hql += this.addCondition(classInfo, params);
+         List<TbClassInfo> tbClassInfoList = classInfoDao.find(hql, params, classInfo.getPage(), classInfo.getRows());
+         if(tbClassInfoList != null && tbClassInfoList.size() > 0) {
+             for(TbClassInfo t : tbClassInfoList) {
                  ClassInfo f = new ClassInfo();
                  BeanUtils.copyProperties(t, f);
-                 if (t.getTbClassType()!=null) {
+                 if(t.getTbClassType()!=null) {
                      f.setClassType(t.getTbClassType().getClassType());
                  }
-                 if (t.getTbYearInfo() != null) {
+                 if(t.getTbYearInfo() != null) {
                      f.setYearId(t.getTbYearInfo().getName());
                  }
-                 if (t.getTbUser() != null) {
+                 if(t.getTbUser() != null) {
                      f.setUserId(t.getTbUser().getName());
+                 }
+                 if(t.getClassMode() !=null) {
+                    TbDictionary tbDictionary = dictionaryDao.getById(TbDictionary.class, t.getClassMode());
+                    f.setClassMode(tbDictionary.getName());
                  }
                  finList.add(f);
              }
          }
          j.setRows(finList);
-         //j.setTotal(studentDao.count("SELECT count(*) " + hql, params));
-         j.setTotal(classInfoDao.count("SELECT count(*) " + hql));
+         j.setTotal(classInfoDao.count("SELECT count(*) " + hql,params));
          return j;
      }
+
+     /**
+      * 生成查询hql语句
+      *
+      * @param student
+      * @param params
+      * @return
+      */
+     private String addCondition(ClassInfo classInfo, Map<String, Object> params) {
+         String hql = "";
+
+         if (classInfo.getYearId() != null && !classInfo.getYearId().trim().equals("")) {
+             hql += " WHERE t.tbYearInfo.id LIKE :yearId";
+             params.put("yearId", "%%" + classInfo.getYearId() + "%%");
+         }
+
+         if (classInfo.getClassType() != null && !classInfo.getClassType().trim().equals("")) {
+             if (classInfo.getYearId() != null && !classInfo.getYearId().trim().equals("")) {
+                 hql += " AND";
+             }else {
+                 hql += " WHERE";
+             }
+             hql += " t.tbClassType.id LIKE :classType";
+             params.put("classType", "%%" + classInfo.getClassType() + "%%");
+         }
+         if(classInfo.getClassMode() != null && !classInfo.getClassMode().trim().equals("")) {
+             if ((classInfo.getYearId() != null && !classInfo.getYearId().trim().equals("")) ||
+                 (classInfo.getClassType() != null && !classInfo.getClassType().trim().equals(""))) {
+                 hql += " AND";
+             }else {
+                 hql += " WHERE";
+             }
+             hql += " t.classMode LIKE :classMode";
+             params.put("classMode", "%%" + classInfo.getClassMode() + "%%");
+         }
+         if (classInfo.getSort() != null) {
+             if ("classType".equals(classInfo.getSort())) {
+                 hql += " ORDER BY t.tbClassType.classType";
+             } else if ("userId".equals(classInfo.getSort())) {
+                 hql += " ORDER BY t.tbUser.name";
+             } else {
+                 hql += " ORDER BY t." + classInfo.getSort();
+             }
+             hql += " " + classInfo.getOrder();
+         }
+         return hql;
+     }
+
+
     @Override
     public void add(ClassInfo classInfo) {
         TbClassInfo tbClassInfo = new TbClassInfo();
@@ -162,5 +242,14 @@ public class ClassInfoServiceImpl implements ClassInfoServiceI {
         TbClassInfo tbClassInfo = classInfoDao.getById(TbClassInfo.class, id.trim());
         BeanUtils.copyProperties(tbClassInfo, classInfo);
         return classInfo;
+    }
+
+    @Override
+    public int getStudentCount(String classId) {
+        SqlParameterVO param = new SqlParameterVO();
+        param.putVarchar("classId", classId);
+        SqlResultVO  ret = queryDAO.queryForObject("com.getStudentCountByClassId", param);
+        int subtotal = ret.getInteger("sCount");
+        return subtotal;
     }
 }

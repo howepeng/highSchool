@@ -1,9 +1,10 @@
 package hs.action;
 
+import hs.common.Property;
+import hs.pageModel.SessionInfo;
 import hs.pageModel.Student;
 import hs.pageModel.Students;
 import hs.service.StudentServiceI;
-import hs.util.HSConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -71,7 +72,8 @@ public class DownloadAllStudentInfoAction extends ActionSupport {
         studentS.setCreatedatetimeEnd(createdatetimeEnd);
         studentS.fractionCountStart = this.fractionCountStart;
         studentS.fractionCountEnd = this.fractionCountEnd;
-        List<Student> tbStudentList = studentService.getStudentInfo(studentS);
+        SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute("sessionInfo");
+        List<Student> tbStudentList = studentService.getStudentInfo(studentS, sessionInfo);
         String fileName = "全部学生";
         List<Student> studentList = new ArrayList<Student>();
         int index = 0;
@@ -169,8 +171,8 @@ public class DownloadAllStudentInfoAction extends ActionSupport {
         Map<String, List<Students>> beans = new HashMap<String, List<Students>>();
         beans.put("students", studentsList);
 
-        String filePath=HSConstants.ROOT_PATH+HSConstants.FILE_PATH+"\\output\\"+fileName+".xls";
-        String fileTemplatePath=HSConstants.ROOT_PATH+HSConstants.FILE_PATH+"\\template\\allStudent.xls";
+        String filePath=Property.getProperty("uploadPath")+"\\output\\"+fileName+".xls";
+        String fileTemplatePath=Property.getProperty("uploadPath")+"\\template\\allStudent.xls";
         outputExcel(fileTemplatePath, filePath, beans);
 
         setFileName(fileName+".xls");

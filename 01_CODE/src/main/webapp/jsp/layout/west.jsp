@@ -11,6 +11,7 @@
                     onClick:function(node){
                         if(node.attributes.url){
                             var url ='${pageContext.request.contextPath}/'+node.attributes.url;
+                            console.log(url);
                             addTabs({title:node.text,href:url,closable:true,tools : [ {
                         iconCls : 'icon-mini-refresh',
                         handler : function() {

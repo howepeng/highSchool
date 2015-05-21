@@ -50,39 +50,48 @@
                             }, {
                                 title : '姓名',
                                 field : 'name',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '身份证号',
                                 field : 'idNum',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '班级类型',
                                 field : 'classTypeName',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '学号',
                                 field : 'num',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } , {
                                 title : '报名时间',
                                 field : 'createdatetime',
-                                width : 120
+                                width : 120,
+                                sortable : true
                             } , {
                                 title : '修改时间',
                                 field : 'updatedatetime',
-                                width : 120
+                                width : 120,
+                                sortable : true
                             } , {
                                 title : '修改者',
                                 field : 'userName',
-                                width : 60
+                                width : 60,
+                                sortable : true
                             } , {
                                 title : '修改类型',
                                 field : 'updateType',
-                                width : 50
+                                width : 50,
+                                sortable : true
                             } , {
                                 title : '修改内容',
                                 field : 'updateContent',
-                                width : 950
+                                width : 950,
+                                sortable : true
                             } ] ],
                             toolbar : [ ],
                             onRowContextMenu : function(e, rowIndex, rowData) {

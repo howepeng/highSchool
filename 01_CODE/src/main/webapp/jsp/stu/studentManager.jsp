@@ -49,32 +49,44 @@
                             }, {
                                 title : '姓名',
                                 field : 'name',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             } ] ],
                             columns : [ [ {
                                 title : '性别',
                                 field : 'sexContent',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '学科',
                                 field : 'wlqfContent',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             }, {
                                 title : '学生类型',
                                 field : 'stuTypeContent',
-                                width : 100
+                                width : 100,
+                                sortable : true
+                            }, {
+                                title : '籍贯',
+                                field : 'nativePlace',
+                                width : 100,
+                                sortable : true
                             },{
                                 title : '身份证号',
                                 field : 'idNum',
-                                width : 200
+                                width : 200,
+                                sortable : true
                             }, {
                                 title : '班级类型',
                                 field : 'classTypeName',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             },{
                                 title : '高考总分',
                                 field : 'fractionCount',
-                                width : 100
+                                width : 100,
+                                sortable : true
                             },{
                                 title : '是否住宿',
                                 field : 'stayFlg',
@@ -85,7 +97,8 @@
                                     } else {
                                         return '走读';
                                     }
-                                }
+                                },
+                                sortable : true
                             },{
                                 title : '是否缴纳保险',
                                 field : 'secureFlg',
@@ -96,11 +109,23 @@
                                     } else {
                                         return '未缴纳';
                                     }
-                                }
+                                },
+                                sortable : true
                             } , {
                                 title : '报名时间',
                                 field : 'createdatetime',
-                                width : 150
+                                width : 150,
+                                sortable : true
+                            } , {
+                                title : '费用缴齐时间',
+                                field : 'payFinishdatetime',
+                                width : 150,
+                                sortable : true
+                            } , {
+                                title : '年限名称',
+                                field : 'yearInfoName',
+                                width : 150,
+                                sortable : true
                             } ] ],
                             toolbar : [  {
                                 text : '编辑',
@@ -150,6 +175,12 @@
                                 iconCls : 'icon-ok',
                                 handler : function() {
                                     stu_manager_download_All_Info_Fun();
+                                }
+                            },'-', {
+                                text : '修改学生年限',
+                                iconCls : 'icon-ok',
+                                handler : function() {
+                                    stu_manager_update_year_Info_Fun();
                                 }
                             }, '-' ],
                             onRowContextMenu : function(e, rowIndex, rowData) {
@@ -201,7 +232,6 @@
             });
         }
     }
-
     function stu_manager_downloadFun_byReport(){
         var rows = stu_manager_datagrid.datagrid('getChecked');
         if (rows.length >= 1) {
@@ -501,6 +531,66 @@
         photoImgHide();
         $("#stu_stuSignup_form2").find('#photoId').val("");
     }
+
+    function stu_manager_update_year_Info_Fun() {
+        var rows = stu_manager_datagrid.datagrid('getChecked');
+        if (rows.length > 1) {
+            $.messager.show({
+                title : '提示',
+                msg : '请选择一条记录'
+            });
+        } else if (rows.length == 1) {
+            $('<div id="stuYearInfoEdit_Open" style="5px;"/>').dialog({
+                href : 'jsp/stu/studentYearInfoEdit.jsp',
+                width : 500,
+                height :250,
+                modal : true,
+                title : '修改学生年限信息',
+                onLoad: function() {
+                    $('#stu_stuSignup_year_info').form('clear');
+                    $('#stu_stuSignup_year_info').form('load', rows[0]);
+                    if (rows[0].num != "undefined") {
+                        $("#stu_stuSignup_year_info").find("input[name^='id']").val(rows[0].id);
+                        $("#stu_stuSignup_year_info").find("input[name^='yearId']").val(rows[0].yearId);
+                    }
+                } ,
+                onClose : function() {
+                    $(this).dialog('destroy');
+                },
+                buttons:[ {
+                    text : '修改',
+                    handler : function() {
+                        stu_update_year_Info();
+                    }
+                } ]
+                });
+        } else {
+            $.messager.show({
+                title : '提示',
+                msg : '请勾选要显示的记录'
+            });
+        }
+    }
+    function stu_update_year_Info() {
+         $('#stu_stuSignup_year_info').form('submit', {
+             url : '${pageContext.request.contextPath}/studentAction!updateYearInfo.action',
+             success : function(d) {
+                 var json = $.parseJSON(d);
+                 if (json.success) {
+                     stu_manager_datagrid.datagrid('reload');
+                     stu_manager_datagrid.datagrid('unselectAll');
+                     stu_manager_datagrid.datagrid('uncheckAll');
+                     $('#stu_stuSignup_year_info').form('clear');
+                 }
+                 $('#submitingManager').dialog('destroy');
+                 $('#stuYearInfoEdit_Open').dialog('destroy');
+                 $.messager.show({
+                     msg : json.msg,
+                     title : '提示'
+                 });
+             }
+         });
+    }
 </script>
 <div class="easyui-layout" data-options="fit:true">
 <div data-options="region:'north',border:false,title:'过滤条件'" style="height: 150px;overflow: hidden;" align="left">
@@ -517,12 +607,21 @@
                                data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath}/classTypeAction!combox.action'"
                                style="width: 180px;" />
                     </td>
+                    <th>籍贯</th>
+                    <td>
+                        <input name="nativePlace" style="width:180px;"/>
+                    </td>
                 </tr>
                 <tr>
                     <th>报名时间</th>
                     <td>
                         <input name="createdatetimeStart" type="text" style="width:75px;" onfocus="WdatePicker()" readonly="readonly"/>
                                                                                    至 <input name="createdatetimeEnd" type="text" style="width:75px;" onfocus="WdatePicker()" readonly="readonly"/>
+                    </td>
+                    <th>费用缴齐时间</th>
+                    <td>
+                        <input name="payFinishdatetimeStart" type="text" style="width:75px;" onfocus="WdatePicker()" readonly="readonly"/>
+                                                                                   至 <input name="payFinishdatetimeEnd" type="text" style="width:75px;" onfocus="WdatePicker()" readonly="readonly"/>
                     </td>
                      <th>高考总分</th>
                     <td>
@@ -531,6 +630,10 @@
                     </td>
                 </tr>
                 <tr>
+                    <th>毕业学校</th>
+                    <td>
+                        <input name="graduateSchool" style="width:180px;"/>
+                    </td>
                     <th>是否住宿</th>
                     <td>
                         <select name="stayType" class="easyui-combobox" style="width:180px;">

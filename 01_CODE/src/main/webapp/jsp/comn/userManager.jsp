@@ -21,6 +21,7 @@
                                 field : 'id',
                                 title : '编号',
                                 width : 150,
+                                sortable : true,
                                 checkbox : true
                             }, {
                                 field : 'username',
@@ -31,14 +32,16 @@
                             columns : [ [ {
                                 field : 'name',
                                 title : '姓名',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             },{
                                 field : 'password',
                                 title : '密码',
                                 width : 150,
                                 formatter : function(value, row, index) {
                                     return '******';
-                                }
+                                },
+                                sortable : true
                             //}, {
                             //    field : 'createdatetime',
                             //    title : '创建时间',
@@ -53,11 +56,13 @@
                                 field : 'roleIds',
                                 title : '所属角色Id',
                                 width : 150,
-                                hidden : true
+                                hidden : true,
+                                sortable : true
                             }, {
                                 field : 'roleNames',
                                 title : '所属角色',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             toolbar : [ {
                                 text : '增加',
@@ -247,7 +252,7 @@
     }
 </script>
 <div id="comn_userManager_layout" class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'north',border:false,title:'过滤条件'" style="height: 85px;overflow: hidden;" align="left">
+    <div data-options="region:'north',border:false,title:'过滤条件'" style="height: 89px;overflow: hidden;" align="left">
         <form id="comn_userManager_searchForm">
             <table class="tableForm datagrid-toolbar" style="width: 100%;height: 100%;">
                 <tr>

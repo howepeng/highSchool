@@ -4,16 +4,17 @@ import hs.pageModel.CalendarEvent;
 import hs.pageModel.ClassTime;
 import hs.pageModel.Json;
 import hs.pageModel.LogInfo;
+import hs.pageModel.SessionInfo;
 import hs.pageModel.ShowCalendarInfo;
 import hs.service.ClassTimeServiceI;
 import hs.service.LogManagerServiceI;
 import hs.util.ConvertUtil;
-import hs.util.UVOUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.Result;
@@ -24,7 +25,7 @@ import com.opensymphony.xwork2.ModelDriven;
 
 @Namespace("/")
 @Action(value = "logManagerAction", results = { @Result(name = "logManager", location = "/jsp/director/logManage.jsp"),
-                                                @Result(name = "logManagerAdd", location = "/jsp/director/logManagerAdd.jsp")})
+                                                @Result(name = "logCalendar", location = "/jsp/director/logCalendar.jsp")})
 public class LogManagerAction extends BaseAction implements ModelDriven<LogInfo> {
 
     LogInfo logInfo = new LogInfo();
@@ -65,7 +66,7 @@ public class LogManagerAction extends BaseAction implements ModelDriven<LogInfo>
                     newItem.setStart(date + " " + formatTime.format(item.getStartTime()));
                     newItem.setEnd(date + " " + formatTime.format(item.getEndTime()));
                     newItem.setTitle(ConvertUtil.messageFormat(msg, item.getLogTypeName(), item.getCount() + ""));
-                    newItem.setId(item.getClassTimeId() + "," + item.getLogTypeId() + "," + item.getClassId());
+                    newItem.setId(item.getClassTimeId() + "," + item.getLogTypeId());
                     output.add(newItem);
                 }
             }
@@ -113,25 +114,32 @@ public class LogManagerAction extends BaseAction implements ModelDriven<LogInfo>
     }
 
     public void datagrid(){
-        if (UVOUtil.isDirector()) {
-            super.writeJson(logManagerService.datagrid(logInfo));
-        }
+        SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute("sessionInfo");
+        super.writeJson(logManagerService.datagrid(logInfo, sessionInfo));
     }
 
     public String gotoLogManager() {
         String[] ids = logInfo.getIds().split(",");
         logInfo.setClassTimeId(ids[0]);
         logInfo.setTypeId(ids[1]);
-        logInfo.setClassId(ids[2]);
         return "logManager";
+    }
+
+    public String gotoLogCalendar() {
+        return "logCalendar";
     }
 
     public void add() {
         Json json = new Json();
         try {
-            logManagerService.add(logInfo);
-            json.setSuccess(true);
-            json.setMsg("添加成功");
+            int ret = logManagerService.add(logInfo);
+            if (0 == ret) {
+                json.setSuccess(true);
+                json.setMsg("添加成功");
+            } else if (1== ret) {
+                json.setSuccess(true);
+                json.setMsg("积分已经全部扣完");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             json.setMsg(e.getMessage());
@@ -158,9 +166,14 @@ public class LogManagerAction extends BaseAction implements ModelDriven<LogInfo>
     public void edit(){
         Json json = new Json();
         try {
-            logManagerService.edit(logInfo);
-            json.setSuccess(true);
-            json.setMsg("修改成功");
+            int ret = logManagerService.edit(logInfo);
+            if (0 == ret) {
+                json.setSuccess(true);
+                json.setMsg("修改成功");
+            } else if (1== ret) {
+                json.setSuccess(true);
+                json.setMsg("积分已经全部扣完");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             json.setMsg(e.getMessage());

@@ -47,12 +47,12 @@ $(function(){
         <table>
             <tr>
                 <th>登录名</th>
-                <td><input name="username" class="easyui-validatebox" value="admin" data-options="required:true,missingMessage:'请输入用户名'"/>
+                <td><input name="username" class="easyui-validatebox" data-options="required:true,missingMessage:'请输入用户名'"/>
                 </td>
             </tr>
             <tr>
                 <th>密码</th>
-                <td><input type="password" name="password" class="easyui-validatebox" value="test"  data-options="required:true,missingMessage:'请输入密码'"/>
+                <td><input type="password" name="password" class="easyui-validatebox"  data-options="required:true,missingMessage:'请输入密码'"/>
                 </td>
             </tr>
         </table>

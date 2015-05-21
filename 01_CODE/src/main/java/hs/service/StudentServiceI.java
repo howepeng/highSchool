@@ -12,15 +12,15 @@ import hs.pageModel.StudentInfoHistory;
 
 public interface StudentServiceI {
 
-    public DataGrid datagridBeforePay(Student student);
+    public DataGrid datagridBeforePay(Student student, SessionInfo sessionInfo);
 
-    public DataGrid datagridAfterPay(Student student);
+    public DataGrid datagridAfterPay(Student student, SessionInfo sessionInfo);
 
     public void feePay(Student student, SessionInfo sessionInfo);
 
     public void arrearsPay(Student student, SessionInfo sessionInfo);
 
-    public DataGrid datagridStudent(Student student);
+    public DataGrid datagridStudent(Student student, SessionInfo sessionInfo);
 
     public DataGrid datagridStudentInfoHistory(StudentInfoHistory studentInfoHistory);
 
@@ -34,11 +34,13 @@ public interface StudentServiceI {
 
     public TbStudent reportFileDownload(String attachid);
 
-    public DataGrid datagridReturnPay(Student student);
+    public DataGrid datagridReturnPay(Student student, SessionInfo sessionInfo);
 
     public void refunPay(Student student, SessionInfo sessionInfo);
 
-    public List<Student> getStudentInfo(Student student);
+    public List<Student> getStudentInfo(Student student, SessionInfo sessionInfo);
 
-    public List<Combobox> combox(Student student);
+    public List<Combobox> combox(Student student, SessionInfo sessionInfo);
+
+    public String updateYearInfo(Student student, SessionInfo sessionInfo);
 }

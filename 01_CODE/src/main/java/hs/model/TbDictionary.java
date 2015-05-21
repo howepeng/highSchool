@@ -9,7 +9,7 @@ import javax.persistence.Table;
  * TbClassType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_dictionary", catalog = "highschool")
+@Table(name = "tb_dictionary", catalog = "highschool2015")
 public class TbDictionary implements java.io.Serializable {
 
     // Fields

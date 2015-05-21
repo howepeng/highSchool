@@ -5,6 +5,7 @@ import hs.pageModel.SessionInfo;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
 
@@ -30,7 +31,7 @@ public class SessionInterceptor extends MethodFilterInterceptor {
             String errMsg = "您还没有登录或登录已超时，请重新登录，然后再刷新本功能！";
             logger.info(errMsg);
             ServletActionContext.getRequest().setAttribute("msg", errMsg);
-            return "noSession";
+            return Action.LOGIN;
         }
         return actionInvocation.invoke();
     }

@@ -1,6 +1,7 @@
 package hs.model;
 
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,7 +11,7 @@ import javax.persistence.Table;
  * TbClassType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_class_type", catalog = "highschool")
+@Table(name = "tb_class_type", catalog = "highschool2015")
 public class TbClassType implements java.io.Serializable {
 
     // Fields
@@ -21,6 +22,7 @@ public class TbClassType implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
     private String id;
     private String classType;
+    private String professionalId;
     private BigDecimal studyFee;
     private BigDecimal stayFee;
     private BigDecimal selfFee;
@@ -131,6 +133,15 @@ public class TbClassType implements java.io.Serializable {
 
     public void setCountFee(BigDecimal countFee) {
         this.countFee = countFee;
+    }
+
+    @Column(name = "professional_id", length = 6)
+    public String getProfessionalId() {
+        return professionalId;
+    }
+
+    public void setProfessionalId(String professionalId) {
+        this.professionalId = professionalId;
     }
 
 }

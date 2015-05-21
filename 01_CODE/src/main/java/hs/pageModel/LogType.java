@@ -25,6 +25,8 @@ public class LogType implements Serializable {
     private String modeId;
     private String modeName;
     private String remark;
+    private int attence;
+    private String attenceText;
     private int page;
     private int rows;
     private String sort;
@@ -113,5 +115,17 @@ public class LogType implements Serializable {
     }
     public void setIds(String ids) {
         this.ids = ids;
+    }
+    public int getAttence() {
+        return attence;
+    }
+    public void setAttence(int attence) {
+        this.attence = attence;
+    }
+    public String getAttenceText() {
+        return attenceText;
+    }
+    public void setAttenceText(String attenceText) {
+        this.attenceText = attenceText;
     }
 }

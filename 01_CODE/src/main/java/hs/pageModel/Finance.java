@@ -3,14 +3,9 @@ package hs.pageModel;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 /**
  * TbFinance entity. @author MyEclipse Persistence Tools
  */
-@Entity
-@Table(name = "tb_finance", catalog = "highschool")
 public class Finance implements java.io.Serializable {
 
     /**
@@ -42,6 +37,7 @@ public class Finance implements java.io.Serializable {
     private BigDecimal payAgainFee = new BigDecimal(0);
     private BigDecimal countPayFee = new BigDecimal(0);
     private BigDecimal preferentialFee = new BigDecimal(0);
+    private BigDecimal deductionFee = new BigDecimal(0);
     private BigDecimal arrearFee = new BigDecimal(0);
     private BigDecimal refundFee = new BigDecimal(0);
     private BigDecimal countReport = new BigDecimal(0);
@@ -63,7 +59,10 @@ public class Finance implements java.io.Serializable {
     private BigDecimal aliPayAgainFee = new BigDecimal(0);
     private String cancelflg;
     private String crashHistoryType;
-
+    private Date payFinishdatetime;
+    private String sexContent;
+    private String className;
+    private BigDecimal payFinishFee = new BigDecimal(0);
     public BigDecimal getStudyFee() {
         return studyFee;
     }
@@ -321,6 +320,36 @@ public class Finance implements java.io.Serializable {
     }
     public void setCrashHistoryType(String crashHistoryType) {
         this.crashHistoryType = crashHistoryType;
+    }
+    public BigDecimal getDeductionFee() {
+        return deductionFee;
+    }
+    public void setDeductionFee(BigDecimal deductionFee) {
+        this.deductionFee = deductionFee;
+    }
+    public Date getPayFinishdatetime() {
+        return payFinishdatetime;
+    }
+    public void setPayFinishdatetime(Date payFinishdatetime) {
+        this.payFinishdatetime = payFinishdatetime;
+    }
+    public String getSexContent() {
+        return sexContent;
+    }
+    public void setSexContent(String sexContent) {
+        this.sexContent = sexContent;
+    }
+    public String getClassName() {
+        return className;
+    }
+    public void setClassName(String className) {
+        this.className = className;
+    }
+    public BigDecimal getPayFinishFee() {
+        return payFinishFee;
+    }
+    public void setPayFinishFee(BigDecimal payFinishFee) {
+        this.payFinishFee = payFinishFee;
     }
 
 

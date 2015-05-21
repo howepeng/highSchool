@@ -9,7 +9,7 @@
          password="root"
          maxIdle="4"
          maxWait="5000"
-         url="jdbc:mysql://localhost:3306/highschool"
+         url="jdbc:mysql://localhost:3306/highschool2015"
          maxActive="10">
         <min-pool-size>0</min-pool-size>
         <max-pool-size>20</max-pool-size>

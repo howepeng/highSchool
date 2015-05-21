@@ -21,6 +21,7 @@
                                 field : 'id',
                                 title : '编号',
                                 width : 150,
+                                sortable : true,
                                 checkbox : true
                             }, {
                                 field : 'name',
@@ -31,11 +32,13 @@
                             columns : [ [ {
                                 field : 'showStartTime',
                                 title : '开始时间',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             },{
                                 field : 'showEndTime',
                                 title : '结束时间',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             toolbar : [ {
                                 text : '增加',

@@ -21,4 +21,6 @@ public interface ClassInfoServiceI {
     public ClassInfo getClassInfo(String id);
 
     public DataGrid datagridClassInfo(ClassInfo classInfo);
+
+    public int getStudentCount(String classId);
 }

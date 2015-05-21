@@ -1,4 +1,4 @@
-  <%@ page language="java" pageEncoding="UTF-8"%>
+<%@ page language="java" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE HTML>
 <html>
@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="jslib/uploadify/uploadify.css" type="text/css"></link>
 <link rel='stylesheet' href='jslib/fullcalendar-2.1.1/fullcalendar.css'  />
 <link rel='stylesheet' href='jslib/fullcalendar-2.1.1/fullcalendar.print.css'  media='print' />
-<script type="text/javascript" src="jslib/jquery-easyui-1.3.4/jquery.min.js"></script>
+<script type="text/javascript" src="jslib/jquery-easyui-1.3.4/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="jslib/jquery-easyui-1.3.4/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="jslib/jquery-easyui-1.3.4/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src='jslib/fullcalendar-2.1.1/moment.min.js'></script>
@@ -24,6 +24,7 @@
 <script type="text/javascript" src="jslib/hsUtil.js"></script>
 <script type="text/javascript" src="jslib/My97DatePicker/WdatePicker.js"></script>
 <script type="text/javascript" src="jslib/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="jslib/highCharts/highcharts.js"></script>
 <script type="text/javascript">
 function exit() {
      $.post("${pageContext.request.contextPath}/userAction!logOut.action",{},callback);

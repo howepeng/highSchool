@@ -34,13 +34,14 @@
                 var start = event.start.format('HH:mm:ss');
                 var end = event.end.format('HH:mm:ss');
                 var date = event.start.format('YYYY-MM-DD');
-                var param = "ids="+ids+"&start="+start+"&end="+end+"&date="+date;
+                var param = "isReturnCalendar=1&ids="+ids+"&startTime="+start+"&endTime="+end+"&date="+date;
+                var url = '${pageContext.request.contextPath}/logManagerAction!gotoLogManager.action?'+param;
                 var curTab = $('#layout_center_tabs').tabs('getSelected');
                 $('#layout_center_tabs').tabs('update', {
                     tab: curTab,
                     options: {
                     title: curTab.panel('options').title,
-                    href: '${pageContext.request.contextPath}/logManagerAction!gotoLogManager.action?'+param
+                    href: url
                     }
                     });
             }
@@ -115,11 +116,6 @@ function addLog() {
         alert("请输入结束时间！");
         return;
     }
-    var classId = $("#director_logManager_addForm").find("input[name^='classId']");
-    if (classId.val().length == 0) {
-        alert("请输入班级！");
-        return;
-    }
     var studentId = $("#director_logManager_addForm").find("input[name^='studentId']");
     if (studentId.val().length == 0) {
         alert("请输入学生！");
@@ -139,6 +135,7 @@ function addLog() {
             var obj = $.parseJSON(data);
             if (obj.success) {
                 $('#director_logCalendar_add_Open').dialog('destroy');
+                $('#calendar').fullCalendar('refetchEvents');
             }
             $.messager.show({
                 title : '提示',

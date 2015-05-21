@@ -12,7 +12,7 @@ import javax.persistence.Table;
  * TbUserRole entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_user_role", catalog = "highschool")
+@Table(name = "tb_user_role", catalog = "highschool2015")
 public class TbUserRole implements java.io.Serializable {
 
     // Fields

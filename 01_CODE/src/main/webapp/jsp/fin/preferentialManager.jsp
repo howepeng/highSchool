@@ -36,7 +36,8 @@
                             columns : [ [ {
                                 title : '优惠金额',
                                 field : 'preferentialFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             toolbar : [ {
                                 text : '增加',
@@ -210,7 +211,7 @@
 </div>
 
 <div id="fin_preferential_addDialog" align="center" class="easyui-dialog" style="width:460px;heighe:220px;padding: 5px;"
-    data-options="closed:true,modal:true,title:'增加角色',buttons:[ {
+    data-options="closed:true,modal:true,title:'增加报名优惠',buttons:[ {
                 text : '增加',
                 handler : function() {
                     fin_preferential_append();
@@ -228,7 +229,7 @@
     </form>
 </div>
 <div id="fin_preferential_editDialog" align="center" class="easyui-dialog" style="width:460px;heighe:220px;padding: 5px;"
-    data-options="closed:true,modal:true,title:'修改角色',buttons:[ {
+    data-options="closed:true,modal:true,title:'修改报名优惠',buttons:[ {
                 text : '修改',
                 handler : function() {
                     fin_preferential_edit();

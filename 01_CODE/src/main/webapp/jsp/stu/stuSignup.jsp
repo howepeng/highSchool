@@ -352,14 +352,18 @@
                     </td>
                 </tr>
                 <tr style="height: 50px;">
+                    <td>籍贯</td>
+                    <td colspan="2"><input id= "nativePlace" name="nativePlace" maxlength="18" value="天津"/> </td>
                     <td><span style="color:red">*</span>身份证号</td>
-                    <td colspan="2"><input id= "idNum" name="idNum" maxlength="18"/>
+                    <td colspan="3"><input id= "idNum" name="idNum" maxlength="18"/>
                     </td>
+                </tr>
+                <tr style="height: 50px;">
                     <td>本人电话</td>
-                    <td><input id="tel" name="tel" maxlength="20"/>
+                    <td colspan="2"><input id="tel" name="tel" maxlength="20"/>
                     </td>
                     <td>家庭电话</td>
-                    <td><input name="homeTel" maxlength="20"/>
+                    <td colspan="3"><input name="homeTel" maxlength="20"/>
                     </td>
                 </tr>
                 <tr style="height: 50px;">
@@ -367,7 +371,7 @@
                    <td colspan="2"><input id="graduateSchool" name="graduateSchool" maxlength="50"/>
                    </td>
                    <td>家庭住址</td>
-                   <td colspan="3"><input name="address" maxlength="100"/>
+                   <td colspan="4"><input name="address" maxlength="100"/>
                    </td>
                 </tr>
                 <tr>
@@ -484,7 +488,9 @@
                         <label>宿舍号</label>
                     </td>
                     <td>
-                        <input name="dormitoryNum"  maxlength="20"/>
+                        <input id="dormitoryNum" name="dormitoryNum" class="easyui-combobox"
+                                   data-options="valueField:'id',textField:'text',url:'${pageContext.request.contextPath}/dormitoryAction!combox.action'"
+                                   style="width: 180px;" />
                     </td>
                     <td colspan="2">
                       <table>

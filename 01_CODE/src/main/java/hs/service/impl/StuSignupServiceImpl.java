@@ -1,7 +1,9 @@
 package hs.service.impl;
 
+import hs.common.Property;
 import hs.dao.ClassInfoDaoI;
 import hs.dao.ClassTypeDaoI;
+import hs.dao.DormitoryInfoDaoI;
 import hs.dao.FileDaoI;
 import hs.dao.FinanceDaoI;
 import hs.dao.IdFileDaoI;
@@ -13,6 +15,7 @@ import hs.dao.UserDaoI;
 import hs.dao.YearInfoDaoI;
 import hs.model.TbClassInfo;
 import hs.model.TbClassType;
+import hs.model.TbDormitoryInfo;
 import hs.model.TbFile;
 import hs.model.TbFinance;
 import hs.model.TbIdFile;
@@ -25,7 +28,6 @@ import hs.model.TbYearInfo;
 import hs.pageModel.SessionInfo;
 import hs.pageModel.Student;
 import hs.service.StuSignupServiceI;
-import hs.util.HSConstants;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -93,6 +95,13 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
         this.yearInfoDao = yearInfoDao;
     }
 
+    private DormitoryInfoDaoI dormitoryInfoDao;
+
+    @Autowired
+    public void setDormitoryInfoDao(DormitoryInfoDaoI dormitoryInfoDao) {
+        this.dormitoryInfoDao = dormitoryInfoDao;
+    }
+
     private FileDaoI fileDao;
 
     @Autowired
@@ -129,6 +138,7 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
         TbClassType tbClassType = null;
         TbClassInfo tbClassInfo = null;
         TbYearInfo tbYearInfo = null;
+        TbDormitoryInfo tbDormitoryInfo = null;
         TbStudentInfoHistory tbStuHis = new TbStudentInfoHistory();
         if (student.getId() == null || "".equals(student.getId())) {
             tbStu = new TbStudent();
@@ -143,6 +153,8 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             tbStu.setTbClassInfo(tbClassInfo);
             tbYearInfo = yearInfoDao.getById(TbYearInfo.class, sessionInfo.getYearId());
             tbStu.setTbYearInfo(tbYearInfo);
+            tbDormitoryInfo = dormitoryInfoDao.getById(TbDormitoryInfo.class, student.getDormitoryNum());
+            tbStu.setTbDormitoryInfo(tbDormitoryInfo);
             tbStu.setScore(100);
             if ("1".equals(tbStu.getSignUpMoneyFlg())) {
                 tbStu.setSignFee(tbClassType.getSignFee());
@@ -157,7 +169,7 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
                 tbFinance.setSignFee(tbClassType.getSignFee());
                 tbFinance.setCountPayFee(tbClassType.getSignFee());
                 tbFinance.setTbUser(tbUser);
-                tbFinance.setStudentId(tbStu.getId());
+                tbFinance.setTbStudent(tbStu);
                 tbFinance.setName(tbStu.getName());
                 tbFinance.setIdNum(tbStu.getIdNum());
                 tbFinance.setTbClassType(tbStu.getTbClassType());
@@ -204,6 +216,9 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             tbStu.setTbClassInfo(tbClassInfo);
             tbYearInfo = yearInfoDao.getById(TbYearInfo.class, student.getYearId());
             tbStu.setTbYearInfo(tbYearInfo);
+            tbDormitoryInfo = dormitoryInfoDao.getById(TbDormitoryInfo.class, student.getDormitoryNum());
+            tbStu.setTbDormitoryInfo(tbDormitoryInfo);
+
             if ("1".equals(tbStu.getSignUpMoneyFlg())
                     && "0".equals(oldSignUpMoneyFlg)) {
                 tbStu.setSignFee(tbClassType.getSignFee());
@@ -224,7 +239,7 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
                 tbFinance.setSignFee(tbClassType.getSignFee());
                 tbFinance.setCountPayFee(tbClassType.getSignFee());
                 tbFinance.setTbUser(tbUser);
-                tbFinance.setStudentId(tbStu.getId());
+                tbFinance.setTbStudent(tbStu);
                 tbFinance.setName(tbStu.getName());
                 tbFinance.setIdNum(tbStu.getIdNum());
                 tbFinance.setTbClassType(tbStu.getTbClassType());
@@ -361,7 +376,6 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             tbStu.setLakalaSignUpMoneyFlg(student.getLakalaSignUpMoneyFlg());
             tbStu.setAliSignUpMoneyFlg(student.getAliSignUpMoneyFlg());
             tbStu.setStayFlg(student.getStayFlg());
-            tbStu.setDormitoryNum(student.getDormitoryNum());
             tbStu.setSelfstudyNightflg(student.getSelfstudyNightflg());
             tbStu.setSelfstudyNoonflg(student.getSelfstudyNoonflg());
             tbStu.setStuNum(student.getStuNum());
@@ -373,6 +387,7 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
             tbStu.setOldIdFileName(student.getOldIdFileName());
             tbStu.setRemark(student.getRemark());
             tbStu.setScore(student.getScore());
+            tbStu.setNativePlace(student.getNativePlace());
         }
     }
 
@@ -402,7 +417,7 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
         if (fileName != null && !"".equals(fileName)) {
             String fileRealName = UUID.randomUUID().toString()
                     + getFileType(fileName);
-            String filePath = HSConstants.ROOT_PATH+HSConstants.FILE_PATH+"\\video\\" + fileRealName;
+            String filePath = Property.getProperty("uploadPath")+"\\video\\" + fileRealName;
             TbFile tbFile = new TbFile();
             tbFile.setId(UUID.randomUUID().toString());
             tbFile.setFileName(fileName);
@@ -436,7 +451,7 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
         if (fileName != null && !"".equals(fileName)) {
             String fileRealName = UUID.randomUUID().toString()
                     + getFileType(fileName);
-            String filePath = HSConstants.ROOT_PATH+HSConstants.FILE_PATH+"\\report\\" + fileRealName;
+            String filePath = Property.getProperty("uploadPath")+"\\report\\" + fileRealName;
             TbReportFile tbFile = new TbReportFile();
             tbFile.setId(UUID.randomUUID().toString());
             tbFile.setFileName(fileName);
@@ -470,7 +485,7 @@ public class StuSignupServiceImpl implements StuSignupServiceI {
         if (fileName != null && !"".equals(fileName)) {
             String fileRealName = UUID.randomUUID().toString()
                     + getFileType(fileName);
-            String filePath = HSConstants.ROOT_PATH+HSConstants.FILE_PATH+"\\id\\" + fileRealName;
+            String filePath = Property.getProperty("uploadPath")+"\\id\\" + fileRealName;
             TbIdFile tbFile = new TbIdFile();
             tbFile.setId(UUID.randomUUID().toString());
             tbFile.setFileName(fileName);

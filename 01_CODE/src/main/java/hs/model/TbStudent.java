@@ -15,7 +15,7 @@ import javax.persistence.Table;
  * TbStudent entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "tb_student", catalog = "highschool")
+@Table(name = "tb_student", catalog = "highschool2015")
 public class TbStudent implements java.io.Serializable {
 
     /**
@@ -34,6 +34,7 @@ public class TbStudent implements java.io.Serializable {
     private TbUser tbUser;
     private TbClassInfo tbClassInfo;
     private TbYearInfo tbYearInfo;
+    private TbDormitoryInfo tbDormitoryInfo;
     private String name;
     private String sex;
     private String nation;
@@ -70,6 +71,7 @@ public class TbStudent implements java.io.Serializable {
     private String remark;
     private Date createdatetime;
     private Date modifydatetime;
+    private Date payFinishdatetime;
     private BigDecimal studyFee;
     private BigDecimal stayFee;
     private BigDecimal selfFee;
@@ -79,7 +81,6 @@ public class TbStudent implements java.io.Serializable {
     private BigDecimal waterFee;
     private BigDecimal countFee;
     private String arrearflg;
-    private String dormitoryNum;
     private String signUpMoneyFlg;
     private String signUpMoneyContent;
     private String secureFlg;
@@ -110,6 +111,8 @@ public class TbStudent implements java.io.Serializable {
     private BigDecimal preferentialFee;
     //积分
     private int score;
+    //籍贯
+    private String nativePlace ;
     // Constructors
 
     /** default constructor */
@@ -708,15 +711,6 @@ public class TbStudent implements java.io.Serializable {
         this.oldPhotoFileName = oldPhotoFileName;
     }
 
-    @Column(name = "dormitory_num", length = 50)
-    public String getDormitoryNum() {
-        return dormitoryNum;
-    }
-
-    public void setDormitoryNum(String dormitoryNum) {
-        this.dormitoryNum = dormitoryNum;
-    }
-
     @Column(name = "signup_money_flg", length = 2)
     public String getSignUpMoneyFlg() {
         return signUpMoneyFlg;
@@ -1116,8 +1110,10 @@ public class TbStudent implements java.io.Serializable {
         }
         sb.append("，");
         sb.append("宿舍号：");
-        if(this.dormitoryNum !=null && !"".equals(this.dormitoryNum)) {
-            sb.append(this.dormitoryNum);
+        if(this.tbDormitoryInfo !=null
+                && this.tbDormitoryInfo.getName() != null
+                && !"".equals(this.tbDormitoryInfo.getName())) {
+            sb.append(this.tbDormitoryInfo.getName());
         } else{
             sb.append("无");
         }
@@ -1191,6 +1187,12 @@ public class TbStudent implements java.io.Serializable {
         sb.append("积分：");
         sb.append(this.score);
         sb.append("，");
+        sb.append("缴其时间：");
+        sb.append(this.payFinishdatetime);
+        sb.append("，");
+        sb.append("籍贯：");
+        sb.append(this.nativePlace);
+        sb.append("，");
         sb.append("备注：");
         if(this.remark !=null && !"".equals(this.remark)) {
             sb.append(this.remark);
@@ -1228,6 +1230,16 @@ public class TbStudent implements java.io.Serializable {
         this.tbYearInfo = tbYearInfo;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dormitory_num")
+    public TbDormitoryInfo getTbDormitoryInfo() {
+        return tbDormitoryInfo;
+    }
+
+    public void setTbDormitoryInfo(TbDormitoryInfo tbDormitoryInfo) {
+        this.tbDormitoryInfo = tbDormitoryInfo;
+    }
+
     @Column(name = "score", nullable = false)
     public int getScore() {
         return score;
@@ -1235,5 +1247,23 @@ public class TbStudent implements java.io.Serializable {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    @Column(name = "payFinishdatetime", length = 19)
+    public Date getPayFinishdatetime() {
+        return payFinishdatetime;
+    }
+
+    public void setPayFinishdatetime(Date payFinishdatetime) {
+        this.payFinishdatetime = payFinishdatetime;
+    }
+
+    @Column(name = "nativePlace", length = 100)
+    public String getNativePlace() {
+        return nativePlace;
+    }
+
+    public void setNativePlace(String nativePlace) {
+        this.nativePlace = nativePlace;
     }
 }

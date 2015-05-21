@@ -36,16 +36,19 @@
                             columns : [ [ {
                                 title : '备注',
                                 field : 'detail',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }, {
                                 title : '拥有权限ID',
                                 field : 'menuIds',
                                 width : 300,
-                                hidden : true
+                                hidden : true,
+                                sortable : true
                             }, {
                                 title : '拥有权限',
                                 field : 'menuNames',
-                                width : 300
+                                width : 300,
+                                sortable : true
                             } ] ],
                             toolbar : [ {
                                 text : '增加',

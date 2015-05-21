@@ -42,8 +42,12 @@ public class FinanceServiceImpl implements FinanceServiceI {
     @Override
     public DataGrid datagridBeforePay(Finance finance) {
         DataGrid j = new DataGrid();
+        String hql = "FROM TbFinance t WHERE t.payflg='0'";
+        if (finance.getSort() != null) {
+            hql += " ORDER BY " + finance.getSort() + " " + finance.getOrder();
+        }
         List<Finance> finList = new ArrayList<Finance>();
-        List<TbFinance> tbFinList = financeDao.find("FROM TbFinance t WHERE t.payflg='0'", finance.getPage(), finance.getRows());
+        List<TbFinance> tbFinList = financeDao.find(hql, finance.getPage(), finance.getRows());
         if (tbFinList != null && tbFinList.size() > 0) {
             for (TbFinance t : tbFinList) {
                 Finance f = new Finance();
@@ -94,6 +98,9 @@ public class FinanceServiceImpl implements FinanceServiceI {
                  if(f.getPreferentialFee() == null) {
                      f.setPreferentialFee(new BigDecimal(0));
                  }
+                 if(f.getDeductionFee() == null) {
+                     f.setDeductionFee(new BigDecimal(0));
+                 }
                  if(f.getCashFee() == null) {
                      f.setCashFee(new BigDecimal(0));
                  }
@@ -123,6 +130,18 @@ public class FinanceServiceImpl implements FinanceServiceI {
                  } else {
                      f.setCancelflg("已撤销");
                  }
+                 f.setPayFinishdatetime(t.getTbStudent().getPayFinishdatetime());
+                 if ("0".equals(t.getTbStudent().getSex())) {
+                     f.setSexContent("男");
+                 } else if ("1".equals(t.getTbStudent().getSex())) {
+                     f.setSexContent("女");
+                 }
+                 if (t.getTbStudent().getTbClassInfo() != null) {
+                     f.setClassName(t.getTbStudent().getTbClassInfo().getName());
+                 } else {
+                     f.setClassName("");
+                 }
+                 f.setPayFinishFee(t.getTbStudent().getCountFee());
 //                if (t.getStudentId() != null && !"".equals(t.getStudentId())) {
 //                    TbStudent tbStudent = studentDao.getById(TbStudent.class, t.getStudentId());
 //                    //f.setName(tbStudent.getName());
@@ -148,7 +167,7 @@ public class FinanceServiceImpl implements FinanceServiceI {
      * @return
      */
     private String addCondition(Finance finance, Map<String, Object> params) {
-        String hql = "FROM TbFinance t WHERE t.studentId <> null";
+        String hql = "FROM TbFinance t WHERE t.tbStudent.id <> null";
         if (finance.getPayee() != null && !finance.getPayee().trim().equals("")) {
             hql += " AND t.tbUser.name LIKE :name";
             params.put("name", "%%" + finance.getPayee() + "%%");
@@ -179,10 +198,17 @@ public class FinanceServiceImpl implements FinanceServiceI {
                 cancelflg = "1";
             }
             hql += " AND t.cancelflg = '" + cancelflg +"'";
-//            params.put("cancelflg", "%%" + cancelflg + "%%");
         }
         if (finance.getSort() != null) {
-            hql += " ORDER BY " + finance.getSort() + " " + finance.getOrder();
+            if("sexContent".equals(finance.getSort())) {
+                hql += " ORDER BY t.tbStudent.sex " + finance.getOrder();
+            } else if("classTypeName".equals(finance.getSort())) {
+                hql += " ORDER BY t.tbClassType.classType " + finance.getOrder();
+            } else if("className".equals(finance.getSort())) {
+                hql += " ORDER BY t.tbStudent.tbClassInfo.name " + finance.getOrder();
+            } else {
+                hql += " ORDER BY " + finance.getSort() + " " + finance.getOrder();
+            }
         }
         return hql;
     }
@@ -207,8 +233,8 @@ public class FinanceServiceImpl implements FinanceServiceI {
         }
 
         TbFinance tbFinance = financeDao.getById(TbFinance.class, finance.getId());
-        if (tbFinance.getStudentId() != null && !"".equals(tbFinance.getStudentId())) {
-            TbStudent tbStudent = studentDao.getById(TbStudent.class, tbFinance.getStudentId());
+        if (tbFinance.getTbStudent().getId() != null && !"".equals(tbFinance.getTbStudent().getId())) {
+            TbStudent tbStudent = studentDao.getById(TbStudent.class, tbFinance.getTbStudent().getId());
             if(tbStudent != null) {
                 if (finance.getArrearFee() != null) {
                     // 欠费  = 变更后-变更前+现在
@@ -218,6 +244,7 @@ public class FinanceServiceImpl implements FinanceServiceI {
                         tbStudent.setArrearflg("1");
                     } else {
                         tbStudent.setArrearflg("0");
+                        tbStudent.setPayFinishdatetime(new Date());
                     }
                 }
 
@@ -260,6 +287,8 @@ public class FinanceServiceImpl implements FinanceServiceI {
         tbFinance.setAliFee(finance.getAliFee());
         // 减免
         tbFinance.setPreferentialFee(finance.getPreferentialFee());
+        // 扣款
+        tbFinance.setDeductionFee(finance.getDeductionFee());
         // 欠费
         tbFinance.setArrearFee(finance.getArrearFee());
         // 退款
@@ -338,6 +367,10 @@ public class FinanceServiceImpl implements FinanceServiceI {
                 if (f.getPreferentialFee() != null) {
                     countReport = countReport.subtract(f.getPreferentialFee());
                 }
+                // 扣款
+                if (f.getDeductionFee() != null) {
+                    countReport = countReport.subtract(f.getDeductionFee());
+                }
                 // 退款
                 if (f.getRefundFee() != null) {
                     countReport = countReport.subtract(f.getRefundFee());
@@ -413,6 +446,14 @@ public class FinanceServiceImpl implements FinanceServiceI {
                     }
                 } else {
                     finances.setPreferentialFee(f.getPreferentialFee());
+                }
+                // 按时扣费
+                if (finances.getDeductionFee() !=null) {
+                    if (f.getDeductionFee() != null){
+                        finances.setDeductionFee(finances.getDeductionFee().add(f.getDeductionFee()));
+                    }
+                } else {
+                    finances.setDeductionFee(f.getDeductionFee());
                 }
                 // 现金
                 if (finances.getCashFee() !=null) {
@@ -507,7 +548,7 @@ public class FinanceServiceImpl implements FinanceServiceI {
             for (int i=0;i<count;i++) {
                 Finance f = new Finance();
                 TbFinance t = tbFinList.get(i);
-                String stuId = t.getStudentId();
+                String stuId = t.getTbStudent().getId();
                 BeanUtils.copyProperties(t, f);
                 f.setPayee(t.getTbUser().getName());
                 if (t.getTbClassType() != null) {
@@ -515,10 +556,22 @@ public class FinanceServiceImpl implements FinanceServiceI {
                     f.setClassTypeName(t.getTbClassType().getClassType());
                 }
                 if (stuId != null && !"".equals(stuId)) {
-                    TbStudent tbStudent = studentDao.getById(TbStudent.class, t.getStudentId());
+                    TbStudent tbStudent = t.getTbStudent();
                     if (tbStudent != null) {
                         f.setName(tbStudent.getName());
                         f.setIdNum(tbStudent.getIdNum());
+                        f.setPayFinishdatetime(tbStudent.getPayFinishdatetime());
+                        if ("0".equals(tbStudent.getSex())) {
+                            f.setSexContent("男");
+                        } else if ("1".equals(tbStudent.getSex())) {
+                            f.setSexContent("女");
+                        }
+                        if (tbStudent.getTbClassInfo() != null) {
+                            f.setClassName(tbStudent.getTbClassInfo().getName());
+                        } else {
+                            f.setClassName("");
+                        }
+                        f.setPayFinishFee(tbStudent.getCountFee());
                     } else {
                         f.setName(t.getName());
                         f.setIdNum(t.getIdNum());
@@ -546,6 +599,10 @@ public class FinanceServiceImpl implements FinanceServiceI {
                 oneStudentFinance.setName(f.getName());
                 oneStudentFinance.setIdNum(f.getIdNum());
                 oneStudentFinance.setClassTypeName(f.getClassTypeName());
+                oneStudentFinance.setSexContent(f.getSexContent());
+                oneStudentFinance.setClassName(f.getClassName());
+                oneStudentFinance.setPayFinishdatetime(f.getPayFinishdatetime());
+                oneStudentFinance.setPayFinishFee(f.getPayFinishFee());
                 BigDecimal countReport = new BigDecimal(0);
                 // 学费
                 if (f.getStudyFee() != null) {
@@ -586,6 +643,11 @@ public class FinanceServiceImpl implements FinanceServiceI {
                 if (f.getPreferentialFee() != null) {
                     countReport = countReport.subtract(f.getPreferentialFee());
                     oneStudentFinance.setPreferentialFee(oneStudentFinance.getPreferentialFee().add(f.getPreferentialFee()));
+                }
+                // 按时扣费
+                if (f.getDeductionFee() != null) {
+                    countReport = countReport.subtract(f.getDeductionFee());
+                    oneStudentFinance.setDeductionFee(oneStudentFinance.getDeductionFee().add(f.getDeductionFee()));
                 }
                 // 退款
                 if (f.getRefundFee() != null) {
@@ -661,7 +723,7 @@ public class FinanceServiceImpl implements FinanceServiceI {
             if(df.parse(createdate).compareTo(df.parse(today)) != 0){
                 return "noToday";
             }
-            TbStudent tbStudent = studentDao.getById(TbStudent.class, tbFinance.getStudentId());
+            TbStudent tbStudent = studentDao.getById(TbStudent.class, tbFinance.getTbStudent().getId());
             if("报名费".equals(tbFinance.getCrashHistoryType())) {
                 if ("1".equals(tbStudent.getSignUpMoneyFlg())) {
                     tbStudent.setSignFee(tbStudent.getSignFee().subtract(tbFinance.getSignFee()));
@@ -736,6 +798,7 @@ public class FinanceServiceImpl implements FinanceServiceI {
                     tbStudent.setArrearflg("1");
                 } else {
                     tbStudent.setArrearflg("0");
+                    tbStudent.setPayFinishdatetime(new Date());
                 }
                 // 现金
                 // 银行转账

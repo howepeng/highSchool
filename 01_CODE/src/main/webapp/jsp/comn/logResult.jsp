@@ -21,6 +21,7 @@
                                 field : 'id',
                                 title : '编号',
                                 width : 150,
+                                sortable : true,
                                 checkbox : true
                             } ] ],
                             columns : [ [ {
@@ -30,30 +31,6 @@
                                 sortable : true
                             } ] ],
                             toolbar : [ {
-                                text : '增加',
-                                iconCls : 'icon-add',
-                                handler : function() {
-                                    comn_logResultManager_appendFun();
-                                }
-                            }, '-', {
-                                text : '删除',
-                                iconCls : 'icon-remove',
-                                handler : function() {
-                                    comn_logResultManager_remove();
-                                }
-                            }, '-', {
-                                text : '修改',
-                                iconCls : 'icon-edit',
-                                handler : function() {
-                                    comn_logResultManager_editFun();
-                                }
-                            }, '-', {
-                                text : '取消选中',
-                                iconCls : 'icon-undo',
-                                handler : function() {
-                                    $('#comn_logResultManager_datagrid').datagrid('unselectAll');
-                                    $('#comn_logResultManager_datagrid').datagrid('uncheckAll');
-                                }
                             }, '-'  ]
                         });
 

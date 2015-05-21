@@ -54,9 +54,13 @@ public class LogTypeAction extends BaseAction implements ModelDriven<LogType> {
     public void remove(){
         Json json = new Json();
         try {
-            logTypeService.remove(logType.getIds());
-            json.setSuccess(true);
-            json.setMsg("删除成功");
+            if (logType.getIds().indexOf("51c9b56b-fac6-4bc6-8079-94fb2ee718be") > -1) {
+                json.setMsg("迟到类型在考勤计算中被使用，不能删除！");
+            } else {
+                logTypeService.remove(logType.getIds());
+                json.setSuccess(true);
+                json.setMsg("删除成功");
+            }
         } catch (DataIntegrityViolationException d){
             d.printStackTrace();
             json.setMsg("有使用该课程的日志存在，请先删除使用该课程的日志！");

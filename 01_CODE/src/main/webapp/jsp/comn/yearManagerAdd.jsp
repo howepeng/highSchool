@@ -14,8 +14,8 @@
                                         valueField : 'id',
                                         textField : 'name',
                                         multiple : false,
-                                        editable : false,
-                                        panelHeight : 'auto'" />
+                                        editable : true,
+                                        panelHeight : '200'" />
             </td>
         </tr>
     </table>

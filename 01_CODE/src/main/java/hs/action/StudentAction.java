@@ -39,35 +39,40 @@ public class StudentAction extends BaseAction implements ModelDriven<Student> {
     }
 
     public void combox() {
-        super.writeJson(studentService.combox(student));
+        SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute("sessionInfo");
+        super.writeJson(studentService.combox(student, sessionInfo));
     }
 
     /**
      * 缴费
      */
     public void datagridBeforePay(){
-        super.writeJson(studentService.datagridBeforePay(student));
+        SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute("sessionInfo");
+        super.writeJson(studentService.datagridBeforePay(student, sessionInfo));
     }
 
     /**
      * 补交费
      */
     public void datagridAfterPay(){
-        super.writeJson(studentService.datagridAfterPay(student));
+        SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute("sessionInfo");
+        super.writeJson(studentService.datagridAfterPay(student, sessionInfo));
     }
 
     /**
      * 退款
      */
     public void datagridReturnPay(){
-        super.writeJson(studentService.datagridReturnPay(student));
+        SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute("sessionInfo");
+        super.writeJson(studentService.datagridReturnPay(student, sessionInfo));
     }
 
     /**
      * 学生管理
      */
     public void datagridStudent(){
-        super.writeJson(studentService.datagridStudent(student));
+        SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute("sessionInfo");
+        super.writeJson(studentService.datagridStudent(student, sessionInfo));
     }
 
     public void feePay(){
@@ -141,5 +146,19 @@ public class StudentAction extends BaseAction implements ModelDriven<Student> {
         }
         super.writeJson(json);
 
+    }
+
+    public void updateYearInfo(){
+        Json json = new Json();
+        SessionInfo sessionInfo = (SessionInfo) ServletActionContext.getRequest().getSession().getAttribute("sessionInfo");
+        String ret = studentService.updateYearInfo(student, sessionInfo);
+        if ("success".equals(ret)) {
+            json.setSuccess(true);
+            json.setMsg("修改成功");
+        } else {
+            json.setSuccess(false);
+            json.setMsg("修改失败");
+        }
+        super.writeJson(json);
     }
 }

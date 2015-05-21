@@ -29,28 +29,44 @@
                             }, {
                                 title : '姓名',
                                 field : 'name',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             } ] ],
                             columns : [ [ {
                                 title : '身份证',
                                 field : 'idNum',
-                                width : 300
+                                width : 300,
+                                sortable : true
                             }, {
                                 title : '高考总分',
                                 field : 'fractionCount',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }, {
                                 title : '班级类型',
                                 field : 'classTypeName',
-                                width : 200
+                                width : 200,
+                                sortable : true
                             } , {
                                 title : '报名时间',
                                 field : 'createdatetime',
-                                width : 150
+                                width : 150,
+                                sortable : true
                             }, {
                                 title : '欠费',
                                 field : 'arrearFee',
-                                width : 150
+                                width : 150,
+                                sortable : true
+                            }, {
+                                title : '实缴',
+                                field : 'countFee',
+                                width : 150,
+                                sortable : true
+                            }, {
+                                title : '应缴',
+                                field : 'allFee',
+                                width : 150,
+                                sortable : true
                             } ] ],
                             toolbar : [ {
                                 text : '缴费',
